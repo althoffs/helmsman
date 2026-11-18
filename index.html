@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#10263a"><title>HELMSMAN MK 0.4</title>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#10263a"><title>HELMSMAN MK 0.5</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{color-scheme:dark;--bg:#0b1926;--panel:#142b3e;--muted:#a9bdcc;--line:#29465c;--accent:#55c2b2}
@@ -42,7 +42,7 @@ header{padding:17px 3px 8px}
 .follow-btn.active{background:var(--accent);border-color:var(--accent);color:#082027}
 .map-card.collapsed #mapWrap{display:none}
 .compass-body{display:flex;align-items:center;gap:12px;margin-top:8px}
-.compass{flex:none;width:min(44vw,172px);height:auto;aspect-ratio:1}
+.compass{flex:none;width:min(46vw,176px);height:auto}
 .readings{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0}
 .metric{background:#0d2030;border-radius:11px;padding:9px 11px}
 .metric strong{display:block;font-size:20px;margin-top:4px;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -64,7 +64,7 @@ header{padding:17px 3px 8px}
 
 <header>
 <div class="toprow">
-<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 0.4</span></div>
+<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 0.5</span></div>
 <button class="stopwatch" id="stopwatch" aria-label="Stoppuhr"></button>
 </div>
 <div class="subrow"><div class="tag">PERSONAL BOAT DASHBOARD</div><div class="status"><i class="dot off" id="dot"></i><span id="gpsStatus">GPS nicht aktiv</span></div></div>
@@ -86,19 +86,15 @@ header{padding:17px 3px 8px}
 <section class="card">
 <div class="eyebrow">KOMPASS · HEADING</div>
 <div class="compass-body">
-<svg class="compass" viewBox="0 0 160 160" role="img" aria-label="Kompassrose">
-<circle cx="80" cy="80" r="76" fill="#1b3549" stroke="#567084"/>
-<g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" text-anchor="middle" dominant-baseline="central">
-<text x="80" y="21" fill="#ff7777" font-size="14" font-weight="800">N</text>
-<text x="139" y="80" fill="#f4f8fb" font-size="14" font-weight="800">O</text>
-<text x="80" y="139" fill="#f4f8fb" font-size="14" font-weight="800">S</text>
-<text x="21" y="80" fill="#f4f8fb" font-size="14" font-weight="800">W</text>
-<text x="121" y="39" fill="#8fa6b7" font-size="11" font-weight="700">NO</text>
-<text x="121" y="121" fill="#8fa6b7" font-size="11" font-weight="700">SO</text>
-<text x="39" y="121" fill="#8fa6b7" font-size="11" font-weight="700">SW</text>
-<text x="39" y="39" fill="#8fa6b7" font-size="11" font-weight="700">NW</text></g>
-<g id="needle" transform="rotate(0 80 80)"><polygon id="needleN" points="80,36 73,80 87,80" fill="#5b7384"/><polygon id="needleS" points="80,124 73,80 87,80" fill="#41596a"/></g>
-<circle cx="80" cy="80" r="6" fill="#f4f8fb" stroke="#19354a" stroke-width="3"/>
+<svg class="compass" viewBox="0 -6 200 212" role="img" aria-label="Kompass: der Kranz dreht sich, der weiße Strich oben ist der Bug">
+<g id="rose">
+<circle cx="100" cy="100" r="92" fill="#1b3549" stroke="#567084"/>
+<g id="ticks"></g>
+<g id="labs"></g>
+<g id="cogMark" style="display:none"><polygon points="100,20 93,6 107,6" fill="#ffb84d"/></g>
+</g>
+<g id="boat" style="display:none"><polygon points="100,80 110,112 100,106 90,112" fill="#f4f8fb" stroke="#19354a" stroke-width="2" stroke-linejoin="round"/></g>
+<g id="lub" style="display:none"><polygon points="100,18 91,-5 109,-5" fill="#fff" stroke="#0b1926" stroke-width="1.5" stroke-linejoin="round"/></g>
 </svg>
 <div class="readings">
 <div class="metric"><div class="eyebrow">HEADING</div><strong id="heading">—</strong></div>
@@ -106,7 +102,7 @@ header{padding:17px 3px 8px}
 <div class="metric"><div class="eyebrow">ABDRIFT</div><strong id="drift">—</strong></div>
 </div>
 </div>
-<div class="sub" id="direction" style="margin-top:8px">Kompass aus</div>
+<div class="sub" id="compassState" style="margin-top:8px">Kompass aus</div>
 </section>
 
 <section class="card" style="padding-bottom:4px">
@@ -116,42 +112,89 @@ header{padding:17px 3px 8px}
 <div id="message">GPS benötigt eine HTTPS-Verbindung. Schalte GPS ein und erlaube den Standortzugriff, wenn Safari danach fragt.</div>
 </section>
 
-<p class="note">SOG und COG werden über GPS über Grund ermittelt. Heading ist die vom iPhone gemessene Ausrichtung. Die Abdrift ist die Differenz aus COG und Heading (StB = nach Steuerbord, BB = nach Backbord) und wird erst ab etwa 1 kn Fahrt angezeigt. Der Gerätekompass kann an Bord durch Metall und elektrische Anlagen gestört werden. Kartendaten benötigen eine Internetverbindung. HELMSMAN ist ein Zusatzinstrument und kein Ersatz für geeignete Navigationsmittel.</p>
+<p class="note">SOG und COG werden über GPS über Grund ermittelt. Heading ist die vom Gerät gemessene Ausrichtung des Bugs (Gerät hochkant oder in der Hand, Rückseite zeigt nach vorn). Der Kompasskranz dreht sich, der weiße Strich oben ist der Bug, die gelbe Marke zeigt den GPS-Kurs (COG). Die Abdrift ist die Differenz aus COG und Heading (StB = nach Steuerbord, BB = nach Backbord) und wird erst ab etwa 1 kn Fahrt angezeigt. Der Gerätekompass kann an Bord durch Metall und elektrische Anlagen gestört werden. Kartendaten benötigen eine Internetverbindung. HELMSMAN ist ein Zusatzinstrument und kein Ersatz für geeignete Navigationsmittel.</p>
 </main>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 let watchId=null,map=null,marker=null,selectedUnit="kn",latestSpeedMs=null,smoothedSpeedMs=null,lastFixAt=0,currentPosition=null,followMap=true,mapHasFix=false;
-let headingDeg=null,cogDeg=null,sogMs=null,compassOn=false;
+let headingDeg=null,cogDeg=null,sogMs=null,compassOn=false,smH=null,lastHT=0,lastTextT=0;
+const MIN_DRIFT_SPEED=0.5; // m/s, ca. 1 kn
 const $=id=>document.getElementById(id);
+const store={get(k){try{return localStorage.getItem("helmsman."+k)}catch(e){return null}},set(k,v){try{localStorage.setItem("helmsman."+k,v)}catch(e){}}};
 
 function fmtCoord(v,pos,neg,isLon=false){if(v==null)return"—";const a=Math.abs(v),d=Math.floor(a),m=(a-d)*60;return`${String(d).padStart(isLon?3:2,"0")}° ${m.toFixed(1).padStart(4,"0")}′ ${v>=0?pos:neg}`}
 function cardinal(d){if(d==null)return"—";return ["N","NNO","NO","ONO","O","OSO","SO","SSO","S","SSW","SW","WSW","W","WNW","NW","NNW"][Math.round(((d%360)+360)%360/22.5)%16]}
 function p3(n){return String(Math.round(n)%360).padStart(3,"0")}
 function setSwitch(id,on){$(id).setAttribute("aria-checked",String(on))}
 
+/* ---------- Kompassrose aufbauen ---------- */
+const NS="http://www.w3.org/2000/svg",labelEls=[];
+(function buildRose(){
+ const ticks=$("ticks");
+ for(let a=0;a<360;a+=10){
+  const len=a%30===0?10:5,l=document.createElementNS(NS,"line");
+  l.setAttribute("x1",100);l.setAttribute("x2",100);l.setAttribute("y1",8);l.setAttribute("y2",8+len);
+  l.setAttribute("stroke",a%30===0?"#8fa6b7":"#567084");l.setAttribute("stroke-width",a%90===0?2:1);
+  l.setAttribute("transform",`rotate(${a} 100 100)`);ticks.appendChild(l);
+ }
+ const defs=[["N",0,14,"#ff7777"],["NO",45,11,"#8fa6b7"],["O",90,14,"#f4f8fb"],["SO",135,11,"#8fa6b7"],["S",180,14,"#f4f8fb"],["SW",225,11,"#8fa6b7"],["W",270,14,"#f4f8fb"],["NW",315,11,"#8fa6b7"]];
+ defs.forEach(d=>{
+  const rad=d[1]*Math.PI/180,x=100+68*Math.sin(rad),y=100-68*Math.cos(rad),t=document.createElementNS(NS,"text");
+  t.setAttribute("x",x);t.setAttribute("y",y);t.setAttribute("text-anchor","middle");t.setAttribute("dominant-baseline","central");
+  t.setAttribute("fill",d[3]);t.setAttribute("font-size",d[2]);t.setAttribute("font-weight",d[2]===14?"800":"700");
+  t.setAttribute("font-family","-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif");t.textContent=d[0];
+  $("labs").appendChild(t);labelEls.push({el:t,x,y});
+ });
+})();
+function drawRose(){
+ const on=compassOn&&headingDeg!=null,h=on?headingDeg:0;
+ $("rose").setAttribute("transform",`rotate(${-h} 100 100)`);
+ labelEls.forEach(l=>l.el.setAttribute("transform",`rotate(${h} ${l.x} ${l.y})`));
+ $("boat").style.display=on?"":"none";$("lub").style.display=on?"":"none";
+}
+function updateCogMark(){
+ const show=cogDeg!=null&&sogMs!=null&&sogMs>=MIN_DRIFT_SPEED;
+ $("cogMark").style.display=show?"":"none";
+ if(show)$("cogMark").setAttribute("transform",`rotate(${cogDeg} 100 100)`);
+}
+function updateCompassState(){
+ $("compassState").textContent=!compassOn?"Kompass aus":headingDeg==null?"Kompass wartet …":"Gelbe Marke = GPS-Kurs (COG), sichtbar ab ca. 1 kn";
+}
+
+/* ---------- Anzeige ---------- */
 function renderSpeed(){if(latestSpeedMs==null){$("speed").textContent="—";return}const value=latestSpeedMs<0.25?0:latestSpeedMs*(selectedUnit==="kn"?1.943844:3.6);$("speed").textContent=value.toFixed(1)}
-function chooseUnit(u){selectedUnit=u;$("knBtn").classList.toggle("active",u==="kn");$("kmhBtn").classList.toggle("active",u==="kmh");$("knBtn").setAttribute("aria-pressed",u==="kn");$("kmhBtn").setAttribute("aria-pressed",u==="kmh");$("unitLabel").textContent=u==="kn"?"kn":"km/h";renderSpeed()}
+function chooseUnit(u){selectedUnit=u;store.set("unit",u);$("knBtn").classList.toggle("active",u==="kn");$("kmhBtn").classList.toggle("active",u==="kmh");$("knBtn").setAttribute("aria-pressed",u==="kn");$("kmhBtn").setAttribute("aria-pressed",u==="kmh");$("unitLabel").textContent=u==="kn"?"kn":"km/h";renderSpeed()}
 
 function updateDrift(){
  const el=$("drift");
- if(headingDeg==null||cogDeg==null||sogMs==null||sogMs<0.5){el.textContent="—";el.className="";return}
+ if(!compassOn||headingDeg==null||cogDeg==null||sogMs==null||sogMs<MIN_DRIFT_SPEED){el.textContent="—";el.className="";return}
  const d=((cogDeg-headingDeg+540)%360)-180,a=Math.round(Math.abs(d));
  if(a===0){el.textContent="0°";el.className=""}
  else if(d>0){el.textContent=a+"° StB";el.className="stb"}
  else{el.textContent=a+"° BB";el.className="bb"}
 }
+function updateHeadingText(force){
+ const now=performance.now();
+ if(!force&&now-lastTextT<200)return;
+ lastTextT=now;
+ $("heading").textContent=(compassOn&&headingDeg!=null)?`${p3(headingDeg)}° ${cardinal(headingDeg)}`:"—";
+ updateDrift();
+}
 
+/* ---------- Karte ---------- */
 function initMap(){if(map||!window.L)return;map=L.map("map",{zoomControl:true,scrollWheelZoom:false}).setView([53.55,9.99],12);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);map.on("dragstart",()=>{if(followMap)setFollow(false)})}
 function updateMap(lat,lon){if(!window.L)return;initMap();const p=[lat,lon];if(!marker)marker=L.circleMarker(p,{radius:8,color:"#fff",weight:3,fillColor:"#168bce",fillOpacity:1}).addTo(map);else marker.setLatLng(p);if(!mapHasFix){map.setView(p,15);mapHasFix=true}else if(followMap){map.panTo(p,{animate:true,duration:.35})}}
 function setFollow(on){followMap=on;$("followBtn").textContent=on?"FOLLOW ON":"FOLLOW OFF";$("followBtn").classList.toggle("active",on);$("followBtn").setAttribute("aria-pressed",String(on));if(on&&currentPosition&&map)map.panTo(currentPosition,{animate:true,duration:.35})}
 
+/* ---------- GPS ---------- */
 function setGpsStatus(kind,label){$("dot").className="dot"+(kind==="good"?" on":kind==="weak"?" weak":kind==="stale"?" stale":kind==="off"?" off":"");$("gpsStatus").textContent=label}
 
 function startGPS(){
  if(!navigator.geolocation){$("message").textContent="Dieser Browser unterstützt keine Standortbestimmung.";setSwitch("swGps",false);return}
- if(!isSecureContext){$("message").textContent="GPS benötigt HTTPS. Bitte die veröffentlichte HTTPS-Adresse in Safari öffnen.";setSwitch("swGps",false);return}
+ if(!isSecureContext){$("message").textContent="GPS benötigt HTTPS. Bitte die veröffentlichte HTTPS-Adresse öffnen.";setSwitch("swGps",false);return}
  if(watchId!==null)navigator.geolocation.clearWatch(watchId);
+ store.set("gps","1");
  setSwitch("swGps",true);setGpsStatus("weak","GPS sucht …");$("message").textContent="Warte auf GPS-Daten …";
  watchId=navigator.geolocation.watchPosition(pos=>{
   const c=pos.coords;lastFixAt=Date.now();currentPosition=[c.latitude,c.longitude];
@@ -164,64 +207,82 @@ function startGPS(){
   cogDeg=Number.isFinite(c.heading)?c.heading:null;
   $("cog").textContent=cogDeg==null?"—":`${p3(cogDeg)}° ${cardinal(cogDeg)}`;
   $("accuracy").textContent=c.accuracy==null?"—":`±${Math.round(c.accuracy)} m`;
-  updateDrift();updateMap(c.latitude,c.longitude);
+  updateCogMark();updateHeadingText(true);updateMap(c.latitude,c.longitude);
   $("message").textContent=`GPS aktualisiert: ${new Date(pos.timestamp).toLocaleTimeString("de-DE")}`;
  },err=>{
   setGpsStatus("stale","GPS-Fehler");
-  const m={1:"Standortzugriff verweigert. Bitte in den iPhone-/Safari-Einstellungen erlauben.",2:"GPS-Position momentan nicht verfügbar.",3:"GPS-Zeitüberschreitung. Bitte erneut versuchen."};
+  const m={1:"Standortzugriff verweigert. Bitte in den Geräte-/Browser-Einstellungen erlauben.",2:"GPS-Position momentan nicht verfügbar.",3:"GPS-Zeitüberschreitung. Bitte erneut versuchen."};
   $("message").textContent=m[err.code]||"Fehler bei der GPS-Ortung.";
-  if(err.code===1){stopGPS(true)}
+  if(err.code===1)stopGPS(true);
  },{enableHighAccuracy:true,maximumAge:1000,timeout:20000});
 }
 function stopGPS(keepMessage){
  if(watchId!==null)navigator.geolocation.clearWatch(watchId);
  watchId=null;lastFixAt=0;latestSpeedMs=null;smoothedSpeedMs=null;sogMs=null;cogDeg=null;currentPosition=null;
- setSwitch("swGps",false);
+ store.set("gps","0");setSwitch("swGps",false);
  renderSpeed();$("lat").textContent="—";$("lon").textContent="—";$("cog").textContent="—";$("accuracy").textContent="—";
- updateDrift();
+ updateCogMark();updateHeadingText(true);
  if(!keepMessage){setGpsStatus("off","GPS nicht aktiv");$("message").textContent="GPS ausgeschaltet."}
  else{$("dot").className="dot stale"}
 }
 setInterval(()=>{if(watchId!==null&&lastFixAt&&Date.now()-lastFixAt>15000){setGpsStatus("stale","GPS-Daten veraltet");$("message").textContent="Seit mehr als 15 Sekunden keine neue GPS-Position."}},5000);
 
+/* ---------- Kompass ---------- */
+function needsCompassPermission(){return typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function"}
 async function activateCompass(){
  try{
-  if(typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function"){
+  if(needsCompassPermission()){
    const p=await DeviceOrientationEvent.requestPermission();
-   if(p!=="granted")throw Error("Kompasszugriff nicht erlaubt. Bitte in den iPhone-/Safari-Einstellungen erlauben.");
+   if(p!=="granted")throw Error("Kompasszugriff nicht erlaubt. Bitte in den Geräte-/Browser-Einstellungen erlauben.");
   }
   window.addEventListener("deviceorientationabsolute",orientationHandler,true);
   window.addEventListener("deviceorientation",orientationHandler,true);
-  compassOn=true;setSwitch("swCompass",true);$("direction").textContent="Kompass wartet …";
-  $("message").textContent="Kompass aktiviert. iPhone möglichst flach halten; an Bord auf magnetische Störungen achten.";
+  compassOn=true;smH=null;headingDeg=null;store.set("compass","1");setSwitch("swCompass",true);
+  updateCompassState();updateHeadingText(true);drawRose();
+  $("message").textContent="Kompass aktiviert. Gerät hochkant oder in der Hand halten; an Bord auf magnetische Störungen achten.";
  }catch(e){
-  compassOn=false;setSwitch("swCompass",false);
+  compassOn=false;setSwitch("swCompass",false);updateCompassState();
   $("message").textContent=e.message||"Kompass konnte nicht aktiviert werden.";
  }
 }
 function deactivateCompass(){
  window.removeEventListener("deviceorientationabsolute",orientationHandler,true);
  window.removeEventListener("deviceorientation",orientationHandler,true);
- compassOn=false;headingDeg=null;setSwitch("swCompass",false);
- $("needle").setAttribute("transform","rotate(0 80 80)");
- $("needleN").setAttribute("fill","#5b7384");$("needleS").setAttribute("fill","#41596a");
- $("heading").textContent="—";$("direction").textContent="Kompass aus";
- updateDrift();$("message").textContent="Kompass ausgeschaltet.";
+ compassOn=false;headingDeg=null;smH=null;store.set("compass","0");setSwitch("swCompass",false);
+ drawRose();updateCompassState();updateHeadingText(true);
+ $("message").textContent="Kompass ausgeschaltet.";
+}
+/* Heading der Geräterückseite bei geneigtem Gerät (Android), nach W3C-Formel */
+function tiltHeading(alpha,beta,gamma){
+ const r=Math.PI/180,x=beta*r,y=gamma*r,z=alpha*r;
+ const cY=Math.cos(y),cZ=Math.cos(z),sX=Math.sin(x),sY=Math.sin(y),sZ=Math.sin(z);
+ const Vx=-cZ*sY-sZ*sX*cY,Vy=-sZ*sY+cZ*sX*cY;
+ let h=Math.atan(Vx/Vy);
+ if(Vy<0)h+=Math.PI;else if(Vx<0)h+=2*Math.PI;
+ return h/r;
 }
 function orientationHandler(e){
  if(!compassOn)return;
  let h=null;
  if(typeof e.webkitCompassHeading==="number")h=e.webkitCompassHeading;
- else if(e.absolute&&typeof e.alpha==="number")h=(360-e.alpha)%360;
- if(h!==null){
-  h=(h%360+360)%360;headingDeg=h;
-  $("needle").setAttribute("transform",`rotate(${h} 80 80)`);
-  $("needleN").setAttribute("fill","#ee6666");$("needleS").setAttribute("fill","#8fa6b7");
-  $("heading").textContent=`${p3(h)}°`;$("direction").textContent=cardinal(h);
-  updateDrift();
+ else if(e.absolute&&typeof e.alpha==="number"){
+  if(typeof e.beta==="number"&&typeof e.gamma==="number"&&Math.abs(e.beta)>=30)h=tiltHeading(e.alpha,e.beta,e.gamma);
+  else h=(360-e.alpha)%360;
  }
+ if(h===null||!Number.isFinite(h))return;
+ h=(h%360+360)%360;
+ const now=performance.now();
+ if(smH===null)smH=h;
+ else{
+  const dt=Math.min((now-lastHT)/1000,.5),a=1-Math.exp(-dt/.3),d=((h-smH+540)%360)-180;
+  smH=(smH+a*d+360)%360;
+ }
+ lastHT=now;headingDeg=smH;
+ if($("compassState").textContent==="Kompass wartet …")updateCompassState();
+ drawRose();updateHeadingText(false);
 }
 
+/* ---------- Stoppuhr ---------- */
 const sw=$("stopwatch");
 let swMode="clock",swAcc=0,swT0=0,swIv=null,swLP=null,swLong=false;
 const clockIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
@@ -244,11 +305,29 @@ sw.addEventListener("pointerdown",()=>{swLong=false;if(swMode==="clock")return;s
 sw.addEventListener("click",()=>{if(swLong){swLong=false;return}swToggle()});
 sw.addEventListener("contextmenu",e=>e.preventDefault());
 
+/* ---------- Bedienung ---------- */
 $("swGps").onclick=()=>{if(watchId!==null)stopGPS();else startGPS()};
 $("swCompass").onclick=()=>{if(compassOn)deactivateCompass();else activateCompass()};
 $("knBtn").onclick=()=>chooseUnit("kn");$("kmhBtn").onclick=()=>chooseUnit("kmh");
 $("followBtn").onclick=()=>setFollow(!followMap);
 $("mapToggle").onclick=()=>{const c=$("mapCard").classList.toggle("collapsed");$("mapToggle").setAttribute("aria-expanded",String(!c));$("mapToggleText").textContent=c?"Ausklappen":"Einklappen";$("mapChevron").textContent=c?"⌄":"⌃";if(!c&&map)setTimeout(()=>map.invalidateSize(),80)};
-swDraw();
+
+/* ---------- Start: gespeicherte Einstellungen wiederherstellen ---------- */
+function autoStartGPS(){
+ if(!navigator.geolocation||!isSecureContext)return;
+ if(navigator.permissions&&navigator.permissions.query){
+  navigator.permissions.query({name:"geolocation"}).then(r=>{
+   if(r.state==="granted")startGPS();
+   else $("message").textContent="GPS war zuletzt an. Zum Starten den GPS-Schalter antippen (Standortzugriff auf „Erlauben“ stellen, dann entfällt die Rückfrage).";
+  }).catch(()=>startGPS());
+ }else startGPS();
+}
+if(store.get("unit")==="kmh")chooseUnit("kmh");
+drawRose();updateCompassState();updateCogMark();swDraw();
 if(window.L)initMap();
+if(store.get("gps")==="1")autoStartGPS();
+if(store.get("compass")==="1"){
+ if(needsCompassPermission())$("message").textContent="Der Kompass war zuletzt an. iOS verlangt eine Bestätigung: bitte den Kompass-Schalter antippen.";
+ else activateCompass();
+}
 </script></body></html>
