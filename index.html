@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d2133"><title>HELMSMAN MK 0.6</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d2133"><title>HELMSMAN MK 0.7</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{color-scheme:dark;--bg:#0b1926;--panel:#142b3e;--muted:#a9bdcc;--line:#29465c;--accent:#55c2b2}
@@ -93,30 +93,30 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 
 <header class="hdr"><div class="wrap">
 <div class="toprow">
-<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 0.6</span></div>
+<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 0.7</span></div>
 <div class="hbtns">
-<button class="hbtn" id="mob" aria-label="MOB: lange drücken"><span id="mobFill"></span><span class="t">MOB</span></button>
-<button class="hbtn" id="stopwatch" aria-label="Stoppuhr"></button>
+<button class="hbtn" id="mob" aria-label="MOB: press and hold"><span id="mobFill"></span><span class="t">MOB</span></button>
+<button class="hbtn" id="stopwatch" aria-label="Stopwatch"></button>
 </div></div>
-<div class="subrow"><div class="tag">PERSONAL BOAT DASHBOARD</div><div class="status"><span id="rec" hidden>● REC</span><span class="gs"><i class="dot off" id="dot"></i><span id="gpsStatus">GPS nicht aktiv</span></span></div></div>
+<div class="subrow"><div class="tag">PERSONAL BOAT DASHBOARD</div><div class="status"><span id="rec" hidden>● REC</span><span class="gs"><i class="dot off" id="dot"></i><span id="gpsStatus">GPS off</span></span></div></div>
 </div></header>
 
 <div class="wrap">
 
-<!-- ========== Seite 1: Instrumente ========== -->
+<!-- ========== Page 1: Instruments ========== -->
 <section class="page" id="p_inst">
 <div class="card">
-<div class="eyebrow">GESCHWINDIGKEIT ÜBER GRUND · SOG</div>
+<div class="eyebrow">SPEED OVER GROUND · SOG</div>
 <div class="speedrow"><div class="speed"><strong id="speed">—</strong><span class="unit" id="unitLabel">kn</span></div>
 <div class="seg"><button id="knBtn" class="active" aria-pressed="true">kn</button><button id="kmhBtn" aria-pressed="false">km/h</button></div></div>
-<div class="sub">GPS-Geschwindigkeit · über Grund</div>
+<div class="sub">GPS speed · over ground</div>
 <div class="position"><span id="lat">—</span><span class="sep">·</span><span id="lon">—</span></div>
 </div>
 
 <div class="card">
-<div class="eyebrow">KOMPASS · HEADING</div>
+<div class="eyebrow">COMPASS · HEADING</div>
 <div class="compass-body">
-<svg class="compass" viewBox="0 -6 200 212" role="img" aria-label="Kompass: der Kranz dreht sich, der weiße Strich oben ist der Bug">
+<svg class="compass" viewBox="0 -6 200 212" role="img" aria-label="Compass: the dial rotates, the white mark at the top is the bow">
 <g id="rose">
 <circle cx="100" cy="100" r="92" fill="#1b3549" stroke="#567084"/>
 <g id="ticks"></g>
@@ -129,78 +129,78 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 </svg>
 <div class="readings">
 <div class="metric"><div class="eyebrow">HEADING</div><strong id="heading">—</strong></div>
-<div class="metric"><div class="eyebrow">GPS-KURS · COG</div><strong id="cog">—</strong></div>
-<div class="metric"><div class="eyebrow">ABDRIFT</div><strong id="drift">—</strong></div>
+<div class="metric"><div class="eyebrow">GPS COURSE · COG</div><strong id="cog">—</strong></div>
+<div class="metric"><div class="eyebrow">DRIFT</div><strong id="drift">—</strong></div>
 </div></div>
-<div id="wpLine" hidden><span id="wpText"></span><button class="x" id="wpHide" aria-label="Wegpunkt ausblenden">×</button></div>
-<div class="sub" id="compassState" style="margin-top:8px">Kompass aus</div>
+<div id="wpLine" hidden><span id="wpText"></span><button class="x" id="wpHide" aria-label="Hide waypoint">×</button></div>
+<div class="sub" id="compassState" style="margin-top:8px">Compass off</div>
 </div>
 
 <div class="card" style="padding-bottom:4px">
-<div class="accrow"><div><div class="eyebrow">GPS-GENAUIGKEIT</div><strong id="accuracy">—</strong></div><span class="hint" id="wakeHint">Display-Sperre aus</span></div>
+<div class="accrow"><div><div class="eyebrow">GPS ACCURACY</div><strong id="accuracy">—</strong></div><span class="hint" id="wakeHint">Screen lock off</span></div>
 <div class="row"><span>GPS</span><button class="sw" id="swGps" role="switch" aria-checked="false" aria-label="GPS"></button></div>
-<div class="row"><span>Kompass</span><button class="sw" id="swCompass" role="switch" aria-checked="false" aria-label="Kompass"></button></div>
-<div class="msg" id="message">GPS benötigt eine HTTPS-Verbindung. Schalte GPS ein und erlaube den Standortzugriff, wenn Safari danach fragt.</div>
+<div class="row"><span>Compass</span><button class="sw" id="swCompass" role="switch" aria-checked="false" aria-label="Compass"></button></div>
+<div class="msg" id="message">GPS needs an HTTPS connection. Switch GPS on and allow location access when Safari asks.</div>
 </div>
 
-<p class="note">SOG und COG werden über GPS über Grund ermittelt. Heading ist die vom Gerät gemessene Ausrichtung des Bugs (Gerät hochkant oder in der Hand, Rückseite zeigt nach vorn), korrigiert um die eingestellte Missweisung. Der Kompasskranz dreht sich, der weiße Strich oben ist der Bug, die gelbe Marke zeigt den GPS-Kurs (COG), die rote Raute die Peilung zum gewählten Wegpunkt. Die Abdrift ist die Differenz aus COG und Heading (StB = nach Steuerbord, BB = nach Backbord) und wird erst ab etwa 1 kn Fahrt angezeigt. Der Gerätekompass kann an Bord durch Metall und elektrische Anlagen gestört werden. MOB speichert nur die Position, an der der Knopf gedrückt wurde, nicht den Ort der Person. Kartendaten benötigen eine Internetverbindung. HELMSMAN ist ein Zusatzinstrument und kein Ersatz für geeignete Navigations- und Rettungsmittel.</p>
+<p class="note">SOG and COG are measured by GPS over ground. Heading is the bow direction measured by the device (held upright or in the hand, back facing forward), corrected by the magnetic variation you set. The compass dial rotates, the white mark at the top is the bow, the amber marker shows the GPS course (COG), the red diamond shows the bearing to the selected waypoint. Drift is the difference between COG and heading (STBD = to starboard, PORT = to port) and is only shown above about 1 kn. The device compass can be disturbed on board by metal and electrical equipment. MOB only saves the position where the button was pressed, not the location of the person. Map data needs an internet connection. HELMSMAN is a supplementary instrument and no substitute for proper navigation and rescue equipment.</p>
 </section>
 
-<!-- ========== Seite 2: Karte ========== -->
+<!-- ========== Page 2: Map ========== -->
 <section class="page" id="p_map" hidden>
 <div id="mapBox">
 <div id="map"></div>
 <div class="chip"><strong id="mapSog">—</strong> <span id="mapUnit">kn</span> &nbsp;·&nbsp; <span id="mapHdg">—</span></div>
-<div class="mapbtns"><button class="btn flex" id="addWp">+ Wegpunkt hier</button><button class="btn active" id="followBtn" aria-pressed="true">FOLLOW ON</button></div>
+<div class="mapbtns"><button class="btn flex" id="addWp">+ Waypoint here</button><button class="btn active" id="followBtn" aria-pressed="true">FOLLOW ON</button></div>
 </div>
 </section>
 
-<!-- ========== Seite 3: Törn ========== -->
+<!-- ========== Page 3: Trip ========== -->
 <section class="page" id="p_trip" hidden>
 <div class="card">
-<div class="eyebrow">TÖRN</div>
+<div class="eyebrow">TRIP</div>
 <div class="grid2">
-<div class="metric"><div class="eyebrow">STRECKE</div><strong id="tDist">—</strong></div>
-<div class="metric"><div class="eyebrow">FAHRZEIT</div><strong id="tTime">—</strong></div>
-<div class="metric"><div class="eyebrow">Ø GESCHW.</div><strong id="tAvg">—</strong></div>
+<div class="metric"><div class="eyebrow">DISTANCE</div><strong id="tDist">—</strong></div>
+<div class="metric"><div class="eyebrow">TIME</div><strong id="tTime">—</strong></div>
+<div class="metric"><div class="eyebrow">AVG SPEED</div><strong id="tAvg">—</strong></div>
 <div class="metric"><div class="eyebrow">MAX</div><strong id="tMax">—</strong></div>
 </div>
-<div class="row" style="margin-top:10px"><span>Törn aufzeichnen</span><button class="sw" id="swRec" role="switch" aria-checked="false" aria-label="Törn aufzeichnen"></button></div>
-<div style="display:flex;gap:8px;padding-top:10px;border-top:1px solid var(--line)"><button class="btn flex" id="gpxBtn">Als GPX sichern</button><button class="btn flex" id="resetTrip">Törn zurücksetzen</button></div>
+<div class="row" style="margin-top:10px"><span>Record trip</span><button class="sw" id="swRec" role="switch" aria-checked="false" aria-label="Record trip"></button></div>
+<div style="display:flex;gap:8px;padding-top:10px;border-top:1px solid var(--line)"><button class="btn flex" id="gpxBtn">Save as GPX</button><button class="btn flex" id="resetTrip">Reset trip</button></div>
 <div class="msg" id="tripMsg"></div>
 </div>
 
 <div class="card" style="padding-bottom:4px">
-<div class="eyebrow" style="padding-bottom:8px">WEGPUNKTE · AUSWAHL ERSCHEINT AUF DEM KRANZ</div>
+<div class="eyebrow" style="padding-bottom:8px">WAYPOINTS · SELECTION SHOWS ON THE DIAL</div>
 <div id="wpList"></div>
 </div>
 
 <div class="card">
-<div class="eyebrow">EINSTELLUNGEN</div>
-<div class="row" style="border-top:0;padding-bottom:4px"><span>Missweisung<br><span style="font-size:11px;color:var(--muted)">Ost = +, West = − (steht in der Seekarte)</span></span>
-<div class="step"><button id="varMinus" aria-label="Missweisung verringern">−</button><span id="varVal">0°</span><button id="varPlus" aria-label="Missweisung erhöhen">+</button></div></div>
+<div class="eyebrow">SETTINGS</div>
+<div class="row" style="border-top:0;padding-bottom:4px"><span>Magnetic variation<br><span style="font-size:11px;color:var(--muted)">East = +, West = − (see your chart)</span></span>
+<div class="step"><button id="varMinus" aria-label="Decrease magnetic variation">−</button><span id="varVal">0°</span><button id="varPlus" aria-label="Increase magnetic variation">+</button></div></div>
 </div>
 </section>
 
 </div>
 
 <nav class="tabbar"><div class="in">
-<button class="tab on" data-t="inst"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7l2.5 5-2.5 5-2.5-5z"/></svg>Instrumente</button>
-<button class="tab" data-t="map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/></svg>Karte</button>
-<button class="tab" data-t="trip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 5h12l-2.5 4 2.5 4H5"/></svg>Törn</button>
+<button class="tab on" data-t="inst"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7l2.5 5-2.5 5-2.5-5z"/></svg>Instruments</button>
+<button class="tab" data-t="map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/></svg>Map</button>
+<button class="tab" data-t="trip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 5h12l-2.5 4 2.5 4H5"/></svg>Trip</button>
 </div></nav>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 let watchId=null,map=null,posMarker=null,trackLine=null,wpLayer=null,wpLine=null,selectedUnit="kn",latestSpeedMs=null,smoothedSpeedMs=null,lastFixAt=0,currentPosition=null,followMap=true,mapHasFix=false;
 let headingRaw=null,cogDeg=null,sogMs=null,compassOn=false,smH=null,lastHT=0,lastTextT=0,wakeLock=null,curTab="inst";
-const MIN_DRIFT_SPEED=0.5; // m/s, ca. 1 kn
+const MIN_DRIFT_SPEED=0.5; // m/s, about 1 kn
 const $=id=>document.getElementById(id);
 const store={get(k){try{return localStorage.getItem("helmsman."+k)}catch(e){return null}},set(k,v){try{localStorage.setItem("helmsman."+k,v)}catch(e){}}};
 function jget(k,def){try{const v=JSON.parse(store.get(k));return v==null?def:v}catch(e){return def}}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 
-/* ---------- gespeicherter Zustand ---------- */
+/* ---------- saved state ---------- */
 let varDeg=Number(store.get("var"))||0;
 let rec=store.get("rec")==="1";
 let trip=jget("trip",{dist:0,time:0,max:0});
@@ -209,21 +209,21 @@ let wps=jget("wps",[]);
 let selId=store.get("wpsel")||null;
 let tripLastT=null,tripDirty=false;
 
-/* ---------- Hilfsfunktionen ---------- */
+/* ---------- helpers ---------- */
 function fmtCoord(v,pos,neg,isLon=false){if(v==null)return"—";const a=Math.abs(v),d=Math.floor(a),m=(a-d)*60;return`${String(d).padStart(isLon?3:2,"0")}° ${m.toFixed(1).padStart(4,"0")}′ ${v>=0?pos:neg}`}
-function cardinal(d){if(d==null)return"—";return ["N","NNO","NO","ONO","O","OSO","SO","SSO","S","SSW","SW","WSW","W","WNW","NW","NNW"][Math.round(((d%360)+360)%360/22.5)%16]}
+function cardinal(d){if(d==null)return"—";return ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"][Math.round(((d%360)+360)%360/22.5)%16]}
 function p3(n){return String(Math.round(n)%360).padStart(3,"0")}
 function setSwitch(id,on){$(id).setAttribute("aria-checked",String(on))}
 function rad(x){return x*Math.PI/180}
 function distM(a,b){const R=6371000,dLat=rad(b[0]-a[0]),dLon=rad(b[1]-a[1]),s=Math.sin(dLat/2)**2+Math.cos(rad(a[0]))*Math.cos(rad(b[0]))*Math.sin(dLon/2)**2;return 2*R*Math.asin(Math.sqrt(s))}
 function bearingDeg(a,b){const p1=rad(a[0]),p2=rad(b[0]),dl=rad(b[1]-a[1]);const y=Math.sin(dl)*Math.cos(p2),x=Math.cos(p1)*Math.sin(p2)-Math.sin(p1)*Math.cos(p2)*Math.cos(dl);return(Math.atan2(y,x)*180/Math.PI+360)%360}
-function fmtDist(m){if(m<185)return Math.round(m)+" m";const sm=m/1852;return(sm<10?sm.toFixed(2):sm.toFixed(1)).replace(".",",")+" sm"}
+function fmtDist(m){if(m<185)return Math.round(m)+" m";const sm=m/1852;return(sm<10?sm.toFixed(2):sm.toFixed(1))+" nm"}
 function fmtDur(s){s=Math.max(0,Math.floor(s));const h=Math.floor(s/3600),m=Math.floor(s/60)%60,ss=s%60;return h?`${h}:${String(m).padStart(2,"0")}:${String(ss).padStart(2,"0")}`:`${m}:${String(ss).padStart(2,"0")}`}
 function currentHeading(){return headingRaw==null?null:(headingRaw+varDeg+720)%360}
-function relText(b){const h=currentHeading();if(!compassOn||h==null)return"";const r=((b-h+540)%360)-180,a=Math.round(Math.abs(r));return a===0?"voraus":a+"° "+(r>0?"StB":"BB")}
-function fmtVar(){return varDeg===0?"0°":(varDeg>0?"+":"−")+Math.abs(varDeg)+"° "+(varDeg>0?"O":"W")}
+function relText(b){const h=currentHeading();if(!compassOn||h==null)return"";const r=((b-h+540)%360)-180,a=Math.round(Math.abs(r));return a===0?"dead ahead":a+"° "+(r>0?"STBD":"PORT")}
+function fmtVar(){return varDeg===0?"0°":(varDeg>0?"+":"−")+Math.abs(varDeg)+"° "+(varDeg>0?"E":"W")}
 
-/* ---------- Kompassrose ---------- */
+/* ---------- compass dial ---------- */
 const NS="http://www.w3.org/2000/svg",labelEls=[];
 (function buildRose(){
  const ticks=$("ticks");
@@ -233,7 +233,7 @@ const NS="http://www.w3.org/2000/svg",labelEls=[];
   l.setAttribute("stroke",a%30===0?"#8fa6b7":"#567084");l.setAttribute("stroke-width",a%90===0?2:1);
   l.setAttribute("transform",`rotate(${a} 100 100)`);ticks.appendChild(l);
  }
- const defs=[["N",0,14,"#ff7777"],["NO",45,11,"#8fa6b7"],["O",90,14,"#f4f8fb"],["SO",135,11,"#8fa6b7"],["S",180,14,"#f4f8fb"],["SW",225,11,"#8fa6b7"],["W",270,14,"#f4f8fb"],["NW",315,11,"#8fa6b7"]];
+ const defs=[["N",0,14,"#ff7777"],["NE",45,11,"#8fa6b7"],["E",90,14,"#f4f8fb"],["SE",135,11,"#8fa6b7"],["S",180,14,"#f4f8fb"],["SW",225,11,"#8fa6b7"],["W",270,14,"#f4f8fb"],["NW",315,11,"#8fa6b7"]];
  defs.forEach(d=>{
   const r=d[1]*Math.PI/180,x=100+68*Math.sin(r),y=100-68*Math.cos(r),t=document.createElementNS(NS,"text");
   t.setAttribute("x",x);t.setAttribute("y",y);t.setAttribute("text-anchor","middle");t.setAttribute("dominant-baseline","central");
@@ -254,10 +254,10 @@ function updateCogMark(){
  if(show)$("cogMark").setAttribute("transform",`rotate(${cogDeg} 100 100)`);
 }
 function updateCompassState(){
- $("compassState").textContent=!compassOn?"Kompass aus":headingRaw==null?"Kompass wartet …":"Gelb = GPS-Kurs (ab ca. 1 kn) · Rot = Wegpunkt"+(varDeg?" · Missweisung "+fmtVar():"");
+ $("compassState").textContent=!compassOn?"Compass off":headingRaw==null?"Waiting for compass …":"Amber = GPS course (above about 1 kn) · Red = waypoint"+(varDeg?" · Variation "+fmtVar():"");
 }
 
-/* ---------- Anzeige ---------- */
+/* ---------- display ---------- */
 function renderSpeed(){
  if(latestSpeedMs==null){$("speed").textContent="—";$("mapSog").textContent="—";return}
  const value=latestSpeedMs<0.25?0:latestSpeedMs*(selectedUnit==="kn"?1.943844:3.6);
@@ -269,8 +269,8 @@ function updateDrift(){
  if(!compassOn||h==null||cogDeg==null||sogMs==null||sogMs<MIN_DRIFT_SPEED){el.textContent="—";el.className="";return}
  const d=((cogDeg-h+540)%360)-180,a=Math.round(Math.abs(d));
  if(a===0){el.textContent="0°";el.className=""}
- else if(d>0){el.textContent=a+"° StB";el.className="stb"}
- else{el.textContent=a+"° BB";el.className="bb"}
+ else if(d>0){el.textContent=a+"° STBD";el.className="stb"}
+ else{el.textContent=a+"° PORT";el.className="bb"}
 }
 function updateHeadingText(force){
  const now=performance.now();
@@ -281,7 +281,7 @@ function updateHeadingText(force){
  updateDrift();updateWpUI();
 }
 
-/* ---------- Wegpunkte ---------- */
+/* ---------- waypoints ---------- */
 function saveWps(){store.set("wps",JSON.stringify(wps));store.set("wpsel",selId||"")}
 function selWp(){return wps.find(w=>w.id===selId)||null}
 function wpGeo(w){if(!currentPosition)return null;const p=[w.lat,w.lon];return{b:bearingDeg(currentPosition,p),d:distM(currentPosition,p)}}
@@ -292,8 +292,8 @@ function updateWpUI(){
   $("wpLine").hidden=false;
   let html='<span style="color:#ff8d90">●</span> <b>'+esc(w.n)+'</b>';
   if(g){html+=" &nbsp;"+p3(g.b)+"° · "+fmtDist(g.d);const r=relText(g.b);if(r)html+=" · "+r;$("wpMark").style.display="";$("wpMark").setAttribute("transform",`rotate(${g.b} 100 100)`)}
-  else{html+=" &nbsp;keine GPS-Position";$("wpMark").style.display="none"}
-  if(w.mob)html+=" · seit "+fmtDur((Date.now()-w.t)/1000);
+  else{html+=" &nbsp;no GPS position";$("wpMark").style.display="none"}
+  if(w.mob)html+=" · "+fmtDur((Date.now()-w.t)/1000)+" ago";
   $("wpText").innerHTML=html;
  }
  document.querySelectorAll("[data-info]").forEach(el=>{const x=wps.find(v=>v.id===el.getAttribute("data-info")),gg=x?wpGeo(x):null;el.textContent=gg?p3(gg.b)+"° · "+fmtDist(gg.d):"—"});
@@ -301,28 +301,28 @@ function updateWpUI(){
 }
 function renderWpList(){
  const box=$("wpList");
- if(!wps.length){box.innerHTML='<div class="sub" style="padding:6px 0 10px;font-size:12px">Noch keine Wegpunkte. MOB oder „+ Wegpunkt hier“ auf der Karte setzt einen Punkt an der aktuellen Position.</div>';return}
+ if(!wps.length){box.innerHTML='<div class="sub" style="padding:6px 0 10px;font-size:12px">No waypoints yet. MOB or “+ Waypoint here” on the map saves a point at your current position.</div>';return}
  let h="";
  wps.forEach(w=>{
   h+=`<div class="wp"><button class="pick" data-sel="${w.id}"><span class="rad${w.id===selId?" on":""}"></span><span class="nm">${esc(w.n)}</span><span class="inf" data-info="${w.id}">—</span></button>`+
-     `<button class="ib" data-ren="${w.id}" aria-label="Umbenennen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>`+
-     `<button class="ib" data-del="${w.id}" aria-label="Löschen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13"/></svg></button></div>`;
+     `<button class="ib" data-ren="${w.id}" aria-label="Rename"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>`+
+     `<button class="ib" data-del="${w.id}" aria-label="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13"/></svg></button></div>`;
  });
- h+=`<div class="wp"><button class="pick" data-sel=""><span class="rad${selId?"":" on"}"></span><span class="nm" style="color:var(--muted)">Keinen anzeigen</span></button></div>`;
+ h+=`<div class="wp"><button class="pick" data-sel=""><span class="rad${selId?"":" on"}"></span><span class="nm" style="color:var(--muted)">Show none</span></button></div>`;
  box.innerHTML=h;
  box.querySelectorAll("[data-sel]").forEach(b=>b.onclick=()=>{selId=b.getAttribute("data-sel")||null;saveWps();renderWpList();updateWpUI();drawMapWps()});
- box.querySelectorAll("[data-ren]").forEach(b=>b.onclick=()=>{const w=wps.find(v=>v.id===b.getAttribute("data-ren"));if(!w)return;const n=prompt("Name des Wegpunkts",w.n);if(n&&n.trim()){w.n=n.trim().slice(0,40);saveWps();renderWpList();updateWpUI();drawMapWps()}});
- box.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{const w=wps.find(v=>v.id===b.getAttribute("data-del"));if(!w||!confirm("„"+w.n+"“ löschen?"))return;wps=wps.filter(v=>v!==w);if(selId===w.id)selId=null;saveWps();renderWpList();updateWpUI();drawMapWps()});
+ box.querySelectorAll("[data-ren]").forEach(b=>b.onclick=()=>{const w=wps.find(v=>v.id===b.getAttribute("data-ren"));if(!w)return;const n=prompt("Waypoint name",w.n);if(n&&n.trim()){w.n=n.trim().slice(0,40);saveWps();renderWpList();updateWpUI();drawMapWps()}});
+ box.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{const w=wps.find(v=>v.id===b.getAttribute("data-del"));if(!w||!confirm("Delete “"+w.n+"”?"))return;wps=wps.filter(v=>v!==w);if(selId===w.id)selId=null;saveWps();renderWpList();updateWpUI();drawMapWps()});
  updateWpUI();
 }
 function addWaypoint(isMob){
- if(!currentPosition){const t="Keine GPS-Position. Bitte GPS einschalten.";$("message").textContent=t;$("tripMsg").textContent=t;if(navigator.vibrate)navigator.vibrate([100,60,100]);return false}
- const now=new Date(),hm=now.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"});
- const w={id:String(Date.now()),n:isMob?"MOB "+hm:"Punkt "+(wps.filter(x=>!x.mob).length+1),lat:currentPosition[0],lon:currentPosition[1],t:Date.now(),mob:!!isMob};
+ if(!currentPosition){const t="No GPS position. Please switch GPS on.";$("message").textContent=t;$("tripMsg").textContent=t;if(navigator.vibrate)navigator.vibrate([100,60,100]);return false}
+ const now=new Date(),hm=now.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
+ const w={id:String(Date.now()),n:isMob?"MOB "+hm:"Waypoint "+(wps.filter(x=>!x.mob).length+1),lat:currentPosition[0],lon:currentPosition[1],t:Date.now(),mob:!!isMob};
  wps.unshift(w);selId=w.id;saveWps();renderWpList();updateWpUI();drawMapWps();return true;
 }
 
-/* ---------- Karte ---------- */
+/* ---------- map ---------- */
 function sizeMap(){
  const top=document.querySelector(".hdr").getBoundingClientRect().bottom,h=Math.max(260,window.innerHeight-Math.max(top,0)-document.querySelector(".tabbar").offsetHeight);
  $("mapBox").style.height=h+"px";if(map)map.invalidateSize();
@@ -353,11 +353,11 @@ function updateMap(lat,lon){
 }
 function setFollow(on){followMap=on;$("followBtn").textContent=on?"FOLLOW ON":"FOLLOW OFF";$("followBtn").classList.toggle("active",on);$("followBtn").setAttribute("aria-pressed",String(on));if(on&&currentPosition&&map)map.panTo(currentPosition,{animate:true,duration:.35})}
 
-/* ---------- Törn ---------- */
+/* ---------- trip ---------- */
 function saveTrip(){if(!tripDirty)return;tripDirty=false;store.set("trip",JSON.stringify(trip));store.set("track",JSON.stringify(track))}
 function updateTripUI(){
  const u=selectedUnit==="kn"?1.943844:3.6;
- $("tDist").textContent=trip.dist>0?(trip.dist/1852).toFixed(1).replace(".",",")+" sm":"—";
+ $("tDist").textContent=trip.dist>0?(trip.dist/1852).toFixed(1)+" nm":"—";
  const h=Math.floor(trip.time/3600),m=Math.floor(trip.time/60)%60;
  $("tTime").textContent=trip.time>0?`${h}:${String(m).padStart(2,"0")} h`:"—";
  $("tAvg").textContent=trip.time>30&&trip.dist>0?(trip.dist/trip.time*u).toFixed(1)+" "+(selectedUnit==="kn"?"kn":"km/h"):"—";
@@ -378,35 +378,35 @@ function recordFix(c,ts){
  }
 }
 function buildGpx(){
- let x='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="HELMSMAN MK 0.6" xmlns="http://www.topografix.com/GPX/1/1">\n';
+ let x='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="HELMSMAN MK 0.7" xmlns="http://www.topografix.com/GPX/1/1">\n';
  wps.forEach(w=>{x+=`<wpt lat="${w.lat}" lon="${w.lon}"><time>${new Date(w.t).toISOString()}</time><name>${esc(w.n)}</name></wpt>\n`});
- x+="<trk><name>HELMSMAN Törn</name><trkseg>\n";
+ x+="<trk><name>HELMSMAN Trip</name><trkseg>\n";
  track.forEach(p=>{x+=`<trkpt lat="${p[0]}" lon="${p[1]}"><time>${new Date(p[2]).toISOString()}</time></trkpt>\n`});
  x+="</trkseg></trk>\n</gpx>\n";return x;
 }
 async function saveGpx(){
- if(!track.length&&!wps.length){$("tripMsg").textContent="Noch nichts aufgezeichnet.";return}
+ if(!track.length&&!wps.length){$("tripMsg").textContent="Nothing recorded yet.";return}
  const name=`helmsman-${new Date().toISOString().slice(0,10)}.gpx`,text=buildGpx();
  try{
   const file=new File([text],name,{type:"application/gpx+xml"});
-  if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name});$("tripMsg").textContent="GPX-Datei übergeben.";return}
+  if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name});$("tripMsg").textContent="GPX file handed over.";return}
  }catch(e){if(e&&e.name==="AbortError")return}
  const url=URL.createObjectURL(new Blob([text],{type:"application/gpx+xml"})),a=document.createElement("a");
  a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);
- $("tripMsg").textContent="GPX-Datei wird geladen: "+name;
+ $("tripMsg").textContent="Downloading GPX file: "+name;
 }
 function resetTrip(){
- if(!confirm("Törn (Strecke, Zeit, Track) wirklich zurücksetzen? Wegpunkte bleiben erhalten."))return;
+ if(!confirm("Really reset the trip (distance, time, track)? Waypoints are kept."))return;
  trip={dist:0,time:0,max:0};track=[];tripLastT=null;tripDirty=true;saveTrip();
- if(trackLine)trackLine.setLatLngs([]);updateTripUI();$("tripMsg").textContent="Törn zurückgesetzt.";
+ if(trackLine)trackLine.setLatLngs([]);updateTripUI();$("tripMsg").textContent="Trip reset.";
 }
 setInterval(saveTrip,15000);
 document.addEventListener("visibilitychange",()=>{if(document.hidden)saveTrip();else if(watchId!==null)requestWake()});
 window.addEventListener("pagehide",saveTrip);
 
-/* ---------- Display anlassen ---------- */
+/* ---------- keep screen on ---------- */
 function wakeHint(){
- $("wakeHint").textContent=watchId===null?"Display-Sperre aus":wakeLock?"Display bleibt an,\nsolange GPS an ist":("wakeLock" in navigator?"Display-Sperre wird\nangefordert …":"Display-Sperre\nnicht unterstützt");
+ $("wakeHint").textContent=watchId===null?"Screen lock off":wakeLock?"Screen stays on\nwhile GPS is on":("wakeLock" in navigator?"Requesting\nscreen lock …":"Screen lock\nnot supported");
  $("wakeHint").style.whiteSpace="pre-line";
 }
 async function requestWake(){
@@ -420,15 +420,15 @@ document.addEventListener("pointerdown",()=>{if(watchId!==null&&!wakeLock)reques
 /* ---------- GPS ---------- */
 function setGpsStatus(kind,label){$("dot").className="dot"+(kind==="good"?" on":kind==="weak"?" weak":kind==="stale"?" stale":kind==="off"?" off":"");$("gpsStatus").textContent=label}
 function startGPS(){
- if(!navigator.geolocation){$("message").textContent="Dieser Browser unterstützt keine Standortbestimmung.";setSwitch("swGps",false);return}
- if(!isSecureContext){$("message").textContent="GPS benötigt HTTPS. Bitte die veröffentlichte HTTPS-Adresse öffnen.";setSwitch("swGps",false);return}
+ if(!navigator.geolocation){$("message").textContent="This browser does not support location services.";setSwitch("swGps",false);return}
+ if(!isSecureContext){$("message").textContent="GPS needs HTTPS. Please open the published HTTPS address.";setSwitch("swGps",false);return}
  if(watchId!==null)navigator.geolocation.clearWatch(watchId);
  store.set("gps","1");
- setSwitch("swGps",true);setGpsStatus("weak","GPS sucht …");$("message").textContent="Warte auf GPS-Daten …";
+ setSwitch("swGps",true);setGpsStatus("weak","GPS searching …");$("message").textContent="Waiting for GPS data …";
  watchId=navigator.geolocation.watchPosition(pos=>{
   const c=pos.coords;lastFixAt=Date.now();currentPosition=[c.latitude,c.longitude];
   const weak=c.accuracy!=null&&c.accuracy>30;
-  setGpsStatus(weak?"weak":"good",weak?"GPS ungenau":"GPS aktiv");
+  setGpsStatus(weak?"weak":"good",weak?"GPS inaccurate":"GPS active");
   $("lat").textContent=fmtCoord(c.latitude,"N","S");$("lon").textContent=fmtCoord(c.longitude,"E","W",true);
   const raw=Number.isFinite(c.speed)&&c.speed>=0?c.speed:null;
   if(raw===null){latestSpeedMs=null;smoothedSpeedMs=null}else{smoothedSpeedMs=smoothedSpeedMs===null?raw:(smoothedSpeedMs*.65+raw*.35);latestSpeedMs=smoothedSpeedMs}
@@ -439,11 +439,11 @@ function startGPS(){
   recordFix(c,pos.timestamp);
   updateCogMark();updateHeadingText(true);updateMap(c.latitude,c.longitude);
   if(curTab==="trip")updateTripUI();
-  $("message").textContent=`GPS aktualisiert: ${new Date(pos.timestamp).toLocaleTimeString("de-DE")}`;
+  $("message").textContent=`GPS updated: ${new Date(pos.timestamp).toLocaleTimeString("en-GB")}`;
  },err=>{
-  setGpsStatus("stale","GPS-Fehler");
-  const m={1:"Standortzugriff verweigert. Bitte in den Geräte-/Browser-Einstellungen erlauben.",2:"GPS-Position momentan nicht verfügbar.",3:"GPS-Zeitüberschreitung. Bitte erneut versuchen."};
-  $("message").textContent=m[err.code]||"Fehler bei der GPS-Ortung.";
+  setGpsStatus("stale","GPS error");
+  const m={1:"Location access denied. Please allow it in the device or browser settings.",2:"GPS position currently unavailable.",3:"GPS timeout. Please try again."};
+  $("message").textContent=m[err.code]||"GPS positioning error.";
   if(err.code===1)stopGPS(true);
  },{enableHighAccuracy:true,maximumAge:1000,timeout:20000});
  requestWake();
@@ -454,28 +454,28 @@ function stopGPS(keepMessage){
  store.set("gps","0");setSwitch("swGps",false);
  renderSpeed();$("lat").textContent="—";$("lon").textContent="—";$("cog").textContent="—";$("accuracy").textContent="—";
  updateCogMark();updateHeadingText(true);saveTrip();releaseWake();
- if(!keepMessage){setGpsStatus("off","GPS nicht aktiv");$("message").textContent="GPS ausgeschaltet."}
+ if(!keepMessage){setGpsStatus("off","GPS off");$("message").textContent="GPS switched off."}
  else{$("dot").className="dot stale"}
 }
-setInterval(()=>{if(watchId!==null&&lastFixAt&&Date.now()-lastFixAt>15000){setGpsStatus("stale","GPS-Daten veraltet");$("message").textContent="Seit mehr als 15 Sekunden keine neue GPS-Position."}},5000);
+setInterval(()=>{if(watchId!==null&&lastFixAt&&Date.now()-lastFixAt>15000){setGpsStatus("stale","GPS data stale");$("message").textContent="No new GPS position for more than 15 seconds."}},5000);
 setInterval(()=>{const w=selWp();if(w&&w.mob)updateWpUI()},1000);
 
-/* ---------- Kompass ---------- */
+/* ---------- compass ---------- */
 function needsCompassPermission(){return typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function"}
 async function activateCompass(){
  try{
   if(needsCompassPermission()){
    const p=await DeviceOrientationEvent.requestPermission();
-   if(p!=="granted")throw Error("Kompasszugriff nicht erlaubt. Bitte in den Geräte-/Browser-Einstellungen erlauben.");
+   if(p!=="granted")throw Error("Compass access not allowed. Please allow it in the device or browser settings.");
   }
   window.addEventListener("deviceorientationabsolute",orientationHandler,true);
   window.addEventListener("deviceorientation",orientationHandler,true);
   compassOn=true;smH=null;headingRaw=null;store.set("compass","1");setSwitch("swCompass",true);
   updateCompassState();updateHeadingText(true);drawRose();
-  $("message").textContent="Kompass aktiviert. Gerät hochkant oder in der Hand halten; an Bord auf magnetische Störungen achten.";
+  $("message").textContent="Compass on. Hold the device upright or in your hand; watch for magnetic interference on board.";
  }catch(e){
   compassOn=false;setSwitch("swCompass",false);updateCompassState();
-  $("message").textContent=e.message||"Kompass konnte nicht aktiviert werden.";
+  $("message").textContent=e.message||"Could not switch the compass on.";
  }
 }
 function deactivateCompass(){
@@ -483,9 +483,9 @@ function deactivateCompass(){
  window.removeEventListener("deviceorientation",orientationHandler,true);
  compassOn=false;headingRaw=null;smH=null;store.set("compass","0");setSwitch("swCompass",false);
  drawRose();updateCompassState();updateHeadingText(true);
- $("message").textContent="Kompass ausgeschaltet.";
+ $("message").textContent="Compass switched off.";
 }
-/* Heading der Geräterückseite bei geneigtem Gerät (Android), nach W3C-Formel */
+/* Heading of the back of a tilted device (Android), W3C formula */
 function tiltHeading(alpha,beta,gamma){
  const r=Math.PI/180,x=beta*r,y=gamma*r,z=alpha*r;
  const cY=Math.cos(y),cZ=Math.cos(z),sX=Math.sin(x),sY=Math.sin(y),sZ=Math.sin(z);
@@ -511,11 +511,11 @@ function orientationHandler(e){
   smH=(smH+a*d+360)%360;
  }
  lastHT=now;headingRaw=smH;
- if($("compassState").textContent==="Kompass wartet …")updateCompassState();
+ if($("compassState").textContent==="Waiting for compass …")updateCompassState();
  drawRose();updateHeadingText(false);
 }
 
-/* ---------- Stoppuhr ---------- */
+/* ---------- stopwatch ---------- */
 const sw=$("stopwatch");
 let swMode="clock",swAcc=0,swT0=0,swIv=null,swLP=null,swLong=false;
 const clockIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
@@ -523,8 +523,8 @@ function swMs(){return swAcc+(swMode==="run"?Date.now()-swT0:0)}
 function swFmt(ms){const t=Math.floor(ms/100),d=t%10,s=Math.floor(t/10)%60,m=Math.floor(t/600)%60,h=Math.floor(t/36000);return(h?h+":"+String(m).padStart(2,"0"):String(m).padStart(2,"0"))+":"+String(s).padStart(2,"0")+"."+d}
 function swDraw(){
  sw.classList.toggle("run",swMode==="run");sw.classList.toggle("pause",swMode==="pause");
- if(swMode==="clock"){sw.innerHTML=clockIcon;sw.setAttribute("aria-label","Stoppuhr starten")}
- else{sw.textContent=swFmt(swMs());sw.setAttribute("aria-label",swMode==="run"?"Stoppuhr anhalten":"Stoppuhr fortsetzen")}
+ if(swMode==="clock"){sw.innerHTML=clockIcon;sw.setAttribute("aria-label","Start stopwatch")}
+ else{sw.textContent=swFmt(swMs());sw.setAttribute("aria-label",swMode==="run"?"Pause stopwatch":"Resume stopwatch")}
 }
 function swToggle(){
  if(swMode==="clock"){swMode="run";swAcc=0;swT0=Date.now();swIv=setInterval(swDraw,100)}
@@ -538,7 +538,7 @@ sw.addEventListener("pointerdown",()=>{swLong=false;if(swMode==="clock")return;s
 sw.addEventListener("click",()=>{if(swLong){swLong=false;return}swToggle()});
 sw.addEventListener("contextmenu",e=>e.preventDefault());
 
-/* ---------- MOB (langes Drücken) ---------- */
+/* ---------- MOB (press and hold) ---------- */
 const mob=$("mob");let mobTimer=null,mobDone=false;
 function mobStart(){
  mobDone=false;const f=$("mobFill");f.style.transition="none";f.style.width="0";
@@ -549,7 +549,7 @@ function mobStart(){
   if(ok){
    showTab("inst");window.scrollTo(0,0);
    if(navigator.vibrate)navigator.vibrate([250,100,250]);
-   $("message").textContent="MOB gespeichert. Peilung und Entfernung stehen unter dem Kompass. Der Punkt ist die Position beim Drücken, nicht der Ort der Person.";
+   $("message").textContent="MOB saved. Bearing and distance are shown below the compass. The point is the position when you pressed the button, not the person’s location.";
   }
   setTimeout(()=>{f.style.transition="none";f.style.width="0"},350);
  },700);
@@ -559,7 +559,7 @@ mob.addEventListener("pointerdown",mobStart);
 ["pointerup","pointerleave","pointercancel"].forEach(ev=>mob.addEventListener(ev,mobStop));
 mob.addEventListener("contextmenu",e=>e.preventDefault());
 
-/* ---------- Seiten ---------- */
+/* ---------- pages ---------- */
 function showTab(t){
  curTab=t;
  ["inst","map","trip"].forEach(k=>{$("p_"+k).hidden=k!==t});
@@ -571,10 +571,10 @@ function showTab(t){
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>showTab(b.getAttribute("data-t")));
 window.addEventListener("resize",()=>{if(curTab==="map")sizeMap()});
 
-/* ---------- Bedienung ---------- */
+/* ---------- controls ---------- */
 $("swGps").onclick=()=>{if(watchId!==null)stopGPS();else startGPS()};
 $("swCompass").onclick=()=>{if(compassOn)deactivateCompass();else activateCompass()};
-$("swRec").onclick=()=>{rec=!rec;store.set("rec",rec?"1":"0");tripLastT=null;updateTripUI();$("tripMsg").textContent=rec?(watchId===null?"Aufzeichnung an. Sie beginnt, sobald GPS läuft.":"Aufzeichnung läuft."):"Aufzeichnung angehalten."};
+$("swRec").onclick=()=>{rec=!rec;store.set("rec",rec?"1":"0");tripLastT=null;updateTripUI();$("tripMsg").textContent=rec?(watchId===null?"Recording on. It starts as soon as GPS is running.":"Recording."):"Recording paused."};
 $("gpxBtn").onclick=saveGpx;$("resetTrip").onclick=resetTrip;
 $("knBtn").onclick=()=>chooseUnit("kn");$("kmhBtn").onclick=()=>chooseUnit("kmh");
 $("followBtn").onclick=()=>setFollow(!followMap);
@@ -583,13 +583,13 @@ $("wpHide").onclick=()=>{selId=null;saveWps();updateWpUI();renderWpList();drawMa
 function setVar(v){varDeg=Math.max(-30,Math.min(30,v));store.set("var",String(varDeg));$("varVal").textContent=fmtVar();drawRose();updateCompassState();updateHeadingText(true)}
 $("varMinus").onclick=()=>setVar(varDeg-1);$("varPlus").onclick=()=>setVar(varDeg+1);
 
-/* ---------- Start: gespeicherte Einstellungen wiederherstellen ---------- */
+/* ---------- start: restore saved settings ---------- */
 function autoStartGPS(){
  if(!navigator.geolocation||!isSecureContext)return;
  if(navigator.permissions&&navigator.permissions.query){
   navigator.permissions.query({name:"geolocation"}).then(r=>{
    if(r.state==="granted")startGPS();
-   else $("message").textContent="GPS war zuletzt an. Zum Starten den GPS-Schalter antippen (Standortzugriff auf „Erlauben“ stellen, dann entfällt die Rückfrage).";
+   else $("message").textContent="GPS was on last time. Tap the GPS switch to start it (set location access to “Allow” to avoid the prompt).";
   }).catch(()=>startGPS());
  }else startGPS();
 }
@@ -598,7 +598,7 @@ $("varVal").textContent=fmtVar();
 drawRose();updateCompassState();updateCogMark();swDraw();updateTripUI();updateWpUI();wakeHint();
 if(store.get("gps")==="1")autoStartGPS();
 if(store.get("compass")==="1"){
- if(needsCompassPermission())$("message").textContent="Der Kompass war zuletzt an. iOS verlangt eine Bestätigung: bitte den Kompass-Schalter antippen.";
+ if(needsCompassPermission())$("message").textContent="The compass was on last time. iOS requires confirmation: please tap the compass switch.";
  else activateCompass();
 }
 </script></body></html>
