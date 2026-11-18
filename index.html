@@ -1,31 +1,254 @@
 <!doctype html>
-<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#10263a"><title>HELMSMAN MK 0.3</title>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#10263a"><title>HELMSMAN MK 0.4</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
-:root{color-scheme:dark;--bg:#0b1926;--panel:#142b3e;--muted:#a9bdcc;--line:#29465c;--accent:#55c2b2}*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#10263a,#08131e 65%);color:#f4f8fb;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}main{max-width:650px;margin:auto;padding:env(safe-area-inset-top) 14px calc(20px + env(safe-area-inset-bottom))}header{display:flex;justify-content:space-between;align-items:center;padding:17px 3px 12px}.brand{font-size:21px;letter-spacing:.16em;margin:0;font-weight:800}.brandline{display:flex;align-items:center;gap:9px}.version{font-size:10px;font-weight:800;letter-spacing:.08em;color:var(--accent);border:1px solid #397c78;border-radius:6px;padding:4px 6px}.tag{font-size:9px;letter-spacing:.16em;color:var(--muted);margin-top:3px}.status{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:7px}.dot{width:8px;height:8px;border-radius:50%;background:#e2a64b}.dot.on{background:#55d49a}.dot.weak{background:#e2a64b}.dot.stale{background:#e56d6d}.card{background:rgba(20,43,62,.96);border:1px solid var(--line);border-radius:17px;padding:15px;margin:9px 0;box-shadow:0 10px 26px #0003}.eyebrow{font-size:10px;letter-spacing:.13em;color:var(--muted);font-weight:750}.speedrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px}.speed{display:flex;align-items:baseline;gap:7px}.speed strong{font-size:clamp(54px,15vw,76px);line-height:1;font-weight:650;letter-spacing:-.055em;font-variant-numeric:tabular-nums}.unit{font-size:19px;color:#c3d4df}.switch{display:flex;background:#0b1d2b;border:1px solid #35536a;border-radius:10px;padding:3px}.switch button{border:0;background:transparent;color:#b8c9d5;border-radius:7px;padding:8px 10px;font-size:13px;font-weight:750;min-width:49px}.switch button.active{background:var(--accent);color:#082027}.sub{font-size:10px;color:var(--muted);margin-top:5px}.position{margin-top:13px;padding-top:11px;border-top:1px solid #29465c;display:flex;align-items:baseline;gap:7px;white-space:nowrap;font-size:clamp(14px,3.8vw,17px);font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.015em}.position .sep{color:#7891a3;font-weight:400}.map-card{padding:0;overflow:hidden}.map-head{width:100%;display:flex;justify-content:space-between;align-items:center;background:transparent;color:#f4f8fb;border:0;padding:14px 15px;font-size:13px;font-weight:800;letter-spacing:.08em;text-align:left}.map-head .right{display:flex;gap:7px;color:var(--muted);font-size:11px;font-weight:600;letter-spacing:0}#mapWrap{height:220px;border-top:1px solid var(--line)}#map{height:100%;width:100%;background:#dbe4df}.map-foot{padding:7px 12px;color:var(--muted);font-size:10px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:8px}.follow-btn{border:1px solid #426176;border-radius:7px;background:#0d2030;color:#dce8ef;padding:5px 9px;font-size:10px;font-weight:800;letter-spacing:.04em}.follow-btn.active{background:var(--accent);border-color:var(--accent);color:#082027}.map-card.collapsed #mapWrap{display:none}.compass-card{text-align:center}.compass-title{text-align:left}.compass-wrap{display:flex;justify-content:center;padding:8px 0 0}.compass{width:min(67vw,260px);aspect-ratio:1;border:1px solid #567084;border-radius:50%;position:relative;background:radial-gradient(circle,#1b3549 0 58%,#12283a 59% 100%);box-shadow:inset 0 0 25px #0005}.cardinal{position:absolute;font-weight:800;font-size:13px;transform:translate(-50%,-50%)}.north{left:50%;top:11%;color:#ff7777}.east{left:89%;top:50%}.south{left:50%;top:89%}.west{left:11%;top:50%}.needle{position:absolute;left:50%;top:50%;width:0;height:0;transform:translate(-50%,-50%)}.needle:before{content:"";position:absolute;left:-7px;top:-91px;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:80px solid #ee6666}.needle:after{content:"";position:absolute;left:-7px;top:-10px;border-left:7px solid transparent;border-right:7px solid transparent;border-top:80px solid #8fa6b7}.hub{position:absolute;z-index:3;left:50%;top:50%;width:13px;height:13px;border-radius:50%;background:#f4f8fb;transform:translate(-50%,-50%);border:3px solid #19354a;box-shadow:0 0 0 2px #d0b77c}.reading{margin-top:5px}.reading strong{font-size:30px;font-variant-numeric:tabular-nums}.reading span{color:var(--muted);font-size:12px;margin-left:5px}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:9px}.metric{background:#0d2030;border-radius:11px;padding:11px}.metric strong{display:block;font-size:18px;margin-top:5px;font-variant-numeric:tabular-nums}.actions{display:flex;gap:9px;margin-top:11px}.action{border:0;border-radius:11px;padding:12px 10px;background:#29465c;color:#f4f8fb;font-size:13px;font-weight:750;flex:1}.action.primary{background:var(--accent);color:#082027}#message{font-size:11px;line-height:1.45;color:#ffd18a;min-height:16px;margin:10px 2px 2px}.note{font-size:10px;line-height:1.5;color:var(--muted);padding:2px 3px 16px}.leaflet-container{font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.leaflet-control-attribution{font-size:9px!important}@media(max-width:360px){main{padding-left:10px;padding-right:10px}.card{padding:12px}.position{font-size:13px;gap:5px}.switch button{padding:7px 8px;min-width:44px}.brand{font-size:19px}}
+:root{color-scheme:dark;--bg:#0b1926;--panel:#142b3e;--muted:#a9bdcc;--line:#29465c;--accent:#55c2b2}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(160deg,#10263a,#08131e 65%);color:#f4f8fb;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+main{max-width:650px;margin:auto;padding:env(safe-area-inset-top) 14px calc(20px + env(safe-area-inset-bottom))}
+header{padding:17px 3px 8px}
+.toprow{display:flex;justify-content:space-between;align-items:center}
+.brand{font-size:21px;letter-spacing:.16em;margin:0;font-weight:800}
+.brandline{display:flex;align-items:center;gap:9px}
+.version{font-size:10px;font-weight:800;letter-spacing:.08em;color:var(--accent);border:1px solid #397c78;border-radius:6px;padding:4px 6px}
+.subrow{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.tag{font-size:9px;letter-spacing:.16em;color:var(--muted)}
+.status{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%;background:#e2a64b}
+.dot.on{background:#55d49a}.dot.weak{background:#e2a64b}.dot.stale{background:#e56d6d}.dot.off{background:#6b8294}
+.stopwatch{border:1px solid #35536a;background:#0d2030;color:#dce8ef;border-radius:11px;height:40px;min-width:44px;padding:0 11px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+.stopwatch svg{width:22px;height:22px}
+.stopwatch.run{color:var(--accent);border-color:var(--accent)}
+.stopwatch.pause{color:#ffd18a;border-color:#ffd18a}
+.card{background:rgba(20,43,62,.96);border:1px solid var(--line);border-radius:17px;padding:15px;margin:9px 0;box-shadow:0 10px 26px #0003}
+.eyebrow{font-size:10px;letter-spacing:.13em;color:var(--muted);font-weight:750}
+.speedrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px}
+.speed{display:flex;align-items:baseline;gap:7px}
+.speed strong{font-size:clamp(54px,15vw,76px);line-height:1;font-weight:650;letter-spacing:-.055em;font-variant-numeric:tabular-nums}
+.unit{font-size:19px;color:#c3d4df}
+.switch{display:flex;background:#0b1d2b;border:1px solid #35536a;border-radius:10px;padding:3px}
+.switch button{border:0;background:transparent;color:#b8c9d5;border-radius:7px;padding:8px 10px;font-size:13px;font-weight:750;min-width:49px}
+.switch button.active{background:var(--accent);color:#082027}
+.sub{font-size:10px;color:var(--muted);margin-top:5px}
+.position{margin-top:13px;padding-top:11px;border-top:1px solid #29465c;display:flex;align-items:baseline;gap:7px;white-space:nowrap;font-size:clamp(14px,3.8vw,17px);font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.015em}
+.position .sep{color:#7891a3;font-weight:400}
+.map-card{padding:0;overflow:hidden}
+.map-head{width:100%;display:flex;justify-content:space-between;align-items:center;background:transparent;color:#f4f8fb;border:0;padding:14px 15px;font-size:13px;font-weight:800;letter-spacing:.08em;text-align:left}
+.map-head .right{display:flex;gap:7px;color:var(--muted);font-size:11px;font-weight:600;letter-spacing:0}
+#mapWrap{border-top:1px solid var(--line)}
+#map{height:300px;width:100%;background:#dbe4df}
+.map-foot{padding:7px 12px;color:var(--muted);font-size:10px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.follow-btn{border:1px solid #426176;border-radius:7px;background:#0d2030;color:#dce8ef;padding:5px 9px;font-size:10px;font-weight:800;letter-spacing:.04em}
+.follow-btn.active{background:var(--accent);border-color:var(--accent);color:#082027}
+.map-card.collapsed #mapWrap{display:none}
+.compass-body{display:flex;align-items:center;gap:12px;margin-top:8px}
+.compass{flex:none;width:min(44vw,172px);height:auto;aspect-ratio:1}
+.readings{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0}
+.metric{background:#0d2030;border-radius:11px;padding:9px 11px}
+.metric strong{display:block;font-size:20px;margin-top:4px;font-variant-numeric:tabular-nums;white-space:nowrap}
+#drift.stb{color:#55d49a}#drift.bb{color:#ee6666}
+.accrow{display:flex;align-items:center;justify-content:space-between;padding-bottom:11px}
+.accrow strong{display:block;font-size:20px;margin-top:4px;font-variant-numeric:tabular-nums}
+.accrow .hint{font-size:11px;color:var(--muted)}
+.row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-top:1px solid var(--line);font-size:15px}
+.sw{position:relative;width:51px;height:31px;border-radius:16px;border:0;padding:0;background:#3a566b;transition:background .2s;flex:none}
+.sw:after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;transition:transform .2s}
+.sw[aria-checked="true"]{background:#34c759}
+.sw[aria-checked="true"]:after{transform:translateX(20px)}
+#message{font-size:11px;line-height:1.45;color:#ffd18a;min-height:16px;margin:10px 2px 2px}
+.note{font-size:10px;line-height:1.5;color:var(--muted);padding:2px 3px 16px}
+.leaflet-container{font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.leaflet-control-attribution{font-size:9px!important}
+@media(max-width:360px){main{padding-left:10px;padding-right:10px}.card{padding:12px}.position{font-size:13px;gap:5px}.switch button{padding:7px 8px;min-width:44px}.brand{font-size:19px}.metric strong{font-size:18px}}
 </style></head><body><main>
-<header><div><div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 0.3</span></div><div class="tag">PERSONAL BOAT DASHBOARD</div></div><div class="status"><i class="dot" id="dot"></i><span id="gpsStatus">GPS nicht aktiv</span></div></header>
-<section class="card"><div class="eyebrow">GESCHWINDIGKEIT ÜBER GRUND · SOG</div><div class="speedrow"><div class="speed"><strong id="speed">—</strong><span class="unit" id="unitLabel">kn</span></div><div class="switch"><button id="knBtn" class="active" aria-pressed="true">kn</button><button id="kmhBtn" aria-pressed="false">km/h</button></div></div><div class="sub">GPS-Geschwindigkeit · über Grund</div><div class="position"><span id="lat">—</span><span class="sep">·</span><span id="lon">—</span></div></section>
-<section class="card map-card" id="mapCard"><button class="map-head" id="mapToggle" aria-expanded="true"><span>KARTE</span><span class="right"><span id="mapToggleText">Einklappen</span><span id="mapChevron">⌃</span></span></button><div id="mapWrap"><div id="map"></div><div class="map-foot"><span>Aktuelle Position · OpenStreetMap</span><button class="follow-btn active" id="followBtn" aria-pressed="true">FOLLOW ON</button></div></div></section>
-<section class="card compass-card"><div class="eyebrow compass-title">KOMPASS · HEADING</div><div class="compass-wrap"><div class="compass"><span class="cardinal north">N</span><span class="cardinal east">O</span><span class="cardinal south">S</span><span class="cardinal west">W</span><div class="needle" id="needle"></div><div class="hub"></div></div></div><div class="reading"><strong id="heading">—°</strong><span id="direction">Kompass wartet</span></div></section>
-<section class="card"><div class="metrics"><div class="metric"><div class="eyebrow">GPS-KURS · COG</div><strong id="cog">—</strong></div><div class="metric"><div class="eyebrow">GPS-GENAUIGKEIT</div><strong id="accuracy">—</strong></div></div><div class="actions"><button class="action primary" id="start">GPS starten</button><button class="action" id="compassBtn">Kompass aktivieren</button></div><div id="message">GPS benötigt eine HTTPS-Verbindung. Erlaube den Standortzugriff, wenn Safari danach fragt.</div></section>
-<p class="note">SOG und COG werden über GPS über Grund ermittelt. Heading ist die vom iPhone gemessene Ausrichtung. Der Gerätekompass kann an Bord durch Metall und elektrische Anlagen gestört werden. Kartendaten benötigen eine Internetverbindung. HELMSMAN ist ein Zusatzinstrument und kein Ersatz für geeignete Navigationsmittel.</p>
+
+<header>
+<div class="toprow">
+<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 0.4</span></div>
+<button class="stopwatch" id="stopwatch" aria-label="Stoppuhr"></button>
+</div>
+<div class="subrow"><div class="tag">PERSONAL BOAT DASHBOARD</div><div class="status"><i class="dot off" id="dot"></i><span id="gpsStatus">GPS nicht aktiv</span></div></div>
+</header>
+
+<section class="card">
+<div class="eyebrow">GESCHWINDIGKEIT ÜBER GRUND · SOG</div>
+<div class="speedrow"><div class="speed"><strong id="speed">—</strong><span class="unit" id="unitLabel">kn</span></div>
+<div class="switch"><button id="knBtn" class="active" aria-pressed="true">kn</button><button id="kmhBtn" aria-pressed="false">km/h</button></div></div>
+<div class="sub">GPS-Geschwindigkeit · über Grund</div>
+<div class="position"><span id="lat">—</span><span class="sep">·</span><span id="lon">—</span></div>
+</section>
+
+<section class="card map-card" id="mapCard">
+<button class="map-head" id="mapToggle" aria-expanded="true"><span>KARTE</span><span class="right"><span id="mapToggleText">Einklappen</span><span id="mapChevron">⌃</span></span></button>
+<div id="mapWrap"><div id="map"></div><div class="map-foot"><span>Aktuelle Position · OpenStreetMap</span><button class="follow-btn active" id="followBtn" aria-pressed="true">FOLLOW ON</button></div></div>
+</section>
+
+<section class="card">
+<div class="eyebrow">KOMPASS · HEADING</div>
+<div class="compass-body">
+<svg class="compass" viewBox="0 0 160 160" role="img" aria-label="Kompassrose">
+<circle cx="80" cy="80" r="76" fill="#1b3549" stroke="#567084"/>
+<g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" text-anchor="middle" dominant-baseline="central">
+<text x="80" y="21" fill="#ff7777" font-size="14" font-weight="800">N</text>
+<text x="139" y="80" fill="#f4f8fb" font-size="14" font-weight="800">O</text>
+<text x="80" y="139" fill="#f4f8fb" font-size="14" font-weight="800">S</text>
+<text x="21" y="80" fill="#f4f8fb" font-size="14" font-weight="800">W</text>
+<text x="121" y="39" fill="#8fa6b7" font-size="11" font-weight="700">NO</text>
+<text x="121" y="121" fill="#8fa6b7" font-size="11" font-weight="700">SO</text>
+<text x="39" y="121" fill="#8fa6b7" font-size="11" font-weight="700">SW</text>
+<text x="39" y="39" fill="#8fa6b7" font-size="11" font-weight="700">NW</text></g>
+<g id="needle" transform="rotate(0 80 80)"><polygon id="needleN" points="80,36 73,80 87,80" fill="#5b7384"/><polygon id="needleS" points="80,124 73,80 87,80" fill="#41596a"/></g>
+<circle cx="80" cy="80" r="6" fill="#f4f8fb" stroke="#19354a" stroke-width="3"/>
+</svg>
+<div class="readings">
+<div class="metric"><div class="eyebrow">HEADING</div><strong id="heading">—</strong></div>
+<div class="metric"><div class="eyebrow">GPS-KURS · COG</div><strong id="cog">—</strong></div>
+<div class="metric"><div class="eyebrow">ABDRIFT</div><strong id="drift">—</strong></div>
+</div>
+</div>
+<div class="sub" id="direction" style="margin-top:8px">Kompass aus</div>
+</section>
+
+<section class="card" style="padding-bottom:4px">
+<div class="accrow"><div><div class="eyebrow">GPS-GENAUIGKEIT</div><strong id="accuracy">—</strong></div><span class="hint">Gut bis ±30 m</span></div>
+<div class="row"><span>GPS</span><button class="sw" id="swGps" role="switch" aria-checked="false" aria-label="GPS"></button></div>
+<div class="row"><span>Kompass</span><button class="sw" id="swCompass" role="switch" aria-checked="false" aria-label="Kompass"></button></div>
+<div id="message">GPS benötigt eine HTTPS-Verbindung. Schalte GPS ein und erlaube den Standortzugriff, wenn Safari danach fragt.</div>
+</section>
+
+<p class="note">SOG und COG werden über GPS über Grund ermittelt. Heading ist die vom iPhone gemessene Ausrichtung. Die Abdrift ist die Differenz aus COG und Heading (StB = nach Steuerbord, BB = nach Backbord) und wird erst ab etwa 1 kn Fahrt angezeigt. Der Gerätekompass kann an Bord durch Metall und elektrische Anlagen gestört werden. Kartendaten benötigen eine Internetverbindung. HELMSMAN ist ein Zusatzinstrument und kein Ersatz für geeignete Navigationsmittel.</p>
 </main>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
-let watchId=null,map=null,marker=null,selectedUnit="kn",latestSpeedMs=null,smoothedSpeedMs=null,lastFixAt=0,currentPosition=null,followMap=true,compassBuilt=false;
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+let watchId=null,map=null,marker=null,selectedUnit="kn",latestSpeedMs=null,smoothedSpeedMs=null,lastFixAt=0,currentPosition=null,followMap=true,mapHasFix=false;
+let headingDeg=null,cogDeg=null,sogMs=null,compassOn=false;
 const $=id=>document.getElementById(id);
+
 function fmtCoord(v,pos,neg,isLon=false){if(v==null)return"—";const a=Math.abs(v),d=Math.floor(a),m=(a-d)*60;return`${String(d).padStart(isLon?3:2,"0")}° ${m.toFixed(1).padStart(4,"0")}′ ${v>=0?pos:neg}`}
 function cardinal(d){if(d==null)return"—";return ["N","NNO","NO","ONO","O","OSO","SO","SSO","S","SSW","SW","WSW","W","WNW","NW","NNW"][Math.round(((d%360)+360)%360/22.5)%16]}
-function renderSpeed(){if(latestSpeedMs==null){$("speed").textContent="—";return}const value=latestSpeedMs<0.25?0:latestSpeedMs* (selectedUnit==="kn"?1.943844:3.6);$("speed").textContent=value.toFixed(1)}
-function chooseUnit(u){selectedUnit=u;$("knBtn").classList.toggle("active",u==="kn");$("kmhBtn").classList.toggle("active",u==="kmh");$("knBtn").setAttribute("aria-pressed",u==="kn");$("kmhBtn").setAttribute("aria-pressed",u==="kmh");$("unitLabel").textContent=u;renderSpeed()}
-function initMap(){if(map||!window.L)return;map=L.map("map",{zoomControl:true,scrollWheelZoom:false}).setView([53.55,9.99],12);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);map.on("dragstart",()=>{if(followMap)setFollow(false)});}
+function p3(n){return String(Math.round(n)%360).padStart(3,"0")}
+function setSwitch(id,on){$(id).setAttribute("aria-checked",String(on))}
+
+function renderSpeed(){if(latestSpeedMs==null){$("speed").textContent="—";return}const value=latestSpeedMs<0.25?0:latestSpeedMs*(selectedUnit==="kn"?1.943844:3.6);$("speed").textContent=value.toFixed(1)}
+function chooseUnit(u){selectedUnit=u;$("knBtn").classList.toggle("active",u==="kn");$("kmhBtn").classList.toggle("active",u==="kmh");$("knBtn").setAttribute("aria-pressed",u==="kn");$("kmhBtn").setAttribute("aria-pressed",u==="kmh");$("unitLabel").textContent=u==="kn"?"kn":"km/h";renderSpeed()}
+
+function updateDrift(){
+ const el=$("drift");
+ if(headingDeg==null||cogDeg==null||sogMs==null||sogMs<0.5){el.textContent="—";el.className="";return}
+ const d=((cogDeg-headingDeg+540)%360)-180,a=Math.round(Math.abs(d));
+ if(a===0){el.textContent="0°";el.className=""}
+ else if(d>0){el.textContent=a+"° StB";el.className="stb"}
+ else{el.textContent=a+"° BB";el.className="bb"}
+}
+
+function initMap(){if(map||!window.L)return;map=L.map("map",{zoomControl:true,scrollWheelZoom:false}).setView([53.55,9.99],12);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);map.on("dragstart",()=>{if(followMap)setFollow(false)})}
 function updateMap(lat,lon){if(!window.L)return;initMap();const p=[lat,lon];if(!marker)marker=L.circleMarker(p,{radius:8,color:"#fff",weight:3,fillColor:"#168bce",fillOpacity:1}).addTo(map);else marker.setLatLng(p);if(!mapHasFix){map.setView(p,15);mapHasFix=true}else if(followMap){map.panTo(p,{animate:true,duration:.35})}}
-let mapHasFix=false;
 function setFollow(on){followMap=on;$("followBtn").textContent=on?"FOLLOW ON":"FOLLOW OFF";$("followBtn").classList.toggle("active",on);$("followBtn").setAttribute("aria-pressed",String(on));if(on&&currentPosition&&map)map.panTo(currentPosition,{animate:true,duration:.35})}
-function setGpsStatus(kind,label){$("dot").className="dot"+(kind==="good"?" on":kind==="weak"?" weak":kind==="stale"?" stale":"");$("gpsStatus").textContent=label}
-function startGPS(){if(!navigator.geolocation){$("message").textContent="Dieser Browser unterstützt keine Standortbestimmung.";return}if(!isSecureContext){$("message").textContent="GPS benötigt HTTPS. Bitte die veröffentlichte HTTPS-Adresse in Safari öffnen.";return}if(watchId!==null)navigator.geolocation.clearWatch(watchId);setGpsStatus("weak","GPS sucht …");$("message").textContent="Warte auf GPS-Daten …";watchId=navigator.geolocation.watchPosition(pos=>{const c=pos.coords;lastFixAt=Date.now();currentPosition=[c.latitude,c.longitude];setGpsStatus(c.accuracy!=null&&c.accuracy>30?"weak":"good",c.accuracy!=null&&c.accuracy>30?"GPS ungenau":"GPS aktiv");$("lat").textContent=fmtCoord(c.latitude,"N","S");$("lon").textContent=fmtCoord(c.longitude,"E","W",true);const raw=Number.isFinite(c.speed)&&c.speed>=0?c.speed:null;if(raw===null){latestSpeedMs=null;smoothedSpeedMs=null}else{smoothedSpeedMs=smoothedSpeedMs===null?raw:(smoothedSpeedMs*.65+raw*.35);latestSpeedMs=smoothedSpeedMs}renderSpeed();$("cog").textContent=c.heading==null?"—":`${Math.round(c.heading).toString().padStart(3,"0")}° ${cardinal(c.heading)}`;$("accuracy").textContent=c.accuracy==null?"—":`±${Math.round(c.accuracy)} m`;updateMap(c.latitude,c.longitude);$("message").textContent=`GPS aktualisiert: ${new Date(pos.timestamp).toLocaleTimeString("de-DE")}`},err=>{setGpsStatus("stale","GPS-Fehler");const m={1:"Standortzugriff verweigert. Bitte in den iPhone-/Safari-Einstellungen erlauben.",2:"GPS-Position momentan nicht verfügbar.",3:"GPS-Zeitüberschreitung. Bitte erneut versuchen."};$("message").textContent=m[err.code]||"Fehler bei der GPS-Ortung."},{enableHighAccuracy:true,maximumAge:1000,timeout:20000})}
-setInterval(()=>{if(lastFixAt&&Date.now()-lastFixAt>15000){setGpsStatus("stale","GPS-Daten veraltet");$("message").textContent="Seit mehr als 15 Sekunden keine neue GPS-Position."}},5000);
-async function activateCompass(){try{if(typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function"){const p=await DeviceOrientationEvent.requestPermission();if(p!=="granted")throw Error("Kompasszugriff nicht erlaubt.")}window.addEventListener("deviceorientationabsolute",orientationHandler,true);window.addEventListener("deviceorientation",orientationHandler,true);$("message").textContent="Kompass aktiviert. iPhone möglichst flach halten; an Bord auf magnetische Störungen achten."}catch(e){$("message").textContent=e.message||"Kompass konnte nicht aktiviert werden."}}
-function orientationHandler(e){let h=null;if(typeof e.webkitCompassHeading==="number")h=e.webkitCompassHeading;else if(e.absolute&&typeof e.alpha==="number")h=(360-e.alpha)%360;if(h!==null){h=(h%360+360)%360;$("needle").style.transform=`translate(-50%,-50%) rotate(${h}deg)`;$("heading").textContent=`${Math.round(h).toString().padStart(3,"0")}°`;$("direction").textContent=cardinal(h)}}
-$("start").onclick=startGPS;$("compassBtn").onclick=activateCompass;$("knBtn").onclick=()=>chooseUnit("kn");$("kmhBtn").onclick=()=>chooseUnit("kmh");$("followBtn").onclick=()=>setFollow(!followMap);$("mapToggle").onclick=()=>{const c=$("mapCard").classList.toggle("collapsed");$("mapToggle").setAttribute("aria-expanded",String(!c));$("mapToggleText").textContent=c?"Ausklappen":"Einklappen";$("mapChevron").textContent=c?"⌄":"⌃";if(!c&&map)setTimeout(()=>map.invalidateSize(),80)};if(window.L)initMap();
+
+function setGpsStatus(kind,label){$("dot").className="dot"+(kind==="good"?" on":kind==="weak"?" weak":kind==="stale"?" stale":kind==="off"?" off":"");$("gpsStatus").textContent=label}
+
+function startGPS(){
+ if(!navigator.geolocation){$("message").textContent="Dieser Browser unterstützt keine Standortbestimmung.";setSwitch("swGps",false);return}
+ if(!isSecureContext){$("message").textContent="GPS benötigt HTTPS. Bitte die veröffentlichte HTTPS-Adresse in Safari öffnen.";setSwitch("swGps",false);return}
+ if(watchId!==null)navigator.geolocation.clearWatch(watchId);
+ setSwitch("swGps",true);setGpsStatus("weak","GPS sucht …");$("message").textContent="Warte auf GPS-Daten …";
+ watchId=navigator.geolocation.watchPosition(pos=>{
+  const c=pos.coords;lastFixAt=Date.now();currentPosition=[c.latitude,c.longitude];
+  const weak=c.accuracy!=null&&c.accuracy>30;
+  setGpsStatus(weak?"weak":"good",weak?"GPS ungenau":"GPS aktiv");
+  $("lat").textContent=fmtCoord(c.latitude,"N","S");$("lon").textContent=fmtCoord(c.longitude,"E","W",true);
+  const raw=Number.isFinite(c.speed)&&c.speed>=0?c.speed:null;
+  if(raw===null){latestSpeedMs=null;smoothedSpeedMs=null}else{smoothedSpeedMs=smoothedSpeedMs===null?raw:(smoothedSpeedMs*.65+raw*.35);latestSpeedMs=smoothedSpeedMs}
+  sogMs=raw;renderSpeed();
+  cogDeg=Number.isFinite(c.heading)?c.heading:null;
+  $("cog").textContent=cogDeg==null?"—":`${p3(cogDeg)}° ${cardinal(cogDeg)}`;
+  $("accuracy").textContent=c.accuracy==null?"—":`±${Math.round(c.accuracy)} m`;
+  updateDrift();updateMap(c.latitude,c.longitude);
+  $("message").textContent=`GPS aktualisiert: ${new Date(pos.timestamp).toLocaleTimeString("de-DE")}`;
+ },err=>{
+  setGpsStatus("stale","GPS-Fehler");
+  const m={1:"Standortzugriff verweigert. Bitte in den iPhone-/Safari-Einstellungen erlauben.",2:"GPS-Position momentan nicht verfügbar.",3:"GPS-Zeitüberschreitung. Bitte erneut versuchen."};
+  $("message").textContent=m[err.code]||"Fehler bei der GPS-Ortung.";
+  if(err.code===1){stopGPS(true)}
+ },{enableHighAccuracy:true,maximumAge:1000,timeout:20000});
+}
+function stopGPS(keepMessage){
+ if(watchId!==null)navigator.geolocation.clearWatch(watchId);
+ watchId=null;lastFixAt=0;latestSpeedMs=null;smoothedSpeedMs=null;sogMs=null;cogDeg=null;currentPosition=null;
+ setSwitch("swGps",false);
+ renderSpeed();$("lat").textContent="—";$("lon").textContent="—";$("cog").textContent="—";$("accuracy").textContent="—";
+ updateDrift();
+ if(!keepMessage){setGpsStatus("off","GPS nicht aktiv");$("message").textContent="GPS ausgeschaltet."}
+ else{$("dot").className="dot stale"}
+}
+setInterval(()=>{if(watchId!==null&&lastFixAt&&Date.now()-lastFixAt>15000){setGpsStatus("stale","GPS-Daten veraltet");$("message").textContent="Seit mehr als 15 Sekunden keine neue GPS-Position."}},5000);
+
+async function activateCompass(){
+ try{
+  if(typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function"){
+   const p=await DeviceOrientationEvent.requestPermission();
+   if(p!=="granted")throw Error("Kompasszugriff nicht erlaubt. Bitte in den iPhone-/Safari-Einstellungen erlauben.");
+  }
+  window.addEventListener("deviceorientationabsolute",orientationHandler,true);
+  window.addEventListener("deviceorientation",orientationHandler,true);
+  compassOn=true;setSwitch("swCompass",true);$("direction").textContent="Kompass wartet …";
+  $("message").textContent="Kompass aktiviert. iPhone möglichst flach halten; an Bord auf magnetische Störungen achten.";
+ }catch(e){
+  compassOn=false;setSwitch("swCompass",false);
+  $("message").textContent=e.message||"Kompass konnte nicht aktiviert werden.";
+ }
+}
+function deactivateCompass(){
+ window.removeEventListener("deviceorientationabsolute",orientationHandler,true);
+ window.removeEventListener("deviceorientation",orientationHandler,true);
+ compassOn=false;headingDeg=null;setSwitch("swCompass",false);
+ $("needle").setAttribute("transform","rotate(0 80 80)");
+ $("needleN").setAttribute("fill","#5b7384");$("needleS").setAttribute("fill","#41596a");
+ $("heading").textContent="—";$("direction").textContent="Kompass aus";
+ updateDrift();$("message").textContent="Kompass ausgeschaltet.";
+}
+function orientationHandler(e){
+ if(!compassOn)return;
+ let h=null;
+ if(typeof e.webkitCompassHeading==="number")h=e.webkitCompassHeading;
+ else if(e.absolute&&typeof e.alpha==="number")h=(360-e.alpha)%360;
+ if(h!==null){
+  h=(h%360+360)%360;headingDeg=h;
+  $("needle").setAttribute("transform",`rotate(${h} 80 80)`);
+  $("needleN").setAttribute("fill","#ee6666");$("needleS").setAttribute("fill","#8fa6b7");
+  $("heading").textContent=`${p3(h)}°`;$("direction").textContent=cardinal(h);
+  updateDrift();
+ }
+}
+
+const sw=$("stopwatch");
+let swMode="clock",swAcc=0,swT0=0,swIv=null,swLP=null,swLong=false;
+const clockIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+function swMs(){return swAcc+(swMode==="run"?Date.now()-swT0:0)}
+function swFmt(ms){const t=Math.floor(ms/100),d=t%10,s=Math.floor(t/10)%60,m=Math.floor(t/600)%60,h=Math.floor(t/36000);return(h?h+":"+String(m).padStart(2,"0"):String(m).padStart(2,"0"))+":"+String(s).padStart(2,"0")+"."+d}
+function swDraw(){
+ sw.classList.toggle("run",swMode==="run");sw.classList.toggle("pause",swMode==="pause");
+ if(swMode==="clock"){sw.innerHTML=clockIcon;sw.setAttribute("aria-label","Stoppuhr starten")}
+ else{sw.textContent=swFmt(swMs());sw.setAttribute("aria-label",swMode==="run"?"Stoppuhr anhalten":"Stoppuhr fortsetzen")}
+}
+function swToggle(){
+ if(swMode==="clock"){swMode="run";swAcc=0;swT0=Date.now();swIv=setInterval(swDraw,100)}
+ else if(swMode==="run"){swAcc+=Date.now()-swT0;swMode="pause";clearInterval(swIv)}
+ else{swMode="run";swT0=Date.now();swIv=setInterval(swDraw,100)}
+ swDraw();
+}
+function swReset(){clearInterval(swIv);swMode="clock";swAcc=0;swDraw()}
+sw.addEventListener("pointerdown",()=>{swLong=false;if(swMode==="clock")return;swLP=setTimeout(()=>{swLong=true;swReset();if(navigator.vibrate)navigator.vibrate(30)},700)});
+["pointerup","pointerleave","pointercancel"].forEach(ev=>sw.addEventListener(ev,()=>clearTimeout(swLP)));
+sw.addEventListener("click",()=>{if(swLong){swLong=false;return}swToggle()});
+sw.addEventListener("contextmenu",e=>e.preventDefault());
+
+$("swGps").onclick=()=>{if(watchId!==null)stopGPS();else startGPS()};
+$("swCompass").onclick=()=>{if(compassOn)deactivateCompass();else activateCompass()};
+$("knBtn").onclick=()=>chooseUnit("kn");$("kmhBtn").onclick=()=>chooseUnit("kmh");
+$("followBtn").onclick=()=>setFollow(!followMap);
+$("mapToggle").onclick=()=>{const c=$("mapCard").classList.toggle("collapsed");$("mapToggle").setAttribute("aria-expanded",String(!c));$("mapToggleText").textContent=c?"Ausklappen":"Einklappen";$("mapChevron").textContent=c?"⌄":"⌃";if(!c&&map)setTimeout(()=>map.invalidateSize(),80)};
+swDraw();
+if(window.L)initMap();
 </script></body></html>
