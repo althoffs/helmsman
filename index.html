@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d2133"><title>HELMSMAN MK 0.7</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d2133"><title>HELMSMAN MK 0.8</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{color-scheme:dark;--bg:#0b1926;--panel:#142b3e;--muted:#a9bdcc;--line:#29465c;--accent:#55c2b2}
@@ -42,14 +42,25 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 .sub{font-size:10px;color:var(--muted);margin-top:5px}
 .position{margin-top:13px;padding-top:11px;border-top:1px solid #29465c;display:flex;align-items:baseline;gap:7px;white-space:nowrap;font-size:clamp(14px,3.8vw,17px);font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.015em}
 .position .sep{color:#7891a3;font-weight:400}
-.compass-body{display:flex;align-items:center;gap:12px;margin-top:8px}
-.compass{flex:none;width:min(46vw,176px);height:auto}
-.readings{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0}
+.compass-body{display:flex;align-items:center;gap:8px;margin-top:8px}
+.compass{flex:none;width:clamp(128px,40vw,150px);height:auto}
+.cells{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.cell{background:#0d2030;border:0;border-radius:11px;padding:7px 8px;min-width:0;text-align:left;color:#f4f8fb;font-family:inherit;display:block}
+button.cell{cursor:pointer}
+.cell .l{font-size:10px;letter-spacing:.08em;color:var(--muted);font-weight:750;white-space:nowrap}
+.cell .v{font-size:19px;font-weight:600;margin-top:2px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cell .v small{font-size:11px;color:var(--muted);font-weight:500}
+.cell .s{font-size:11px;color:var(--muted);white-space:nowrap;margin-top:1px;min-height:14px}
+.cell .stb{color:#55d49a}.cell .bb{color:#ee6666}
 .metric{background:#0d2030;border-radius:11px;padding:9px 11px}
 .metric strong{display:block;font-size:20px;margin-top:4px;font-variant-numeric:tabular-nums;white-space:nowrap}
-#drift.stb{color:#55d49a}#drift.bb{color:#ee6666}
-#wpLine{margin-top:10px;background:#2a1a22;border:1px solid #6b2a32;border-radius:11px;padding:9px 11px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:15px;font-variant-numeric:tabular-nums}
-#wpLine .x{border:0;background:transparent;color:#ff8d90;font-size:22px;line-height:1;padding:0 4px}
+
+#wpLine{margin-top:10px;background:#0f2d2d;border:1px solid #397c78;border-radius:11px;padding:9px 11px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:15px;font-variant-numeric:tabular-nums}
+#wpLine.mob{background:#2a1a22;border-color:#6b2a32}
+#wpLine .wdot{color:var(--accent)}
+#wpLine.mob .wdot{color:#ff8d90}
+#wpLine .x{border:0;background:transparent;color:var(--accent);font-size:22px;line-height:1;padding:0 4px}
+#wpLine.mob .x{color:#ff8d90}
 .accrow{display:flex;align-items:center;justify-content:space-between;padding-bottom:11px}
 .accrow strong{display:block;font-size:20px;margin-top:4px;font-variant-numeric:tabular-nums}
 .accrow .hint{font-size:11px;color:var(--muted);text-align:right}
@@ -59,6 +70,15 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 .sw[aria-checked="true"]{background:#34c759}
 .sw[aria-checked="true"]:after{transform:translateX(20px)}
 .msg{font-size:11px;line-height:1.45;color:#ffd18a;min-height:16px;margin:10px 2px 2px}
+#wxSheet{position:fixed;inset:0;z-index:3000;background:#000a;display:flex;align-items:flex-end;justify-content:center}
+#wxSheet .sheet{background:#142b3e;border-top:1px solid #35536a;border-radius:18px 18px 0 0;width:100%;max-width:650px;padding:14px 14px calc(14px + env(safe-area-inset-bottom));max-height:85vh;overflow:auto}
+.sheetHead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.sheetTitle{font-size:16px;font-weight:600}
+#wxBody table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums;margin-top:8px}
+#wxBody th{font-weight:600;color:var(--muted);text-align:right;padding:5px 3px;font-size:10px;letter-spacing:.05em}
+#wxBody td{text-align:right;padding:6px 3px;border-top:1px solid var(--line)}
+#wxBody th:first-child,#wxBody td:first-child{text-align:left}
+.wxnote{font-size:12px;color:var(--muted);line-height:1.5;margin-top:10px}
 .note{font-size:10px;line-height:1.5;color:var(--muted);padding:2px 3px 16px}
 #p_map{padding:0}
 #mapBox{position:relative;width:100%}
@@ -88,12 +108,12 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 .tab.on{color:var(--accent)}
 .leaflet-container{font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 .leaflet-control-attribution{font-size:9px!important}
-@media(max-width:360px){.page{padding-left:10px;padding-right:10px}.card{padding:12px}.position{font-size:13px;gap:5px}.seg button{padding:7px 8px;min-width:44px}.brand{font-size:19px}.metric strong{font-size:18px}}
+@media(max-width:360px){.page{padding-left:10px;padding-right:10px}.card{padding:12px}.position{font-size:13px;gap:5px}.seg button{padding:7px 8px;min-width:44px}.brand{font-size:19px}.metric strong{font-size:18px}.cell .v{font-size:17px}}
 </style></head><body>
 
 <header class="hdr"><div class="wrap">
 <div class="toprow">
-<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 0.7</span></div>
+<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 0.8</span></div>
 <div class="hbtns">
 <button class="hbtn" id="mob" aria-label="MOB: press and hold"><span id="mobFill"></span><span class="t">MOB</span></button>
 <button class="hbtn" id="stopwatch" aria-label="Stopwatch"></button>
@@ -122,18 +142,23 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 <g id="ticks"></g>
 <g id="labs"></g>
 <g id="cogMark" style="display:none"><polygon points="100,20 93,6 107,6" fill="#ffb84d"/></g>
+<g id="windMark" style="display:none"><polygon points="100,22 91,4 109,4" fill="#6cc4ff" stroke="#0b1926" stroke-width="1.5" stroke-linejoin="round"/></g>
 <g id="wpMark" style="display:none"><polygon points="100,5 108,13 100,21 92,13" fill="#e5484d" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></g>
 </g>
 <g id="boat" style="display:none"><polygon points="100,80 110,112 100,106 90,112" fill="#f4f8fb" stroke="#19354a" stroke-width="2" stroke-linejoin="round"/></g>
 <g id="lub" style="display:none"><polygon points="100,18 91,-5 109,-5" fill="#fff" stroke="#0b1926" stroke-width="1.5" stroke-linejoin="round"/></g>
 </svg>
-<div class="readings">
-<div class="metric"><div class="eyebrow">HEADING</div><strong id="heading">—</strong></div>
-<div class="metric"><div class="eyebrow">GPS COURSE · COG</div><strong id="cog">—</strong></div>
-<div class="metric"><div class="eyebrow">DRIFT</div><strong id="drift">—</strong></div>
+<div class="cells">
+<div class="cell"><div class="l">HEADING</div><div class="v" id="heading">—</div><div class="s" id="headingDir">&nbsp;</div></div>
+<button class="cell" id="cellWind" aria-label="Wind forecast"><div class="l">WIND</div><div class="v" id="wxWind">—</div><div class="s" id="wxWindSub">&nbsp;</div></button>
+<div class="cell"><div class="l">COG</div><div class="v" id="cog">—</div><div class="s" id="cogDir">&nbsp;</div></div>
+<button class="cell" id="cellPres" aria-label="Pressure forecast"><div class="l">PRESSURE</div><div class="v" id="wxPres">—</div><div class="s" id="wxPresSub">&nbsp;</div></button>
+<div class="cell"><div class="l">DRIFT</div><div class="v" id="drift">—</div><div class="s" id="driftDir">&nbsp;</div></div>
+<button class="cell" id="cellRain" aria-label="Rain forecast"><div class="l">RAIN AHEAD</div><div class="v" id="wxRain">—</div><div class="s" id="wxRainSub">&nbsp;</div></button>
 </div></div>
 <div id="wpLine" hidden><span id="wpText"></span><button class="x" id="wpHide" aria-label="Hide waypoint">×</button></div>
 <div class="sub" id="compassState" style="margin-top:8px">Compass off</div>
+<div class="sub" id="wxAge" style="margin-top:3px">Weather: waiting for GPS</div>
 </div>
 
 <div class="card" style="padding-bottom:4px">
@@ -143,7 +168,7 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 <div class="msg" id="message">GPS needs an HTTPS connection. Switch GPS on and allow location access when Safari asks.</div>
 </div>
 
-<p class="note">SOG and COG are measured by GPS over ground. Heading is the bow direction measured by the device (held upright or in the hand, back facing forward), corrected by the magnetic variation you set. The compass dial rotates, the white mark at the top is the bow, the amber marker shows the GPS course (COG), the red diamond shows the bearing to the selected waypoint. Drift is the difference between COG and heading (STBD = to starboard, PORT = to port) and is only shown above about 1 kn. The device compass can be disturbed on board by metal and electrical equipment. MOB only saves the position where the button was pressed, not the location of the person. Map data needs an internet connection. HELMSMAN is a supplementary instrument and no substitute for proper navigation and rescue equipment.</p>
+<p class="note">SOG and COG are measured by GPS over ground. Heading is the bow direction measured by the device (held upright or in the hand, back facing forward), corrected by the magnetic variation you set. The compass dial rotates, the white mark at the top is the bow, the amber marker shows the GPS course (COG), the green diamond the bearing to the selected waypoint (red for MOB), the blue marker the direction the wind comes from. Drift is the difference between COG and heading (STBD = to starboard, PORT = to port) and is only shown above about 1 kn. Weather values are model forecasts for your position and a point ahead on your course (Open-Meteo), not measurements, and they need an internet connection. The device compass can be disturbed on board by metal and electrical equipment. MOB only saves the position where the button was pressed, not the location of the person. Map data needs an internet connection. HELMSMAN is a supplementary instrument and no substitute for proper navigation, weather and rescue equipment.</p>
 </section>
 
 <!-- ========== Page 2: Map ========== -->
@@ -183,6 +208,14 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 </section>
 
 </div>
+
+<div id="wxSheet" hidden><div class="sheet" role="dialog" aria-label="Weather forecast">
+<div class="sheetHead"><div><div class="sheetTitle">Forecast at your position</div><div class="sub" style="font-size:11px">Next hours · model data, not a measurement</div></div><button class="ib" id="wxClose" aria-label="Close" style="font-size:22px">×</button></div>
+<div id="wxBody"></div>
+<div style="display:flex;gap:8px;margin-top:12px"><button class="btn flex" id="wxRefresh">Refresh now</button></div>
+<div class="msg" id="wxStatus"></div>
+<div class="sub" style="font-size:11px;margin-top:6px"><a href="https://open-meteo.com/" target="_blank" rel="noopener" style="color:#8fc8ee">Weather data by Open-Meteo.com</a></div>
+</div></div>
 
 <nav class="tabbar"><div class="in">
 <button class="tab on" data-t="inst"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7l2.5 5-2.5 5-2.5-5z"/></svg>Instruments</button>
@@ -233,11 +266,11 @@ const NS="http://www.w3.org/2000/svg",labelEls=[];
   l.setAttribute("stroke",a%30===0?"#8fa6b7":"#567084");l.setAttribute("stroke-width",a%90===0?2:1);
   l.setAttribute("transform",`rotate(${a} 100 100)`);ticks.appendChild(l);
  }
- const defs=[["N",0,14,"#ff7777"],["NE",45,11,"#8fa6b7"],["E",90,14,"#f4f8fb"],["SE",135,11,"#8fa6b7"],["S",180,14,"#f4f8fb"],["SW",225,11,"#8fa6b7"],["W",270,14,"#f4f8fb"],["NW",315,11,"#8fa6b7"]];
+ const defs=[["N",0,19,"#ff7777"],["NE",45,15,"#8fa6b7"],["E",90,19,"#f4f8fb"],["SE",135,15,"#8fa6b7"],["S",180,19,"#f4f8fb"],["SW",225,15,"#8fa6b7"],["W",270,19,"#f4f8fb"],["NW",315,15,"#8fa6b7"]];
  defs.forEach(d=>{
-  const r=d[1]*Math.PI/180,x=100+68*Math.sin(r),y=100-68*Math.cos(r),t=document.createElementNS(NS,"text");
+  const r=d[1]*Math.PI/180,x=100+66*Math.sin(r),y=100-66*Math.cos(r),t=document.createElementNS(NS,"text");
   t.setAttribute("x",x);t.setAttribute("y",y);t.setAttribute("text-anchor","middle");t.setAttribute("dominant-baseline","central");
-  t.setAttribute("fill",d[3]);t.setAttribute("font-size",d[2]);t.setAttribute("font-weight",d[2]===14?"800":"700");
+  t.setAttribute("fill",d[3]);t.setAttribute("font-size",d[2]);t.setAttribute("font-weight",d[2]===19?"800":"700");
   t.setAttribute("font-family","-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif");t.textContent=d[0];
   $("labs").appendChild(t);labelEls.push({el:t,x,y});
  });
@@ -254,7 +287,7 @@ function updateCogMark(){
  if(show)$("cogMark").setAttribute("transform",`rotate(${cogDeg} 100 100)`);
 }
 function updateCompassState(){
- $("compassState").textContent=!compassOn?"Compass off":headingRaw==null?"Waiting for compass …":"Amber = GPS course (above about 1 kn) · Red = waypoint"+(varDeg?" · Variation "+fmtVar():"");
+ $("compassState").textContent=!compassOn?"Compass off":headingRaw==null?"Waiting for compass …":"Amber = GPS course (above about 1 kn) · Green = waypoint, red = MOB · Blue = wind"+(varDeg?" · Variation "+fmtVar():"");
 }
 
 /* ---------- display ---------- */
@@ -263,21 +296,23 @@ function renderSpeed(){
  const value=latestSpeedMs<0.25?0:latestSpeedMs*(selectedUnit==="kn"?1.943844:3.6);
  $("speed").textContent=value.toFixed(1);$("mapSog").textContent=value.toFixed(1);
 }
-function chooseUnit(u){selectedUnit=u;store.set("unit",u);$("knBtn").classList.toggle("active",u==="kn");$("kmhBtn").classList.toggle("active",u==="kmh");$("knBtn").setAttribute("aria-pressed",u==="kn");$("kmhBtn").setAttribute("aria-pressed",u==="kmh");const t=u==="kn"?"kn":"km/h";$("unitLabel").textContent=t;$("mapUnit").textContent=t;renderSpeed();updateTripUI()}
+function chooseUnit(u){selectedUnit=u;store.set("unit",u);$("knBtn").classList.toggle("active",u==="kn");$("kmhBtn").classList.toggle("active",u==="kmh");$("knBtn").setAttribute("aria-pressed",u==="kn");$("kmhBtn").setAttribute("aria-pressed",u==="kmh");const t=u==="kn"?"kn":"km/h";$("unitLabel").textContent=t;$("mapUnit").textContent=t;renderSpeed();updateTripUI();updateWxUI()}
 function updateDrift(){
- const el=$("drift"),h=currentHeading();
- if(!compassOn||h==null||cogDeg==null||sogMs==null||sogMs<MIN_DRIFT_SPEED){el.textContent="—";el.className="";return}
+ const el=$("drift"),dd=$("driftDir"),h=currentHeading();
+ const set=(v,t,c)=>{el.textContent=v;dd.innerHTML=t;el.className="v "+c;dd.className="s "+c};
+ if(!compassOn||h==null||cogDeg==null||sogMs==null||sogMs<MIN_DRIFT_SPEED){set("—","&nbsp;","");return}
  const d=((cogDeg-h+540)%360)-180,a=Math.round(Math.abs(d));
- if(a===0){el.textContent="0°";el.className=""}
- else if(d>0){el.textContent=a+"° STBD";el.className="stb"}
- else{el.textContent=a+"° PORT";el.className="bb"}
+ if(a===0)set("0°","&nbsp;","");
+ else if(d>0)set(a+"°","STBD","stb");
+ else set(a+"°","PORT","bb");
 }
 function updateHeadingText(force){
  const now=performance.now();
  if(!force&&now-lastTextT<200)return;
  lastTextT=now;
- const h=currentHeading(),t=(compassOn&&h!=null)?`${p3(h)}° ${cardinal(h)}`:"—";
- $("heading").textContent=t;$("mapHdg").textContent=t;
+ const h=currentHeading(),on=compassOn&&h!=null;
+ $("heading").textContent=on?p3(h)+"°":"—";$("headingDir").innerHTML=on?cardinal(h):"&nbsp;";
+ $("mapHdg").textContent=on?`${p3(h)}° ${cardinal(h)}`:"—";
  updateDrift();updateWpUI();
 }
 
@@ -287,17 +322,19 @@ function selWp(){return wps.find(w=>w.id===selId)||null}
 function wpGeo(w){if(!currentPosition)return null;const p=[w.lat,w.lon];return{b:bearingDeg(currentPosition,p),d:distM(currentPosition,p)}}
 function updateWpUI(){
  const w=selWp(),g=w?wpGeo(w):null;
+ $("wpLine").classList.toggle("mob",!!(w&&w.mob));
+ if(w)$("wpMark").firstElementChild.setAttribute("fill",w.mob?"#e5484d":"#55c2b2");
  if(!w){$("wpLine").hidden=true;$("wpMark").style.display="none"}
  else{
   $("wpLine").hidden=false;
-  let html='<span style="color:#ff8d90">●</span> <b>'+esc(w.n)+'</b>';
+  let html='<span class="wdot">●</span> <b>'+esc(w.n)+'</b>';
   if(g){html+=" &nbsp;"+p3(g.b)+"° · "+fmtDist(g.d);const r=relText(g.b);if(r)html+=" · "+r;$("wpMark").style.display="";$("wpMark").setAttribute("transform",`rotate(${g.b} 100 100)`)}
   else{html+=" &nbsp;no GPS position";$("wpMark").style.display="none"}
   if(w.mob)html+=" · "+fmtDur((Date.now()-w.t)/1000)+" ago";
   $("wpText").innerHTML=html;
  }
  document.querySelectorAll("[data-info]").forEach(el=>{const x=wps.find(v=>v.id===el.getAttribute("data-info")),gg=x?wpGeo(x):null;el.textContent=gg?p3(gg.b)+"° · "+fmtDist(gg.d):"—"});
- if(map&&wpLine){const g2=w&&currentPosition?[currentPosition,[w.lat,w.lon]]:[];wpLine.setLatLngs(g2)}
+ if(map&&wpLine){const g2=w&&currentPosition?[currentPosition,[w.lat,w.lon]]:[];wpLine.setLatLngs(g2);if(w)wpLine.setStyle({color:w.mob?"#e5484d":"#0f9d8f"})}
 }
 function renderWpList(){
  const box=$("wpList");
@@ -342,7 +379,7 @@ function initMap(){
 function drawMapWps(){
  if(!map||!wpLayer)return;
  wpLayer.clearLayers();
- wps.forEach(w=>{const sel=w.id===selId;L.circleMarker([w.lat,w.lon],{radius:sel?9:7,color:"#fff",weight:2.5,fillColor:w.mob?"#e5484d":(sel?"#ff8d90":"#ffb84d"),fillOpacity:1}).bindTooltip(w.n,{direction:"top"}).addTo(wpLayer)});
+ wps.forEach(w=>{const sel=w.id===selId;L.circleMarker([w.lat,w.lon],{radius:sel?9:7,color:"#fff",weight:2.5,fillColor:w.mob?"#e5484d":(sel?"#55c2b2":"#ffb84d"),fillOpacity:1}).bindTooltip(w.n,{direction:"top"}).addTo(wpLayer)});
  updateWpUI();
 }
 function updateMap(lat,lon){
@@ -378,7 +415,7 @@ function recordFix(c,ts){
  }
 }
 function buildGpx(){
- let x='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="HELMSMAN MK 0.7" xmlns="http://www.topografix.com/GPX/1/1">\n';
+ let x='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="HELMSMAN MK 0.8" xmlns="http://www.topografix.com/GPX/1/1">\n';
  wps.forEach(w=>{x+=`<wpt lat="${w.lat}" lon="${w.lon}"><time>${new Date(w.t).toISOString()}</time><name>${esc(w.n)}</name></wpt>\n`});
  x+="<trk><name>HELMSMAN Trip</name><trkseg>\n";
  track.forEach(p=>{x+=`<trkpt lat="${p[0]}" lon="${p[1]}"><time>${new Date(p[2]).toISOString()}</time></trkpt>\n`});
@@ -401,7 +438,7 @@ function resetTrip(){
  if(trackLine)trackLine.setLatLngs([]);updateTripUI();$("tripMsg").textContent="Trip reset.";
 }
 setInterval(saveTrip,15000);
-document.addEventListener("visibilitychange",()=>{if(document.hidden)saveTrip();else if(watchId!==null)requestWake()});
+document.addEventListener("visibilitychange",()=>{if(document.hidden)saveTrip();else if(watchId!==null){requestWake();maybeFetchWeather()}});
 window.addEventListener("pagehide",saveTrip);
 
 /* ---------- keep screen on ---------- */
@@ -434,9 +471,9 @@ function startGPS(){
   if(raw===null){latestSpeedMs=null;smoothedSpeedMs=null}else{smoothedSpeedMs=smoothedSpeedMs===null?raw:(smoothedSpeedMs*.65+raw*.35);latestSpeedMs=smoothedSpeedMs}
   sogMs=raw;renderSpeed();
   cogDeg=Number.isFinite(c.heading)?c.heading:null;
-  $("cog").textContent=cogDeg==null?"—":`${p3(cogDeg)}° ${cardinal(cogDeg)}`;
+  $("cog").textContent=cogDeg==null?"—":p3(cogDeg)+"°";$("cogDir").innerHTML=cogDeg==null?"&nbsp;":cardinal(cogDeg);
   $("accuracy").textContent=c.accuracy==null?"—":`±${Math.round(c.accuracy)} m`;
-  recordFix(c,pos.timestamp);
+  recordFix(c,pos.timestamp);maybeFetchWeather();
   updateCogMark();updateHeadingText(true);updateMap(c.latitude,c.longitude);
   if(curTab==="trip")updateTripUI();
   $("message").textContent=`GPS updated: ${new Date(pos.timestamp).toLocaleTimeString("en-GB")}`;
@@ -452,7 +489,7 @@ function stopGPS(keepMessage){
  if(watchId!==null)navigator.geolocation.clearWatch(watchId);
  watchId=null;lastFixAt=0;latestSpeedMs=null;smoothedSpeedMs=null;sogMs=null;cogDeg=null;currentPosition=null;tripLastT=null;
  store.set("gps","0");setSwitch("swGps",false);
- renderSpeed();$("lat").textContent="—";$("lon").textContent="—";$("cog").textContent="—";$("accuracy").textContent="—";
+ renderSpeed();$("lat").textContent="—";$("lon").textContent="—";$("cog").textContent="—";$("cogDir").innerHTML="&nbsp;";$("accuracy").textContent="—";
  updateCogMark();updateHeadingText(true);saveTrip();releaseWake();
  if(!keepMessage){setGpsStatus("off","GPS off");$("message").textContent="GPS switched off."}
  else{$("dot").className="dot stale"}
@@ -514,6 +551,115 @@ function orientationHandler(e){
  if($("compassState").textContent==="Waiting for compass …")updateCompassState();
  drawRose();updateHeadingText(false);
 }
+
+/* ---------- weather (Open-Meteo) ---------- */
+let wx=jget("wx",null),wxBusy=false,wxErr=false,wxLastTry=0;
+function bft(kn){const t=[1,4,7,11,17,22,28,34,41,48,56,64];for(let i=0;i<t.length;i++)if(kn<t[i])return i;return 12}
+function wxArrow(kind,color){
+ const p=kind==="up"?"M7 12V3M2.5 7.5 7 3l4.5 4.5":kind==="down"?"M7 2v9M2.5 6.5 7 11l4.5-4.5":"M2 7h9M6.5 2.5 11 7l-4.5 4.5";
+ return `<svg viewBox="0 0 14 14" width="16" height="16" style="vertical-align:-2px;margin-left:3px" fill="none" stroke="${color}" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${p}"/></svg>`;
+}
+function aheadPoint(){
+ if(!currentPosition||cogDeg==null||sogMs==null||sogMs<MIN_DRIFT_SPEED)return null;
+ const dr=Math.min(sogMs*3600,120*1852)/6371000,br=rad(cogDeg),la=rad(currentPosition[0]),lo=rad(currentPosition[1]);
+ const la2=Math.asin(Math.sin(la)*Math.cos(dr)+Math.cos(la)*Math.sin(dr)*Math.cos(br));
+ const lo2=lo+Math.atan2(Math.sin(br)*Math.sin(dr)*Math.cos(la),Math.cos(dr)-Math.sin(la)*Math.sin(la2));
+ return[la2*180/Math.PI,((lo2*180/Math.PI+540)%360)-180];
+}
+function rainIn(times,vals,step,thr,limitMin){
+ const now=Date.now()/1000;
+ for(let i=0;i<times.length;i++){
+  const t=times[i];
+  if(t+step<=now)continue;
+  if(t>now+limitMin*60)break;
+  if(vals[i]!=null&&vals[i]>=thr)return Math.max(0,Math.round((t-now)/60));
+ }
+ return null;
+}
+async function fetchWeather(manual){
+ if(!currentPosition){if(manual)wxStatusText();return}
+ if(wxBusy)return;
+ wxBusy=true;wxLastTry=Date.now();if(manual)wxStatusText();
+ try{
+  const a=aheadPoint(),pts=a?[currentPosition,a]:[currentPosition];
+  const q=new URLSearchParams({
+   latitude:pts.map(p=>p[0].toFixed(2)).join(","),longitude:pts.map(p=>p[1].toFixed(2)).join(","),
+   current:"temperature_2m,precipitation,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m",
+   hourly:"temperature_2m,precipitation,pressure_msl,wind_speed_10m,wind_gusts_10m",
+   minutely_15:"precipitation",wind_speed_unit:"kn",timeformat:"unixtime",past_hours:"3",forecast_hours:"8",forecast_days:"2"
+  });
+  const r=await fetch("https://api.open-meteo.com/v1/forecast?"+q.toString().replace(/%2C/g,","));
+  if(!r.ok)throw Error("HTTP "+r.status);
+  const j=await r.json(),arr=Array.isArray(j)?j:[j],h=arr[0],ah=arr[1]||null;
+  if(!h||!h.current||!h.hourly)throw Error("bad data");
+  const c=h.current,H=h.hourly,now=Date.now()/1000;
+  let delta=null,bi=-1,bd=1e9;
+  H.time.forEach((t,i)=>{const d=Math.abs(t-(c.time-3*3600));if(d<bd){bd=d;bi=i}});
+  if(bi>=0&&bd<=3600&&H.pressure_msl[bi]!=null&&c.pressure_msl!=null)delta=c.pressure_msl-H.pressure_msl[bi];
+  const hours=[];
+  for(let i=0;i<H.time.length&&hours.length<6;i++){
+   if(H.time[i]>=now-1800)hours.push([H.time[i],H.wind_speed_10m[i],H.wind_gusts_10m[i],H.precipitation[i],H.pressure_msl[i],H.temperature_2m[i]]);
+  }
+  const src=ah||h;
+  const rainMin=(src.minutely_15&&src.minutely_15.time)?rainIn(src.minutely_15.time,src.minutely_15.precipitation,900,0.1,60):rainIn(src.hourly.time,src.hourly.precipitation,3600,0.2,60);
+  wx={t:Date.now(),cur:{wind:c.wind_speed_10m,dir:c.wind_direction_10m,gust:c.wind_gusts_10m,pres:c.pressure_msl,temp:c.temperature_2m,rain:c.precipitation},
+      delta,hours,rainNow:(c.precipitation||0)>=0.1,rainMin,ahead:!!a,aheadNm:a?distM(currentPosition,a)/1852:0};
+  store.set("wx",JSON.stringify(wx));wxErr=false;
+ }catch(e){wxErr=true}
+ wxBusy=false;updateWxUI();if(!$("wxSheet").hidden)renderWxSheet();
+}
+function maybeFetchWeather(){
+ if(!currentPosition||wxBusy||Date.now()-wxLastTry<60000)return;
+ if(!wx||Date.now()-wx.t>10*60000)fetchWeather();
+}
+function wxAgeText(){
+ if(!wx)return wxErr?"Weather unavailable (offline?)":"Weather: waiting for GPS";
+ const m=Math.floor((Date.now()-wx.t)/60000);
+ return "Weather "+(m<1?"just now":m<60?m+" min ago":Math.floor(m/60)+" h ago")+(wxErr?" · refresh failed":"");
+}
+function updateWxUI(){
+ const age=wx?(Date.now()-wx.t)/60000:0,stale=!!wx&&age>30;
+ $("wxAge").textContent=wxAgeText();$("wxAge").style.color=(stale||wxErr)?"#e2a64b":"";
+ ["wxWind","wxPres","wxRain"].forEach(id=>{$(id).style.opacity=stale?.5:1});
+ if(!wx||age>180){
+  $("wxWind").textContent="—";$("wxWindSub").innerHTML="&nbsp;";$("wxPres").textContent="—";$("wxPresSub").innerHTML="&nbsp;";$("wxRain").textContent="—";$("wxRainSub").innerHTML="&nbsp;";
+  $("windMark").style.display="none";return;
+ }
+ const f=selectedUnit==="kn"?1:1.852,u=selectedUnit==="kn"?"kn":"km/h";
+ $("wxWind").innerHTML=Math.round(wx.cur.wind*f)+" <small>"+u+"</small>";
+ $("wxWindSub").textContent=bft(wx.cur.wind)+" Bft · "+cardinal(wx.cur.dir);
+ const d=wx.delta;
+ let arrow="";
+ if(d!=null){const kind=d>0.5?"up":d<-0.5?"down":"flat",col=kind==="up"?"#55d49a":kind==="down"?(d<=-3?"#ee6666":"#ffb84d"):"#a9bdcc";arrow=wxArrow(kind,col)}
+ $("wxPres").innerHTML=Math.round(wx.cur.pres)+arrow;
+ $("wxPresSub").textContent=d==null?"hPa":(d>=0?"+":"−")+Math.abs(d).toFixed(1)+" hPa/3h";
+ if(wx.rainNow){$("wxRain").innerHTML='<span style="color:#6cc4ff">Now</span>';$("wxRainSub").textContent="raining here"}
+ else if(wx.rainMin!=null){$("wxRain").innerHTML='<span style="color:#6cc4ff">'+(wx.rainMin<5?"&lt;5":wx.rainMin)+' min</span>';$("wxRainSub").textContent=wx.ahead?"rain ahead":"rain expected"}
+ else{$("wxRain").textContent="Dry";$("wxRainSub").textContent="next hour"}
+ $("windMark").style.display="";$("windMark").setAttribute("transform",`rotate(${wx.cur.dir} 100 100)`);
+}
+function wxStatusText(){
+ $("wxStatus").textContent=!currentPosition?"No GPS position yet. Switch GPS on first.":wxBusy?"Loading …":wxErr?"Could not load weather. Check the internet connection.":(wx?"Updated "+new Date(wx.t).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}):"");
+}
+function renderWxSheet(){
+ const body=$("wxBody");
+ if(!wx){body.innerHTML='<div class="wxnote">No weather data yet. It loads once GPS has a position and the phone is online.</div>';wxStatusText();return}
+ const f=selectedUnit==="kn"?1:1.852,u=selectedUnit==="kn"?"kn":"km/h";
+ let rows="";
+ wx.hours.forEach(r=>{rows+=`<tr><td>${new Date(r[0]*1000).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}</td><td>${Math.round(r[1]*f)}</td><td>${Math.round(r[2]*f)}</td><td>${bft(r[1])}</td><td>${r[3]?r[3].toFixed(1):"—"}</td><td>${Math.round(r[4])}</td><td>${Math.round(r[5])}</td></tr>`});
+ const rainRes=wx.rainNow?"It is raining at your position.":wx.rainMin!=null?`Rain is expected ${wx.ahead?"there":"here"} in about ${wx.rainMin} min.`:"No rain expected within the next hour.";
+ const rainTxt=wx.ahead?`Rain check: forecast at a point 1 h ahead along your course over ground (${wx.aheadNm.toFixed(1)} nm). ${rainRes}`:`Rain check: your speed or course over ground is too low for a look-ahead, so the check uses your current position. ${rainRes}`;
+ body.innerHTML=`<table><thead><tr><th>TIME</th><th>WIND ${u.toUpperCase()}</th><th>GUST</th><th>BFT</th><th>RAIN MM</th><th>HPA</th><th>°C</th></tr></thead><tbody>${rows}</tbody></table>`+
+  `<div class="wxnote">Now: wind from ${p3(wx.cur.dir)}° (${cardinal(wx.cur.dir)}), gusts ${Math.round(wx.cur.gust*f)} ${u}, ${Math.round(wx.cur.temp)} °C. ${rainTxt}</div>`;
+ wxStatusText();
+}
+function openWx(){renderWxSheet();$("wxSheet").hidden=false;if(wx&&Date.now()-wx.t>10*60000)maybeFetchWeather()}
+function closeWx(){$("wxSheet").hidden=true}
+["cellWind","cellPres","cellRain"].forEach(id=>$(id).addEventListener("click",openWx));
+$("wxClose").onclick=closeWx;
+$("wxSheet").addEventListener("click",e=>{if(e.target===$("wxSheet"))closeWx()});
+$("wxRefresh").onclick=()=>fetchWeather(true);
+setInterval(updateWxUI,30000);
 
 /* ---------- stopwatch ---------- */
 const sw=$("stopwatch");
@@ -595,7 +741,7 @@ function autoStartGPS(){
 }
 if(store.get("unit")==="kmh")chooseUnit("kmh");
 $("varVal").textContent=fmtVar();
-drawRose();updateCompassState();updateCogMark();swDraw();updateTripUI();updateWpUI();wakeHint();
+drawRose();updateCompassState();updateCogMark();swDraw();updateTripUI();updateWpUI();updateWxUI();wakeHint();
 if(store.get("gps")==="1")autoStartGPS();
 if(store.get("compass")==="1"){
  if(needsCompassPermission())$("message").textContent="The compass was on last time. iOS requires confirmation: please tap the compass switch.";
