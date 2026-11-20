@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d2133"><title>HELMSMAN MK 0.9</title>
+<html lang="en" translate="no"><head><meta charset="utf-8"><meta name="google" content="notranslate"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d2133"><title>HELMSMAN MK 0.9</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{color-scheme:dark;--bg:#0b1926;--panel:#142b3e;--muted:#a9bdcc;--line:#29465c;--accent:#55c2b2}
@@ -40,7 +40,7 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 .seg button{border:0;background:transparent;color:#b8c9d5;border-radius:7px;padding:8px 10px;font-size:13px;font-weight:750;min-width:49px}
 .seg button.active{background:var(--accent);color:#082027}
 .sub{font-size:10px;color:var(--muted);margin-top:5px}
-.position{margin-top:13px;padding-top:11px;border-top:1px solid #29465c;display:flex;align-items:baseline;gap:7px;white-space:nowrap;font-size:clamp(14px,3.8vw,17px);font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.015em}
+.position{margin-top:9px;padding-top:8px;border-top:1px solid #29465c;display:flex;align-items:baseline;gap:7px;white-space:nowrap;font-size:clamp(14px,3.8vw,17px);font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.015em}
 .position .sep{color:#7891a3;font-weight:400}
 .compass-body{display:flex;align-items:center;gap:8px;margin-top:8px}
 .compass{flex:none;width:clamp(128px,40vw,150px);height:auto}
@@ -64,8 +64,9 @@ button.cell{cursor:pointer}
 .accrow{display:flex;align-items:center;justify-content:space-between;padding-bottom:11px}
 .accrow strong{display:block;font-size:20px;margin-top:4px;font-variant-numeric:tabular-nums}
 .accrow .hint{font-size:11px;color:var(--muted);margin-top:3px}
-.sun{display:flex;flex-direction:column;gap:6px;min-width:112px}
-.sunrow{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.accrow>div:first-child{flex:1;min-width:0}
+.sun{display:flex;flex-direction:column;gap:6px;flex:none;margin-right:16px}
+.sunrow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;white-space:nowrap}
 .sunrow b{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
 .rowmsg{font-size:11px;line-height:1.4;color:#ffd18a;margin:-5px 0 7px}
 .rowmsg:empty{display:none}
@@ -88,7 +89,7 @@ button.cell{cursor:pointer}
 #wxBody td{text-align:right;padding:6px 3px;border-top:1px solid var(--line)}
 #wxBody th:first-child,#wxBody td:first-child{text-align:left}
 .wxnote{font-size:12px;color:var(--muted);line-height:1.5;margin-top:10px}
-.note{font-size:10px;line-height:1.5;color:var(--muted);padding:2px 3px 16px}
+.note{font-size:10px;line-height:1.5;color:var(--muted);padding:0 3px;margin:0 0 7px}
 #p_map{padding:0}
 #mapBox{position:relative;width:100%}
 #map{height:100%;width:100%;background:#dbe4df}
@@ -99,9 +100,19 @@ button.cell{cursor:pointer}
 .mapbtns{position:absolute;left:10px;right:10px;bottom:70px;z-index:1000;display:flex;gap:8px}
 .mapbtns .btn{padding:11px 8px;font-size:13px}
 .maptype{position:absolute;left:10px;bottom:22px;z-index:1000;background:#0b1926ee}
+.seg.maptype{width:calc((100% - 36px)/3);height:41px;padding:3px;box-sizing:border-box}
+.seg.maptype button{flex:1;min-width:0;padding:0;font-size:13px}
 .btn{border:1px solid #35536a;background:#0b1926ee;color:#dce8ef;border-radius:11px;padding:11px 12px;font-size:14px;font-weight:600}
 .btn.flex{flex:1}
 .btn.active{background:var(--accent);border-color:var(--accent);color:#082027}
+.mapbtns #followBtn{transition:background .15s,color .15s}
+.mapbtns #followBtn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#082027}
+.mapbtns #followBtn[aria-pressed="false"]{background:#0b1926ee;border-color:#35536a;color:#dce8ef}
+.btn.flash,.mapbtns .btn.flash{background:#f4f8fb!important;border-color:#f4f8fb!important;color:#082027!important}
+.toast{position:absolute;left:50%;top:30%;transform:translateX(-50%);z-index:1100;background:#0b1926f2;border:1px solid var(--accent);color:#f4f8fb;border-radius:14px;padding:12px 20px;font-size:17px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .25s;white-space:nowrap}
+.toast.show{opacity:1}
+.mobline{animation:mobpulse 1s ease-in-out infinite}
+@keyframes mobpulse{0%,100%{opacity:1;stroke-width:8px}50%{opacity:.3;stroke-width:5px}}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 .wp{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
 .wp .pick{display:flex;align-items:center;gap:10px;flex:1;min-width:0;background:transparent;border:0;color:#f4f8fb;text-align:left;font-size:15px;padding:0}
@@ -116,7 +127,7 @@ button.cell{cursor:pointer}
 .step span{min-width:64px;text-align:center;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums}
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:2000;background:#0e2233;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
 .tabbar .in{max-width:650px;margin:auto;display:flex}
-.tab{flex:1;background:transparent;border:0;color:#7f97a8;padding:9px 0 8px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px}
+.tab{flex:1;background:transparent;border:0;color:#7f97a8;padding:7px 0 6px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px}
 .tab svg{width:25px;height:25px}
 .tab.on{color:var(--accent)}
 .leaflet-container{font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -132,18 +143,17 @@ button.cell{cursor:pointer}
 <button class="hbtn" id="mob" aria-label="MOB: press and hold"><span id="mobFill"></span><span class="t">MOB</span></button>
 <button class="hbtn" id="stopwatch" aria-label="Stopwatch"></button>
 </div></div>
-<div class="subrow"><div class="tag">PERSONAL BOAT DASHBOARD</div><div class="status"><span id="rec" hidden>● REC</span><span class="gs"><i class="dot off" id="dot"></i><span id="gpsStatus">GPS off</span></span></div></div>
+<div class="subrow"><div class="tag">PERSONAL BOAT DASHBOARD</div><div class="status"><span id="rec" hidden>● REC</span><span class="gs"><i class="dot off" id="dot"></i><span id="gpsStatus">GPS Off</span></span></div></div>
 </div></header>
 
 <div class="wrap">
 
 <!-- ========== Page 1: Instruments ========== -->
 <section class="page" id="p_inst">
-<div class="card">
+<div class="card" style="padding:13px 15px 12px">
 <div class="eyebrow">SPEED OVER GROUND · SOG</div>
 <div class="speedrow"><div class="speed"><strong id="speed">—</strong><span class="unit" id="unitLabel">kn</span></div>
 <div class="seg"><button id="knBtn" class="active" aria-pressed="true">kn</button><button id="kmhBtn" aria-pressed="false">km/h</button></div></div>
-<div class="sub">GPS speed · over ground</div>
 <div class="position"><span id="lat">—</span><span class="sep">·</span><span id="lon">—</span></div>
 </div>
 
@@ -168,35 +178,47 @@ button.cell{cursor:pointer}
 <div class="cell"><div class="l">COG</div><div class="v" id="cog">—</div><div class="s" id="cogDir">&nbsp;</div></div>
 <button class="cell" id="cellPres" aria-label="Pressure forecast"><div class="l">PRESSURE</div><div class="v" id="wxPres">—</div><div class="s" id="wxPresSub">&nbsp;</div></button>
 <div class="cell"><div class="l">DRIFT</div><div class="v" id="drift">—</div><div class="s" id="driftDir">&nbsp;</div></div>
-<button class="cell" id="cellRain" aria-label="Rain forecast"><div class="l">RAIN AHEAD</div><div class="v" id="wxRain">—</div><div class="s" id="wxRainSub">&nbsp;</div></button>
+<button class="cell" id="cellRain" aria-label="Weather forecast"><div class="l">WEATHER</div><div class="v" id="wxRain">—</div><div class="s" id="wxRainSub">&nbsp;</div></button>
 </div></div>
 <div id="wpLine" hidden><span id="wpText"></span><button class="x" id="wpHide" aria-label="Hide waypoint">×</button></div>
-<div class="legend" style="margin-top:8px"><span class="amb">Amber</span> = GPS course (above about 1 kn) · <span class="grn">Green</span> = Waypoint</div>
-<div class="legend"><span class="red">Red</span> = MOB · <span class="blu">Blue</span> = Wind · <span id="wxAge">Weather: waiting for GPS</span></div>
+<div class="legend" style="margin-top:8px"><span class="amb">Amber</span> = GPS Course (Above 1 kn) · <span class="grn">Green</span> = Waypoint</div>
+<div class="legend"><span class="red">Red</span> = MOB · <span class="blu">Blue</span> = Wind · <span id="wxAge">Weather: Waiting For GPS</span></div>
 </div>
 
-<div class="card" style="padding-bottom:4px">
-<div class="accrow"><div><div class="eyebrow">GPS ACCURACY</div><strong id="accuracy">—</strong><div class="hint" id="wakeHint">Screen lock off</div></div>
+<div class="card" style="padding:13px 15px">
+<div class="accrow" style="padding-bottom:0"><div><div class="eyebrow">GPS ACCURACY</div><strong id="accuracy">—</strong><div class="hint" id="wakeHint">Screen Lock Off</div></div>
 <div class="sun"><div class="sunrow"><span class="eyebrow">SUNRISE</span><b id="sunRise">—</b></div><div class="sunrow"><span class="eyebrow">SUNSET</span><b id="sunSet">—</b></div></div></div>
-<div class="row"><span>GPS</span><button class="sw" id="swGps" role="switch" aria-checked="false" aria-label="GPS"></button></div>
+</div>
+
+<div class="card" style="padding-top:2px;padding-bottom:4px">
+<div class="row" style="border-top:0"><span>GPS</span><button class="sw" id="swGps" role="switch" aria-checked="false" aria-label="GPS"></button></div>
 <div class="rowmsg" id="gpsMsg">GPS needs an HTTPS connection. Switch GPS on and allow location access when Safari asks.</div>
 <div class="row"><span>Compass</span><button class="sw" id="swCompass" role="switch" aria-checked="false" aria-label="Compass"></button></div>
 <div class="rowmsg" id="compMsg"></div>
-<div class="row"><span>Record trip</span><button class="sw" id="swRec2" role="switch" aria-checked="false" aria-label="Record trip"></button></div>
+<div class="row"><span>Record Trip</span><button class="sw" id="swRec2" role="switch" aria-checked="false" aria-label="Record Trip"></button></div>
 <div class="rowmsg" id="recMsg"></div>
-<div class="row"><span>Magnetic variation</span><button class="sw" id="swVar" role="switch" aria-checked="false" aria-label="Magnetic variation"></button></div>
-<div class="varbox" id="varBox" hidden><span class="sub">East = +, West = − (see your chart)</span>
+<div class="row"><span>Magnetic Variation</span><button class="sw" id="swVar" role="switch" aria-checked="false" aria-label="Magnetic variation"></button></div>
+<div class="varbox" id="varBox" hidden><span class="sub">East = +, West = − (See Your Chart)</span>
 <div class="step"><button id="varMinus" aria-label="Decrease magnetic variation">−</button><span id="varVal">0°</span><button id="varPlus" aria-label="Increase magnetic variation">+</button></div></div>
 <div class="msg" id="message"></div>
 </div>
 
-<p class="note">SOG and COG are measured by GPS over ground. Heading is the bow direction measured by the device (held upright or in the hand, back facing forward), corrected by the magnetic variation you set. The compass dial rotates, the white mark at the top is the bow, the amber marker shows the GPS course (COG), the green diamond the bearing to the selected waypoint (red for MOB), the blue marker the direction the wind comes from. Drift is the difference between COG and heading (STBD = to starboard, PORT = to port) and is only shown above about 1 kn. Weather values are model forecasts for your position and a point ahead on your course (Open-Meteo), not measurements, and they need an internet connection. The device compass can be disturbed on board by metal and electrical equipment. MOB only saves the position where the button was pressed, not the location of the person. Map data needs an internet connection. HELMSMAN is a supplementary instrument and no substitute for proper navigation, weather and rescue equipment.</p>
+<p class="note">SOG and COG are measured by GPS over ground.</p>
+<p class="note">Heading is the bow direction measured by the device (held upright or in the hand, back facing forward), corrected by the magnetic variation you set.</p>
+<p class="note">The compass dial rotates, the white mark at the top is the bow, the amber marker shows the GPS course (COG), the green diamond the bearing to the selected waypoint (red for MOB), the blue marker the direction the wind comes from.</p>
+<p class="note">Drift is the difference between COG and heading (STBD = to starboard, PORT = to port) and is only shown above about 1 kn.</p>
+<p class="note">Weather values are model forecasts for your position and a point ahead on your course (Open-Meteo), not measurements, and they need an internet connection.</p>
+<p class="note">The device compass can be disturbed on board by metal and electrical equipment.</p>
+<p class="note">MOB only saves the position where the button was pressed, not the location of the person.</p>
+<p class="note">Map data needs an internet connection.</p>
+<p class="note">HELMSMAN is a supplementary instrument and no substitute for proper navigation, weather and rescue equipment.</p>
 </section>
 
 <!-- ========== Page 2: Map ========== -->
 <section class="page" id="p_map" hidden>
 <div id="mapBox">
 <div id="map"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="mapHud"><div class="chip"><span><strong id="mapSog">—</strong> <span id="mapUnit">kn</span></span><span id="mapHdg">—</span></div>
 <svg id="miniCompass" viewBox="0 -6 200 212" role="img" aria-label="Small compass">
 <g id="rose2"><circle cx="100" cy="100" r="92" fill="#1b3549" stroke="#567084"/><g id="ticks2"></g><g id="labs2"></g>
@@ -205,7 +227,7 @@ button.cell{cursor:pointer}
 <g id="lub2" style="display:none"><polygon points="100,26 85,-6 115,-6" fill="#fff" stroke="#0b1926" stroke-width="2" stroke-linejoin="round"/></g>
 </svg></div>
 <div class="mapbtns"><button class="btn flex" id="addWp">+ WAYPOINT</button><button class="btn flex" id="recenter">RECENTER</button><button class="btn flex active" id="followBtn" aria-pressed="true">FOLLOW ON</button></div>
-<div class="seg maptype"><button id="mtStreet" class="active" aria-pressed="true">Street</button><button id="mtNaut" aria-pressed="false">Nautical</button></div>
+<div class="seg maptype"><button id="mtStreet" class="active" aria-pressed="true">Street</button><button id="mtNaut" aria-pressed="false" aria-label="Nautical">Naut.</button></div>
 </div>
 </section>
 
@@ -219,8 +241,8 @@ button.cell{cursor:pointer}
 <div class="metric"><div class="eyebrow">AVG SPEED</div><strong id="tAvg">—</strong></div>
 <div class="metric"><div class="eyebrow">MAX</div><strong id="tMax">—</strong></div>
 </div>
-<div class="row" style="margin-top:10px"><span>Record trip</span><button class="sw" id="swRec" role="switch" aria-checked="false" aria-label="Record trip"></button></div>
-<div style="display:flex;gap:8px;padding-top:10px;border-top:1px solid var(--line)"><button class="btn flex" id="gpxBtn">Save as GPX</button><button class="btn flex" id="resetTrip">Reset trip</button></div>
+<div class="row" style="margin-top:10px"><span>Record Trip</span><button class="sw" id="swRec" role="switch" aria-checked="false" aria-label="Record Trip"></button></div>
+<div style="display:flex;gap:8px;padding-top:10px;border-top:1px solid var(--line)"><button class="btn flex" id="gpxBtn">Save As GPX</button><button class="btn flex" id="resetTrip">Reset Trip</button></div>
 <div class="msg" id="tripMsg"></div>
 </div>
 
@@ -234,9 +256,9 @@ button.cell{cursor:pointer}
 </div>
 
 <div id="wxSheet" hidden><div class="sheet" role="dialog" aria-label="Weather forecast">
-<div class="sheetHead"><div><div class="sheetTitle">Forecast at your position</div><div class="sub" style="font-size:11px">Next hours · model data, not a measurement</div></div><button class="ib" id="wxClose" aria-label="Close" style="font-size:22px">×</button></div>
+<div class="sheetHead"><div><div class="sheetTitle">Forecast At Your Position</div><div class="sub" style="font-size:11px">Next Hours · Model Data, Not A Measurement</div></div><button class="ib" id="wxClose" aria-label="Close" style="font-size:22px">×</button></div>
 <div id="wxBody"></div>
-<div style="display:flex;gap:8px;margin-top:12px"><button class="btn flex" id="wxRefresh">Refresh now</button></div>
+<div style="display:flex;gap:8px;margin-top:12px"><button class="btn flex" id="wxRefresh">Refresh Now</button></div>
 <div class="msg" id="wxStatus"></div>
 <div class="sub" style="font-size:11px;margin-top:6px"><a href="https://open-meteo.com/" target="_blank" rel="noopener" style="color:#8fc8ee">Weather data by Open-Meteo.com</a></div>
 </div></div>
@@ -267,6 +289,9 @@ let track=jget("track",[]);
 let wps=jget("wps",[]);
 let selId=store.get("wpsel")||null;
 let tripLastT=null,tripDirty=false;
+let recStart=rec?(Number(store.get("recstart"))||Date.now()):null;
+if(rec)store.set("recstart",String(recStart));
+function tripSeconds(){return trip.time+(rec&&recStart?(Date.now()-recStart)/1000:0)}
 
 /* ---------- helpers ---------- */
 function fmtCoord(v,pos,neg,isLon=false){if(v==null)return"—";const a=Math.abs(v),d=Math.floor(a),m=(a-d)*60;return`${String(d).padStart(isLon?3:2,"0")}° ${m.toFixed(1).padStart(4,"0")}′ ${v>=0?pos:neg}`}
@@ -343,7 +368,7 @@ function updateHeadingText(force){
  if(!force&&now-lastTextT<200)return;
  lastTextT=now;
  const h=currentHeading(),on=compassOn&&h!=null;
- $("heading").textContent=on?p3(h)+"°":"—";$("headingDir").innerHTML=on?cardinal(h):(compassOn?"waiting":"off");
+ $("heading").textContent=on?p3(h)+"°":"—";$("headingDir").innerHTML=on?cardinal(h):(compassOn?"Waiting":"Off");
  $("mapHdg").textContent=on?`${p3(h)}° ${cardinal(h)}`:"—";
  updateDrift();updateWpUI();
 }
@@ -360,27 +385,27 @@ function updateWpUI(){
  else{
   $("wpLine").hidden=false;
   let html='<span class="wdot">●</span> <b>'+esc(w.n)+'</b>';
-  if(g){html+=" &nbsp;"+p3(g.b)+"° · "+fmtDist(g.d);const r=relText(g.b);if(r)html+=" · "+r;$("wpMark").style.display="";$("wpMark").setAttribute("transform",`rotate(${g.b} 100 100)`)}
-  else{html+=" &nbsp;no GPS position";$("wpMark").style.display="none"}
-  if(w.mob)html+=" · "+fmtDur((Date.now()-w.t)/1000)+" ago";
+  if(g){html+=" &nbsp;"+p3(g.b)+"° · "+fmtDist(g.d);$("wpMark").style.display="";$("wpMark").setAttribute("transform",`rotate(${g.b} 100 100)`)}
+  else{html+=" &nbsp;No GPS Position";$("wpMark").style.display="none"}
+  if(w.mob)html+=" · "+fmtDur((Date.now()-w.t)/1000)+" Ago";
   $("wpText").innerHTML=html;
  }
  document.querySelectorAll("[data-info]").forEach(el=>{const x=wps.find(v=>v.id===el.getAttribute("data-info")),gg=x?wpGeo(x):null;el.textContent=gg?p3(gg.b)+"° · "+fmtDist(gg.d):"—"});
- if(map&&wpLine){const g2=w&&currentPosition?[currentPosition,[w.lat,w.lon]]:[];wpLine.setLatLngs(g2);if(w)wpLine.setStyle({color:w.mob?"#e5484d":"#0f9d8f"})}
+ if(map&&wpLine){const g2=w&&w.mob&&currentPosition?[currentPosition,[w.lat,w.lon]]:[];wpLine.setLatLngs(g2)}
 }
 function renderWpList(){
  const box=$("wpList");
- if(!wps.length){box.innerHTML='<div class="sub" style="padding:6px 0 10px;font-size:12px">No waypoints yet. MOB or “+ Waypoint here” on the map saves a point at your current position.</div>';return}
+ if(!wps.length){box.innerHTML='<div class="sub" style="padding:6px 0 10px;font-size:12px">No waypoints yet. MOB or “+ WAYPOINT” on the map saves a point at your current position.</div>';return}
  let h="";
  wps.forEach(w=>{
   h+=`<div class="wp"><button class="pick" data-sel="${w.id}"><span class="rad${w.id===selId?" on":""}"></span><span class="nm">${esc(w.n)}</span><span class="inf" data-info="${w.id}">—</span></button>`+
      `<button class="ib" data-ren="${w.id}" aria-label="Rename"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>`+
      `<button class="ib" data-del="${w.id}" aria-label="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13"/></svg></button></div>`;
  });
- h+=`<div class="wp"><button class="pick" data-sel=""><span class="rad${selId?"":" on"}"></span><span class="nm" style="color:var(--muted)">Show none</span></button></div>`;
+ h+=`<div class="wp"><button class="pick" data-sel=""><span class="rad${selId?"":" on"}"></span><span class="nm" style="color:var(--muted)">Show None</span></button></div>`;
  box.innerHTML=h;
  box.querySelectorAll("[data-sel]").forEach(b=>b.onclick=()=>{selId=b.getAttribute("data-sel")||null;saveWps();renderWpList();updateWpUI();drawMapWps()});
- box.querySelectorAll("[data-ren]").forEach(b=>b.onclick=()=>{const w=wps.find(v=>v.id===b.getAttribute("data-ren"));if(!w)return;const n=prompt("Waypoint name",w.n);if(n&&n.trim()){w.n=n.trim().slice(0,40);saveWps();renderWpList();updateWpUI();drawMapWps()}});
+ box.querySelectorAll("[data-ren]").forEach(b=>b.onclick=()=>{const w=wps.find(v=>v.id===b.getAttribute("data-ren"));if(!w)return;const n=prompt("Waypoint Name",w.n);if(n&&n.trim()){w.n=n.trim().slice(0,40);saveWps();renderWpList();updateWpUI();drawMapWps()}});
  box.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{const w=wps.find(v=>v.id===b.getAttribute("data-del"));if(!w||!confirm("Delete “"+w.n+"”?"))return;wps=wps.filter(v=>v!==w);if(selId===w.id)selId=null;saveWps();renderWpList();updateWpUI();drawMapWps()});
  updateWpUI();
 }
@@ -388,7 +413,7 @@ function addWaypoint(isMob){
  if(!currentPosition){const t="No GPS position. Please switch GPS on.";$("message").textContent=t;$("tripMsg").textContent=t;if(navigator.vibrate)navigator.vibrate([100,60,100]);return false}
  const now=new Date(),hm=now.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
  const w={id:String(Date.now()),n:isMob?"MOB "+hm:"Waypoint "+(wps.filter(x=>!x.mob).length+1),lat:currentPosition[0],lon:currentPosition[1],t:Date.now(),mob:!!isMob};
- wps.unshift(w);selId=w.id;saveWps();renderWpList();updateWpUI();drawMapWps();return true;
+ wps.unshift(w);if(isMob)selId=w.id;saveWps();renderWpList();updateWpUI();drawMapWps();return true;
 }
 
 /* ---------- map ---------- */
@@ -396,8 +421,18 @@ function sizeMap(){
  const top=document.querySelector(".hdr").getBoundingClientRect().bottom,h=Math.max(260,window.innerHeight-Math.max(top,0)-document.querySelector(".tabbar").offsetHeight);
  $("mapBox").style.height=h+"px";if(map)map.invalidateSize();
 }
+let autoUntil=0,lastFit=0;
+function markAuto(){autoUntil=Date.now()+1200}
+function fitMob(force){
+ const w=selWp();
+ if(!map||!currentPosition||!w||!w.mob)return false;
+ if(!force&&Date.now()-lastFit<3000)return true;
+ lastFit=Date.now();markAuto();
+ map.fitBounds(L.latLngBounds([currentPosition,[w.lat,w.lon]]),{padding:[90,90],maxZoom:17,animate:true,duration:.6});
+ return true;
+}
 function initMap(){
- if(map||!window.L)return;
+ if(map||!window.L)return;markAuto();
  map=L.map("map",{zoomControl:true,scrollWheelZoom:false}).setView([53.55,9.99],12);
  map.zoomControl.setPosition("topright");
  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
@@ -405,8 +440,9 @@ function initMap(){
  applyMapType();
  trackLine=L.polyline(track.map(p=>[p[0],p[1]]),{color:"#0f9d8f",weight:4,opacity:.9}).addTo(map);
  wpLayer=L.layerGroup().addTo(map);
- wpLine=L.polyline([],{color:"#e5484d",weight:2,dashArray:"6 6"}).addTo(map);
+ wpLine=L.polyline([],{color:"#e5484d",weight:8,opacity:1,className:"mobline"}).addTo(map);
  map.on("dragstart",()=>{if(followMap)setFollow(false)});
+ map.on("zoomstart",()=>{if(followMap&&Date.now()>autoUntil)setFollow(false)});
  drawMapWps();
  if(currentPosition){updateMap(currentPosition[0],currentPosition[1])}
 }
@@ -416,30 +452,29 @@ function drawMapWps(){
  wpLayer.clearLayers();
  wps.forEach(w=>{const sel=w.id===selId;L.circleMarker([w.lat,w.lon],{radius:sel?9:7,color:"#fff",weight:2.5,fillColor:w.mob?"#e5484d":(sel?"#55c2b2":"#ffb84d"),fillOpacity:1}).bindTooltip(w.n,{direction:"top"}).addTo(wpLayer)});
  updateWpUI();
+ if(followMap)fitMob(true);
 }
 function updateMap(lat,lon){
  if(!map)return;
  const p=[lat,lon];
  if(!posMarker)posMarker=L.circleMarker(p,{radius:8,color:"#fff",weight:3,fillColor:"#168bce",fillOpacity:1}).addTo(map);else posMarker.setLatLng(p);
- if(!mapHasFix){map.setView(p,15);mapHasFix=true}else if(followMap){map.panTo(p,{animate:true,duration:.35})}
+ if(!mapHasFix){markAuto();map.setView(p,15);mapHasFix=true;if(followMap)fitMob(true)}else if(followMap){if(!fitMob()){markAuto();map.panTo(p,{animate:true,duration:.35})}}
 }
-function setFollow(on){followMap=on;$("followBtn").textContent=on?"FOLLOW ON":"FOLLOW OFF";$("followBtn").classList.toggle("active",on);$("followBtn").setAttribute("aria-pressed",String(on));if(on&&currentPosition&&map)map.panTo(currentPosition,{animate:true,duration:.35})}
+function setFollow(on){followMap=on;$("followBtn").textContent=on?"FOLLOW ON":"FOLLOW OFF";$("followBtn").classList.toggle("active",on);$("followBtn").setAttribute("aria-pressed",String(on));if(on&&currentPosition&&map){markAuto();if(!fitMob(true))map.panTo(currentPosition,{animate:true,duration:.35})}}
 
 /* ---------- trip ---------- */
 function saveTrip(){if(!tripDirty)return;tripDirty=false;store.set("trip",JSON.stringify(trip));store.set("track",JSON.stringify(track))}
 function updateTripUI(){
  const u=selectedUnit==="kn"?1.943844:3.6;
  $("tDist").textContent=trip.dist>0?(selectedUnit==="kn"?(trip.dist/1852).toFixed(1)+" nm":(trip.dist/1000).toFixed(1)+" km"):"—";
- const h=Math.floor(trip.time/3600),m=Math.floor(trip.time/60)%60;
- $("tTime").textContent=trip.time>0?`${h}:${String(m).padStart(2,"0")} h`:"—";
- $("tAvg").textContent=trip.time>30&&trip.dist>0?(trip.dist/trip.time*u).toFixed(1)+" "+(selectedUnit==="kn"?"kn":"km/h"):"—";
+ const ts=tripSeconds();
+ $("tTime").textContent=ts>0?fmtDur(ts):"—";
+ $("tAvg").textContent=ts>30&&trip.dist>0?(trip.dist/ts*u).toFixed(1)+" "+(selectedUnit==="kn"?"kn":"km/h"):"—";
  $("tMax").textContent=trip.max>0?(trip.max*u).toFixed(1)+" "+(selectedUnit==="kn"?"kn":"km/h"):"—";
  setSwitch("swRec",rec);setSwitch("swRec2",rec);$("rec").hidden=!rec;
 }
 function recordFix(c,ts){
  if(!rec)return;
- if(tripLastT!==null){const dt=(ts-tripLastT)/1000;if(dt>0&&dt<60){trip.time+=dt;tripDirty=true}}
- tripLastT=ts;
  if(c.accuracy!=null&&c.accuracy>30)return;
  if(Number.isFinite(c.speed)&&c.speed>trip.max&&(c.accuracy==null||c.accuracy<=20)){trip.max=c.speed;tripDirty=true}
  const p=[+c.latitude.toFixed(5),+c.longitude.toFixed(5)],last=track.length?track[track.length-1]:null;
@@ -470,15 +505,17 @@ async function saveGpx(){
 function resetTrip(){
  if(!confirm("Really reset the trip (distance, time, track)? Waypoints are kept."))return;
  trip={dist:0,time:0,max:0};track=[];tripLastT=null;tripDirty=true;saveTrip();
- if(trackLine)trackLine.setLatLngs([]);updateTripUI();$("tripMsg").textContent="Trip reset.";
+ recStart=rec?Date.now():null;store.set("recstart",rec?String(recStart):"");
+ if(trackLine)trackLine.setLatLngs([]);updateTripUI();$("tripMsg").textContent="Trip Reset.";
 }
 setInterval(saveTrip,15000);
+setInterval(()=>{if(rec&&curTab==="trip")updateTripUI()},1000);
 document.addEventListener("visibilitychange",()=>{if(document.hidden)saveTrip();else if(watchId!==null){requestWake();maybeFetchWeather()}});
 window.addEventListener("pagehide",saveTrip);
 
 /* ---------- keep screen on ---------- */
 function wakeHint(){
- $("wakeHint").textContent=watchId===null?"Screen lock off":wakeLock?"Screen stays on while GPS is on":("wakeLock" in navigator?"Requesting screen lock …":"Screen lock not supported");
+ $("wakeHint").textContent=watchId===null?"Screen Lock Off":wakeLock?"Screen Stays On While GPS Is On":("wakeLock" in navigator?"Requesting Screen Lock …":"Screen Lock Not Supported");
 }
 async function requestWake(){
  if(!("wakeLock" in navigator)||wakeLock||document.hidden){wakeHint();return}
@@ -495,11 +532,11 @@ function startGPS(){
  if(!isSecureContext){$("gpsMsg").textContent="GPS needs HTTPS. Please open the published HTTPS address.";setSwitch("swGps",false);return}
  if(watchId!==null)navigator.geolocation.clearWatch(watchId);
  store.set("gps","1");
- setSwitch("swGps",true);setGpsStatus("weak","GPS searching …");$("gpsMsg").textContent="Waiting for GPS data …";
+ setSwitch("swGps",true);setGpsStatus("weak","GPS Searching …");$("gpsMsg").textContent="Waiting For GPS Data …";
  watchId=navigator.geolocation.watchPosition(pos=>{
   const c=pos.coords;lastFixAt=Date.now();currentPosition=[c.latitude,c.longitude];
   const weak=c.accuracy!=null&&c.accuracy>30;
-  setGpsStatus(weak?"weak":"good",weak?"GPS inaccurate":"GPS active");
+  setGpsStatus(weak?"weak":"good",weak?"GPS Inaccurate":"GPS Active");
   $("lat").textContent=fmtCoord(c.latitude,"N","S");$("lon").textContent=fmtCoord(c.longitude,"E","W",true);
   const raw=Number.isFinite(c.speed)&&c.speed>=0?c.speed:null;
   if(raw===null){latestSpeedMs=null;smoothedSpeedMs=null}else{smoothedSpeedMs=smoothedSpeedMs===null?raw:(smoothedSpeedMs*.65+raw*.35);latestSpeedMs=smoothedSpeedMs}
@@ -510,9 +547,9 @@ function startGPS(){
   recordFix(c,pos.timestamp);maybeFetchWeather();noteSunPos();
   updateCogMark();updateHeadingText(true);updateMap(c.latitude,c.longitude);
   if(curTab==="trip")updateTripUI();
-  $("gpsMsg").textContent=`GPS updated: ${new Date(pos.timestamp).toLocaleTimeString("en-GB")}`;
+  $("gpsMsg").textContent=`GPS Updated: ${new Date(pos.timestamp).toLocaleTimeString("en-GB")}`;
  },err=>{
-  setGpsStatus("stale","GPS error");
+  setGpsStatus("stale","GPS Error");
   const m={1:"Location access denied. Please allow it in the device or browser settings.",2:"GPS position currently unavailable.",3:"GPS timeout. Please try again."};
   $("gpsMsg").textContent=m[err.code]||"GPS positioning error.";
   if(err.code===1)stopGPS(true);
@@ -525,10 +562,10 @@ function stopGPS(keepMessage){
  store.set("gps","0");setSwitch("swGps",false);
  renderSpeed();$("lat").textContent="—";$("lon").textContent="—";$("cog").textContent="—";$("cogDir").innerHTML="&nbsp;";$("accuracy").textContent="—";
  updateCogMark();updateHeadingText(true);saveTrip();releaseWake();
- if(!keepMessage){setGpsStatus("off","GPS off");$("gpsMsg").textContent="GPS switched off."}
+ if(!keepMessage){setGpsStatus("off","GPS Off");$("gpsMsg").textContent="GPS Switched Off."}
  else{$("dot").className="dot stale"}
 }
-setInterval(()=>{if(watchId!==null&&lastFixAt&&Date.now()-lastFixAt>15000){setGpsStatus("stale","GPS data stale");$("gpsMsg").textContent="No new GPS position for more than 15 seconds."}},5000);
+setInterval(()=>{if(watchId!==null&&lastFixAt&&Date.now()-lastFixAt>15000){setGpsStatus("stale","GPS Data Stale");$("gpsMsg").textContent="No new GPS position for more than 15 seconds."}},5000);
 setInterval(()=>{const w=selWp();if(w&&w.mob)updateWpUI()},1000);
 
 /* ---------- compass ---------- */
@@ -554,7 +591,7 @@ function deactivateCompass(){
  window.removeEventListener("deviceorientation",orientationHandler,true);
  compassOn=false;headingRaw=null;smH=null;store.set("compass","0");setSwitch("swCompass",false);
  drawRose();updateCompassState();updateHeadingText(true);
- $("compMsg").textContent="Compass switched off.";
+ $("compMsg").textContent="Compass Switched Off.";
 }
 /* Heading of the back of a tilted device (Android), W3C formula */
 function tiltHeading(alpha,beta,gamma){
@@ -609,6 +646,20 @@ function rainIn(times,vals,step,thr,limitMin){
  }
  return null;
 }
+function skyLabel(code,isDay){
+ if(code==null)return null;
+ if(code<=1)return isDay===0?"Clear":"Sun";
+ if(code===2)return "Partly";
+ if(code===3)return "Cloudy";
+ if(code===45||code===48)return "Fog";
+ if(code>=51&&code<=57)return "Drizzle";
+ if(code>=61&&code<=67)return "Rain";
+ if((code>=71&&code<=77)||code===85||code===86)return "Snow";
+ if(code>=80&&code<=82)return "Showers";
+ if(code>=95)return "Thunder";
+ return null;
+}
+function isWet(code){return code!=null&&((code>=51&&code<=67)||(code>=71&&code<=77)||(code>=80&&code<=86)||code>=95)}
 async function fetchWeather(manual){
  if(!currentPosition){if(manual)wxStatusText();return}
  if(wxBusy)return;
@@ -617,8 +668,8 @@ async function fetchWeather(manual){
   const a=aheadPoint(),pts=a?[currentPosition,a]:[currentPosition];
   const q=new URLSearchParams({
    latitude:pts.map(p=>p[0].toFixed(2)).join(","),longitude:pts.map(p=>p[1].toFixed(2)).join(","),
-   current:"temperature_2m,precipitation,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m",
-   hourly:"temperature_2m,precipitation,pressure_msl,wind_speed_10m,wind_gusts_10m",
+   current:"temperature_2m,precipitation,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,weather_code,is_day",
+   hourly:"temperature_2m,precipitation,pressure_msl,wind_speed_10m,wind_gusts_10m,weather_code",
    minutely_15:"precipitation",wind_speed_unit:"kn",timeformat:"unixtime",past_hours:"3",forecast_hours:"8",forecast_days:"2"
   });
   const r=await fetch("https://api.open-meteo.com/v1/forecast?"+q.toString().replace(/%2C/g,","));
@@ -635,7 +686,19 @@ async function fetchWeather(manual){
   }
   const src=ah||h;
   const rainMin=(src.minutely_15&&src.minutely_15.time)?rainIn(src.minutely_15.time,src.minutely_15.precipitation,900,0.1,60):rainIn(src.hourly.time,src.hourly.precipitation,3600,0.2,60);
-  wx={t:Date.now(),cur:{wind:c.wind_speed_10m,dir:c.wind_direction_10m,gust:c.wind_gusts_10m,pres:c.pressure_msl,temp:c.temperature_2m,rain:c.precipitation},
+  const srcC=src.current||c,srcH=src.hourly,nowS=Date.now()/1000;
+  let arrIdx=-1,ad=1e9;srcH.time.forEach((t,i)=>{const d=Math.abs(t-(nowS+(a?3600:0)));if(d<ad){ad=d;arrIdx=i}});
+  const arrCode=(srcH.weather_code&&arrIdx>=0)?srcH.weather_code[arrIdx]:srcC.weather_code;
+  let thunderMin=null;
+  if(srcH.weather_code){for(let i=0;i<srcH.time.length;i++){const t=srcH.time[i];if(t+3600<nowS)continue;if(t>nowS+2*3600)break;if(srcH.weather_code[i]>=95){thunderMin=Math.max(0,Math.round((t-nowS)/60));break}}}
+  const inTxt=m=>m<=0?"Now":m<5?"In <5 Min":m<60?"In "+m+" Min":"In "+Math.round(m/60)+" Hr";
+  let sky;
+  if(bft(c.wind_speed_10m)>=10)sky={label:"Storm",kind:"warn",sub:"Bft "+bft(c.wind_speed_10m)};
+  else if(thunderMin!=null)sky={label:"Thunder",kind:"warn",sub:inTxt(thunderMin)};
+  else if((c.precipitation||0)>=0.1)sky={label:(isWet(c.weather_code)&&skyLabel(c.weather_code,c.is_day))||"Rain",kind:"rain",sub:"Now"};
+  else if(rainMin!=null)sky={label:(isWet(arrCode)&&skyLabel(arrCode,srcC.is_day))||"Rain",kind:"rain",sub:inTxt(rainMin)};
+  else sky={label:skyLabel(arrCode,srcC.is_day)||skyLabel(c.weather_code,c.is_day)||"Dry",kind:"calm",sub:"Next Hour"};
+  wx={sky,skyNow:skyLabel(c.weather_code,c.is_day),t:Date.now(),cur:{wind:c.wind_speed_10m,dir:c.wind_direction_10m,gust:c.wind_gusts_10m,pres:c.pressure_msl,temp:c.temperature_2m,rain:c.precipitation},
       delta,hours,rainNow:(c.precipitation||0)>=0.1,rainMin,ahead:!!a,aheadNm:a?distM(currentPosition,a)/1852:0};
   store.set("wx",JSON.stringify(wx));wxErr=false;
  }catch(e){wxErr=true}
@@ -646,9 +709,9 @@ function maybeFetchWeather(){
  if(!wx||Date.now()-wx.t>10*60000)fetchWeather();
 }
 function wxAgeText(){
- if(!wx)return wxErr?"Weather unavailable (offline?)":"Weather: waiting for GPS";
+ if(!wx)return wxErr?"Weather Unavailable (Offline?)":"Weather: Waiting For GPS";
  const m=Math.floor((Date.now()-wx.t)/60000);
- return "Weather "+(m<1?"just now":m<60?m+" min ago":Math.floor(m/60)+" h ago")+(wxErr?" · refresh failed":"");
+ return "Weather "+(m<1?"Just Now":m<60?m+" Min Ago":Math.floor(m/60)+" Hr Ago")+(wxErr?" · Refresh Failed":"");
 }
 function updateWxUI(){
  const age=wx?(Date.now()-wx.t)/60000:0,stale=!!wx&&age>30;
@@ -666,9 +729,12 @@ function updateWxUI(){
  if(d!=null){const kind=d>0.5?"up":d<-0.5?"down":"flat",col=kind==="up"?"#55d49a":kind==="down"?(d<=-3?"#ee6666":"#ffb84d"):"#a9bdcc";arrow=wxArrow(kind,col)}
  $("wxPres").innerHTML=Math.round(wx.cur.pres)+arrow;
  $("wxPresSub").textContent=d==null?"hPa":(d>=0?"+":"−")+Math.abs(d).toFixed(1)+" hPa/3h";
- if(wx.rainNow){$("wxRain").innerHTML='<span style="color:#6cc4ff">Now</span>';$("wxRainSub").textContent="raining here"}
- else if(wx.rainMin!=null){$("wxRain").innerHTML='<span style="color:#6cc4ff">'+(wx.rainMin<5?"&lt;5":wx.rainMin)+' min</span>';$("wxRainSub").textContent=wx.ahead?"rain ahead":"rain expected"}
- else{$("wxRain").textContent="Dry";$("wxRainSub").textContent="next hour"}
+ $("wxWind").style.color=bft(wx.cur.wind)>=7?"#ffb84d":"";
+ const sk=wx.sky;
+ if(sk){const col=sk.kind==="warn"?"#ffb84d":sk.kind==="rain"?"#6cc4ff":"";$("wxRain").innerHTML='<span style="color:'+col+'">'+esc(sk.label)+'</span>';$("wxRainSub").textContent=sk.sub}
+ else if(wx.rainNow){$("wxRain").innerHTML='<span style="color:#6cc4ff">Now</span>';$("wxRainSub").textContent="Raining Here"}
+ else if(wx.rainMin!=null){$("wxRain").innerHTML='<span style="color:#6cc4ff">'+(wx.rainMin<5?"&lt;5":wx.rainMin)+' Min</span>';$("wxRainSub").textContent=wx.ahead?"Rain Ahead":"Rain Expected"}
+ else{$("wxRain").textContent="Dry";$("wxRainSub").textContent="Next Hour"}
  $("windMark").style.display="";$("windMark").setAttribute("transform",`rotate(${wx.cur.dir} 100 100)`);
 }
 function wxStatusText(){
@@ -683,7 +749,7 @@ function renderWxSheet(){
  const rainRes=wx.rainNow?"It is raining at your position.":wx.rainMin!=null?`Rain is expected ${wx.ahead?"there":"here"} in about ${wx.rainMin} min.`:"No rain expected within the next hour.";
  const rainTxt=wx.ahead?`Rain check: forecast at a point 1 h ahead along your course over ground (${fmtDist(wx.aheadNm*1852)}). ${rainRes}`:`Rain check: your speed or course over ground is too low for a look-ahead, so the check uses your current position. ${rainRes}`;
  body.innerHTML=`<table><thead><tr><th>TIME</th><th>WIND ${u.toUpperCase()}</th><th>GUST</th><th>BFT</th><th>RAIN MM</th><th>HPA</th><th>°C</th></tr></thead><tbody>${rows}</tbody></table>`+
-  `<div class="wxnote">Now: wind from ${p3(wx.cur.dir)}° (${cardinal(wx.cur.dir)}), gusts ${Math.round(wx.cur.gust*f)} ${u}, ${Math.round(wx.cur.temp)} °C. ${rainTxt}</div>`;
+  `<div class="wxnote">Now: wind from ${p3(wx.cur.dir)}° (${cardinal(wx.cur.dir)}), gusts ${Math.round(wx.cur.gust*f)} ${u}, ${Math.round(wx.cur.temp)} °C${wx.skyNow?", sky: "+wx.skyNow.toLowerCase():""}. ${rainTxt}</div>`;
  wxStatusText();
 }
 function openWx(){renderWxSheet();$("wxSheet").hidden=false;if(wx&&Date.now()-wx.t>10*60000)maybeFetchWeather()}
@@ -709,7 +775,7 @@ function sunTimes(date,lat,lon){
  return{rise:fromJ(Jr),set:fromJ(Js)};
 }
 let sunPos=jget("lastpos",null),lastSunUpdate=0;
-function fmtClock(d){return d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}
+function fmtClock(d){let h=d.getHours();const m=String(d.getMinutes()).padStart(2,"0"),ap=h>=12?"pm":"am";h=h%12||12;return h+":"+m+ap}
 function updateSun(){
  const p=currentPosition||sunPos;
  if(!p){$("sunRise").textContent="—";$("sunSet").textContent="—";return}
@@ -783,15 +849,21 @@ window.addEventListener("resize",()=>{if(curTab==="map")sizeMap()});
 /* ---------- controls ---------- */
 $("swGps").onclick=()=>{if(watchId!==null)stopGPS();else startGPS()};
 $("swCompass").onclick=()=>{if(compassOn)deactivateCompass();else activateCompass()};
-function toggleRec(){rec=!rec;store.set("rec",rec?"1":"0");tripLastT=null;updateTripUI();const t=rec?(watchId===null?"Recording on. It starts as soon as GPS is running.":"Recording."):"Recording paused.";$("tripMsg").textContent=t;$("recMsg").textContent=t}
+function toggleRec(){
+ if(!rec){recStart=Date.now();store.set("recstart",String(recStart))}
+ else{if(recStart)trip.time+=(Date.now()-recStart)/1000;recStart=null;store.set("recstart","");tripDirty=true;saveTrip()}
+ rec=!rec;store.set("rec",rec?"1":"0");tripLastT=null;updateTripUI();const t=rec?(watchId===null?"Recording on. It starts as soon as GPS is running.":"Recording."):"Recording Paused.";$("tripMsg").textContent=t;$("recMsg").textContent=t}
 $("swRec").onclick=toggleRec;$("swRec2").onclick=toggleRec;
 $("gpxBtn").onclick=saveGpx;$("resetTrip").onclick=resetTrip;
 $("knBtn").onclick=()=>chooseUnit("kn");$("kmhBtn").onclick=()=>chooseUnit("kmh");
 $("followBtn").onclick=()=>setFollow(!followMap);
-$("recenter").onclick=()=>{if(map&&currentPosition)map.panTo(currentPosition,{animate:true,duration:.35})};
+$("recenter").onclick=()=>{if(map&&currentPosition){markAuto();map.panTo(currentPosition,{animate:true,duration:.35})}};
 function setMapType(t){mapType=t;store.set("maptype",t);$("mtStreet").classList.toggle("active",t==="street");$("mtNaut").classList.toggle("active",t==="nautical");$("mtStreet").setAttribute("aria-pressed",String(t==="street"));$("mtNaut").setAttribute("aria-pressed",String(t==="nautical"));applyMapType()}
 $("mtStreet").onclick=()=>setMapType("street");$("mtNaut").onclick=()=>setMapType("nautical");
-$("addWp").onclick=()=>{if(addWaypoint(false)&&navigator.vibrate)navigator.vibrate(40)};
+function flashBtn(id){const b=$(id);b.classList.add("flash");setTimeout(()=>b.classList.remove("flash"),650)}
+let toastTimer=null;
+function showToast(t){const el=$("toast");el.textContent=t;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),5000)}
+$("addWp").onclick=()=>{if(addWaypoint(false)){if(navigator.vibrate)navigator.vibrate(40);flashBtn("addWp");showToast("Waypoint Set!")}};
 $("wpHide").onclick=()=>{selId=null;saveWps();updateWpUI();renderWpList();drawMapWps()};
 function setVar(v){varDeg=Math.max(-30,Math.min(30,v));store.set("var",String(varDeg));$("varVal").textContent=fmtVar();drawRose();updateCompassState();updateHeadingText(true)}
 function applyVarUI(){setSwitch("swVar",varOn);$("varBox").hidden=!varOn}
