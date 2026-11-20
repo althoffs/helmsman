@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" translate="no"><head><meta charset="utf-8"><meta name="google" content="notranslate"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d2133"><title>HELMSMAN MK 0.9</title>
+<html lang="en" translate="no"><head><meta charset="utf-8"><meta name="google" content="notranslate"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d2133"><title>HELMSMAN MK 1.0</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{color-scheme:dark;--bg:#0b1926;--panel:#142b3e;--muted:#a9bdcc;--line:#29465c;--accent:#55c2b2}
@@ -12,7 +12,7 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 .hdr{position:sticky;top:0;z-index:2000;background:#0d2133;border-bottom:1px solid var(--line);padding:calc(env(safe-area-inset-top) + 8px) 14px 7px}
 .toprow{display:flex;justify-content:space-between;align-items:center}
 .brand{font-size:21px;letter-spacing:.16em;margin:0;font-weight:800}
-.brandline{display:flex;align-items:center;gap:9px}
+.brandline{display:flex;align-items:center;gap:6px}
 .version{font-size:10px;font-weight:800;letter-spacing:.08em;color:var(--accent);border:1px solid #397c78;border-radius:6px;padding:4px 6px}
 .hbtns{display:flex;gap:8px;align-items:center}
 .subrow{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
@@ -47,6 +47,15 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 .cells{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .cell{background:#0d2030;border:0;border-radius:11px;padding:7px 8px;min-width:0;text-align:left;color:#f4f8fb;font-family:inherit;display:block}
 button.cell{cursor:pointer}
+.cell{position:relative}
+button.cell:active{background:#173247}
+.tap{position:absolute;top:6px;right:6px;width:16px;height:16px;color:#7f97a8}
+.tap circle{fill:none;stroke:currentColor}
+.tap .d{fill:currentColor;stroke:none}
+#cellWind.pulse .o{transform-origin:8px 8px;animation:ripple 1.3s ease-out 3}
+#cellWind.pulse .m{transform-origin:8px 8px;animation:ripple 1.3s ease-out .35s 3}
+@keyframes ripple{0%{transform:scale(.55);opacity:.95}100%{transform:scale(1.35);opacity:0}}
+@media(prefers-reduced-motion:reduce){#cellWind.pulse .o,#cellWind.pulse .m{animation:none}}
 .cell .l{font-size:10px;letter-spacing:.08em;color:var(--muted);font-weight:750;white-space:nowrap}
 .cell .v{font-size:19px;font-weight:600;margin-top:2px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .cell .v small{font-size:11px;color:var(--muted);font-weight:500}
@@ -69,8 +78,8 @@ button.cell{cursor:pointer}
 .sunrow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;white-space:nowrap}
 .sunrow b{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
 .rowmsg{font-size:11px;line-height:1.4;color:#ffd18a;margin:-5px 0 7px}
-.rowmsg:empty{display:none}
-.varbox{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 0 12px}
+.rowmsg:empty,.msg:empty{display:none}
+.varbox{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 0 8px}
 .varbox .sub{margin:0;font-size:11px}
 .legend{font-size:11px;color:var(--muted);line-height:1.5}
 .legend .amb{color:#ffb84d;font-weight:700}.legend .grn{color:#55c2b2;font-weight:700}.legend .red{color:#ff7d80;font-weight:700}.legend .blu{color:#6cc4ff;font-weight:700}
@@ -144,7 +153,7 @@ button.cell{cursor:pointer}
 
 <header class="hdr"><div class="wrap">
 <div class="toprow">
-<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 0.9</span></div>
+<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 1.0</span></div>
 <div class="hbtns">
 <button class="hbtn" id="mob" aria-label="MOB: press and hold"><span id="mobFill"></span><span class="t">MOB</span></button>
 <button class="hbtn" id="stopwatch" aria-label="Stopwatch"></button>
@@ -180,7 +189,7 @@ button.cell{cursor:pointer}
 </svg>
 <div class="cells">
 <div class="cell"><div class="l">HEADING</div><div class="v" id="heading">—</div><div class="s" id="headingDir">&nbsp;</div></div>
-<button class="cell" id="cellWind" aria-label="Wind forecast"><div class="l">WIND</div><div class="v" id="wxWind">—</div><div class="s" id="wxWindSub">&nbsp;</div></button>
+<button class="cell" id="cellWind" aria-label="Wind forecast"><div class="l">WIND</div><svg class="tap" viewBox="0 0 16 16" aria-hidden="true"><circle class="o" cx="8" cy="8" r="6.8" stroke-width="1.1" opacity=".55"/><circle class="m" cx="8" cy="8" r="4.3" stroke-width="1.4"/><circle class="d" cx="8" cy="8" r="1.7"/></svg><div class="v" id="wxWind">—</div><div class="s" id="wxWindSub">&nbsp;</div></button>
 <div class="cell"><div class="l">COG</div><div class="v" id="cog">—</div><div class="s" id="cogDir">&nbsp;</div></div>
 <button class="cell" id="cellPres" aria-label="Pressure forecast"><div class="l">PRESSURE</div><div class="v" id="wxPres">—</div><div class="s" id="wxPresSub">&nbsp;</div></button>
 <div class="cell"><div class="l">DRIFT</div><div class="v" id="drift">—</div><div class="s" id="driftDir">&nbsp;</div></div>
@@ -196,7 +205,7 @@ button.cell{cursor:pointer}
 <div class="sun"><div class="sunrow"><span class="eyebrow">SUNRISE</span><b id="sunRise">—</b></div><div class="sunrow"><span class="eyebrow">SUNSET</span><b id="sunSet">—</b></div></div></div>
 </div>
 
-<div class="card" style="padding-top:2px;padding-bottom:4px">
+<div class="card" style="padding-top:2px;padding-bottom:0">
 <div class="row" style="border-top:0"><span>GPS</span><button class="sw" id="swGps" role="switch" aria-checked="false" aria-label="GPS"></button></div>
 <div class="rowmsg" id="gpsMsg">GPS needs an HTTPS connection. Switch GPS on and allow location access when Safari asks.</div>
 <div class="row"><span>Compass</span><button class="sw" id="swCompass" role="switch" aria-checked="false" aria-label="Compass"></button></div>
@@ -301,6 +310,7 @@ let trip=jget("trip",{dist:0,time:0,max:0});
 let track=jget("track",[]);
 let wps=jget("wps",[]);
 let selId=store.get("wpsel")||null;
+if(selId){const w0=wps.find(x=>x.id===selId);if(!w0||!w0.mob){selId=null;store.set("wpsel","")}}
 let tripLastT=null,tripDirty=false;
 let recStart=rec?(Number(store.get("recstart"))||Date.now()):null;
 if(rec)store.set("recstart",String(recStart));
@@ -527,7 +537,7 @@ function recordFix(c,ts){
  }
 }
 function buildGpx(){
- let x='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="HELMSMAN MK 0.9" xmlns="http://www.topografix.com/GPX/1/1">\n';
+ let x='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="HELMSMAN MK 1.0" xmlns="http://www.topografix.com/GPX/1/1">\n';
  wps.forEach(w=>{x+=`<wpt lat="${w.lat}" lon="${w.lon}"><time>${new Date(w.t).toISOString()}</time><name>${esc(w.n)}</name></wpt>\n`});
  x+="<trk><name>HELMSMAN Trip</name><trkseg>\n";
  track.forEach(p=>{x+=`<trkpt lat="${p[0]}" lon="${p[1]}"><time>${new Date(p[2]).toISOString()}</time></trkpt>\n`});
@@ -666,6 +676,8 @@ function orientationHandler(e){
 
 /* ---------- weather (Open-Meteo) ---------- */
 let wx=jget("wx",null),wxBusy=false,wxErr=false,wxLastTry=0;
+let tapStarts=(Number(store.get("tapstarts"))||0)+1;store.set("tapstarts",String(tapStarts));
+let tapPulse=tapStarts<=3&&store.get("tapopened")!=="1",tapPlayed=false;
 function bft(kn){const t=[1,4,7,11,17,22,28,34,41,48,56,64];for(let i=0;i<t.length;i++)if(kn<t[i])return i;return 12}
 function wxArrow(kind,color){
  const p=kind==="up"?"M7 12V3M2.5 7.5 7 3l4.5 4.5":kind==="down"?"M7 2v9M2.5 6.5 7 11l4.5-4.5":"M2 7h9M6.5 2.5 11 7l-4.5 4.5";
@@ -778,6 +790,7 @@ function updateWxUI(){
  else if(wx.rainMin!=null){$("wxRain").innerHTML='<span style="color:#6cc4ff">'+(wx.rainMin<5?"&lt;5":wx.rainMin)+' Min</span>';$("wxRainSub").textContent=wx.ahead?"Rain Ahead":"Rain Expected"}
  else{$("wxRain").textContent="Dry";$("wxRainSub").textContent="Next Hour"}
  $("windMark").style.display="";$("windMark").setAttribute("transform",`rotate(${wx.cur.dir} 100 100)`);
+ if(tapPulse&&!tapPlayed){tapPlayed=true;const tc=$("cellWind");tc.classList.remove("pulse");void tc.offsetWidth;tc.classList.add("pulse")}
 }
 function wxStatusText(){
  $("wxStatus").textContent=!currentPosition?"No GPS position yet. Switch GPS on first.":wxBusy?"Loading …":wxErr?"Could not load weather. Check the internet connection.":(wx?"Updated "+new Date(wx.t).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}):"");
@@ -794,7 +807,7 @@ function renderWxSheet(){
   `<div class="wxnote">Now: wind from ${p3(wx.cur.dir)}° (${cardinal(wx.cur.dir)}), gusts ${Math.round(wx.cur.gust*f)} ${u}, ${Math.round(wx.cur.temp)} °C${wx.skyNow?", sky: "+wx.skyNow.toLowerCase():""}. ${rainTxt}</div>`;
  wxStatusText();
 }
-function openWx(){renderWxSheet();$("wxSheet").hidden=false;if(wx&&Date.now()-wx.t>10*60000)maybeFetchWeather()}
+function openWx(){renderWxSheet();$("wxSheet").hidden=false;store.set("tapopened","1");tapPulse=false;$("cellWind").classList.remove("pulse");if(wx&&Date.now()-wx.t>10*60000)maybeFetchWeather()}
 function closeWx(){$("wxSheet").hidden=true}
 ["cellWind","cellPres","cellRain"].forEach(id=>$(id).addEventListener("click",openWx));
 $("wxClose").onclick=closeWx;
@@ -930,7 +943,7 @@ function autoStartGPS(){
 }
 if(store.get("unit")==="kmh")chooseUnit("kmh");
 $("varVal").textContent=fmtVar();applyVarUI();$("mtStreet").classList.toggle("active",mapType==="street");$("mtNaut").classList.toggle("active",mapType==="nautical");
-drawRose();updateCompassState();updateCogMark();swDraw();updateTripUI();updateWpUI();updateNavUI();updateWxUI();updateSun();wakeHint();
+drawRose();updateCompassState();updateCogMark();swDraw();updateTripUI();updateWpUI();updateNavUI();if(selWp()&&selWp().mob)setNav(true);updateWxUI();updateSun();wakeHint();
 if(store.get("gps")==="1")autoStartGPS();
 if(store.get("compass")==="1"){
  if(needsCompassPermission())$("compMsg").textContent="The compass was on last time. iOS requires confirmation: please tap the compass switch.";
