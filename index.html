@@ -80,8 +80,8 @@ button.cell{cursor:pointer}
 .sw[aria-checked="true"]{background:#34c759}
 .sw[aria-checked="true"]:after{transform:translateX(20px)}
 .msg{font-size:11px;line-height:1.45;color:#ffd18a;min-height:16px;margin:10px 2px 2px}
-#wxSheet{position:fixed;inset:0;z-index:3000;background:#000a;display:flex;align-items:flex-end;justify-content:center}
-#wxSheet .sheet{background:#142b3e;border-top:1px solid #35536a;border-radius:18px 18px 0 0;width:100%;max-width:650px;padding:14px 14px calc(14px + env(safe-area-inset-bottom));max-height:85vh;overflow:auto}
+#wxSheet,#navSheet{position:fixed;inset:0;z-index:3000;background:#000a;display:flex;align-items:flex-end;justify-content:center}
+#wxSheet .sheet,#navSheet .sheet{background:#142b3e;border-top:1px solid #35536a;border-radius:18px 18px 0 0;width:100%;max-width:650px;padding:14px 14px calc(14px + env(safe-area-inset-bottom));max-height:85vh;overflow:auto}
 .sheetHead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
 .sheetTitle{font-size:16px;font-weight:600}
 #wxBody table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums;margin-top:8px}
@@ -102,6 +102,12 @@ button.cell{cursor:pointer}
 .maptype{position:absolute;left:10px;bottom:22px;z-index:1000;background:#0b1926ee}
 .seg.maptype{width:calc((100% - 36px)/3);height:41px;padding:3px;box-sizing:border-box}
 .seg.maptype button{flex:1;min-width:0;padding:0;font-size:13px}
+.navrow{position:absolute;left:calc(10px + (100% - 36px)/3 + 8px);right:10px;bottom:22px;height:41px;z-index:1000;display:flex;gap:6px}
+.navrow .btn{height:41px;padding:0 10px;font-size:13px;white-space:nowrap}
+#navToggle{flex:0 0 84px}
+#navToggle[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#082027}
+#navToggle:disabled{opacity:.45}
+#navPick{overflow:hidden;text-overflow:ellipsis;text-align:left}
 .btn{border:1px solid #35536a;background:#0b1926ee;color:#dce8ef;border-radius:11px;padding:11px 12px;font-size:14px;font-weight:600}
 .btn.flex{flex:1}
 .btn.active{background:var(--accent);border-color:var(--accent);color:#082027}
@@ -111,8 +117,8 @@ button.cell{cursor:pointer}
 .btn.flash,.mapbtns .btn.flash{background:#f4f8fb!important;border-color:#f4f8fb!important;color:#082027!important}
 .toast{position:absolute;left:50%;top:30%;transform:translateX(-50%);z-index:1100;background:#0b1926f2;border:1px solid var(--accent);color:#f4f8fb;border-radius:14px;padding:12px 20px;font-size:17px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .25s;white-space:nowrap}
 .toast.show{opacity:1}
-.mobline{animation:mobpulse 1s ease-in-out infinite}
-@keyframes mobpulse{0%,100%{opacity:1;stroke-width:8px}50%{opacity:.3;stroke-width:5px}}
+.mobline{stroke-dasharray:16 12;animation:mobflow .7s linear infinite}
+@keyframes mobflow{from{stroke-dashoffset:0}to{stroke-dashoffset:-28}}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 .wp{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
 .wp .pick{display:flex;align-items:center;gap:10px;flex:1;min-width:0;background:transparent;border:0;color:#f4f8fb;text-align:left;font-size:15px;padding:0}
@@ -228,6 +234,7 @@ button.cell{cursor:pointer}
 </svg></div>
 <div class="mapbtns"><button class="btn flex" id="addWp">+ WAYPOINT</button><button class="btn flex" id="recenter">RECENTER</button><button class="btn flex active" id="followBtn" aria-pressed="true">FOLLOW ON</button></div>
 <div class="seg maptype"><button id="mtStreet" class="active" aria-pressed="true">Street</button><button id="mtNaut" aria-pressed="false" aria-label="Nautical">Naut.</button></div>
+<div class="navrow"><button class="btn" id="navToggle" aria-pressed="false" aria-label="Fit map to waypoint">NAV OFF</button><button class="btn flex" id="navPick" aria-label="Choose waypoint">Select ▾</button></div>
 </div>
 </section>
 
@@ -254,6 +261,12 @@ button.cell{cursor:pointer}
 </section>
 
 </div>
+
+<div id="navSheet" hidden><div class="sheet" role="dialog" aria-label="Navigate to waypoint">
+<div class="sheetHead"><div><div class="sheetTitle">Navigate To</div><div class="sub" style="font-size:11px">Pick A Waypoint · The Map Fits You And The Waypoint</div></div><button class="ib" id="navClose" aria-label="Close" style="font-size:22px">×</button></div>
+<div id="navList"></div>
+<div style="display:flex;gap:8px;margin-top:12px"><button class="btn flex" id="navStop">Stop Navigation</button></div>
+</div></div>
 
 <div id="wxSheet" hidden><div class="sheet" role="dialog" aria-label="Weather forecast">
 <div class="sheetHead"><div><div class="sheetTitle">Forecast At Your Position</div><div class="sub" style="font-size:11px">Next Hours · Model Data, Not A Measurement</div></div><button class="ib" id="wxClose" aria-label="Close" style="font-size:22px">×</button></div>
@@ -305,6 +318,7 @@ function fmtDist(m){
  if(selectedUnit==="kn"){if(m<185)return Math.round(m)+" m";const sm=m/1852;return(sm<10?sm.toFixed(2):sm.toFixed(1))+" nm"}
  if(m<1000)return Math.round(m)+" m";const km=m/1000;return(km<10?km.toFixed(2):km.toFixed(1))+" km";
 }
+function fmtHMS(s){s=Math.max(0,Math.floor(s));const h=Math.floor(s/3600),m=Math.floor(s/60)%60,ss=s%60;return h+":"+String(m).padStart(2,"0")+":"+String(ss).padStart(2,"0")}
 function fmtDur(s){s=Math.max(0,Math.floor(s));const h=Math.floor(s/3600),m=Math.floor(s/60)%60,ss=s%60;return h?`${h}:${String(m).padStart(2,"0")}:${String(ss).padStart(2,"0")}`:`${m}:${String(ss).padStart(2,"0")}`}
 function currentHeading(){return headingRaw==null?null:(headingRaw+(varOn?varDeg:0)+720)%360}
 function relText(b){const h=currentHeading();if(!compassOn||h==null)return"";const r=((b-h+540)%360)-180,a=Math.round(Math.abs(r));return a===0?"dead ahead":a+"° "+(r>0?"STBD":"PORT")}
@@ -378,6 +392,7 @@ function saveWps(){store.set("wps",JSON.stringify(wps));store.set("wpsel",selId|
 function selWp(){return wps.find(w=>w.id===selId)||null}
 function wpGeo(w){if(!currentPosition)return null;const p=[w.lat,w.lon];return{b:bearingDeg(currentPosition,p),d:distM(currentPosition,p)}}
 function updateWpUI(){
+ updateNavUI();
  const w=selWp(),g=w?wpGeo(w):null;
  $("wpLine").classList.toggle("mob",!!(w&&w.mob));
  if(w)$("wpMark").firstElementChild.setAttribute("fill",w.mob?"#e5484d":"#55c2b2");
@@ -412,7 +427,7 @@ function renderWpList(){
 function addWaypoint(isMob){
  if(!currentPosition){const t="No GPS position. Please switch GPS on.";$("message").textContent=t;$("tripMsg").textContent=t;if(navigator.vibrate)navigator.vibrate([100,60,100]);return false}
  const now=new Date(),hm=now.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
- const w={id:String(Date.now()),n:isMob?"MOB "+hm:"Waypoint "+(wps.filter(x=>!x.mob).length+1),lat:currentPosition[0],lon:currentPosition[1],t:Date.now(),mob:!!isMob};
+ const w={id:String(Date.now())+Math.random().toString(36).slice(2,6),n:isMob?"MOB "+hm:"Waypoint "+(wps.filter(x=>!x.mob).length+1),lat:currentPosition[0],lon:currentPosition[1],t:Date.now(),mob:!!isMob};
  wps.unshift(w);if(isMob)selId=w.id;saveWps();renderWpList();updateWpUI();drawMapWps();return true;
 }
 
@@ -423,14 +438,40 @@ function sizeMap(){
 }
 let autoUntil=0,lastFit=0;
 function markAuto(){autoUntil=Date.now()+1200}
-function fitMob(force){
+let navFit=false;
+function fitTarget(force){
  const w=selWp();
- if(!map||!currentPosition||!w||!w.mob)return false;
+ if(!map||!currentPosition||!w||!navFit)return false;
  if(!force&&Date.now()-lastFit<3000)return true;
  lastFit=Date.now();markAuto();
- map.fitBounds(L.latLngBounds([currentPosition,[w.lat,w.lon]]),{padding:[90,90],maxZoom:17,animate:true,duration:.6});
+ map.fitBounds(L.latLngBounds([currentPosition,[w.lat,w.lon]]),{paddingTopLeft:[50,95],paddingBottomRight:[50,150],maxZoom:18,animate:true,duration:.6});
  return true;
 }
+function updateNavUI(){
+ const w=selWp();
+ if(!w)navFit=false;
+ $("navPick").textContent=(w?w.n:"Select")+" ▾";
+ $("navToggle").disabled=!w;
+ $("navToggle").textContent=navFit?"NAV ON":"NAV OFF";
+ $("navToggle").setAttribute("aria-pressed",String(navFit));
+}
+function setNav(on){
+ navFit=!!on&&!!selWp();
+ if(navFit&&followMap)setFollow(false);
+ updateNavUI();
+ if(navFit)fitTarget(true);
+}
+function manualMove(){if(followMap)setFollow(false);if(navFit){navFit=false;updateNavUI()}}
+function renderNavList(){
+ const box=$("navList");
+ if(!wps.length){box.innerHTML='<div class="wxnote">No waypoints yet. Set one with “+ WAYPOINT” or MOB.</div>';return}
+ let h="";
+ wps.forEach(w=>{const g=wpGeo(w);h+=`<button class="wp" data-nav="${w.id}" style="width:100%;background:transparent;border-left:0;border-right:0;border-bottom:0;color:#f4f8fb;text-align:left;font-size:15px"><span class="rad${w.id===selId?" on":""}"></span><span class="nm">${esc(w.n)}</span><span class="inf">${g?p3(g.b)+"° · "+fmtDist(g.d):"—"}</span></button>`});
+ box.innerHTML=h;
+ box.querySelectorAll("[data-nav]").forEach(b=>b.onclick=()=>{selId=b.getAttribute("data-nav");saveWps();renderWpList();updateWpUI();drawMapWps();setNav(true);closeNav()});
+}
+function openNav(){renderNavList();$("navSheet").hidden=false}
+function closeNav(){$("navSheet").hidden=true}
 function initMap(){
  if(map||!window.L)return;markAuto();
  map=L.map("map",{zoomControl:true,scrollWheelZoom:false}).setView([53.55,9.99],12);
@@ -440,9 +481,9 @@ function initMap(){
  applyMapType();
  trackLine=L.polyline(track.map(p=>[p[0],p[1]]),{color:"#0f9d8f",weight:4,opacity:.9}).addTo(map);
  wpLayer=L.layerGroup().addTo(map);
- wpLine=L.polyline([],{color:"#e5484d",weight:8,opacity:1,className:"mobline"}).addTo(map);
- map.on("dragstart",()=>{if(followMap)setFollow(false)});
- map.on("zoomstart",()=>{if(followMap&&Date.now()>autoUntil)setFollow(false)});
+ wpLine=L.polyline([],{color:"#e5484d",weight:7,opacity:1,dashArray:"16 12",className:"mobline"}).addTo(map);
+ map.on("dragstart",manualMove);
+ map.on("zoomstart",()=>{if(Date.now()>autoUntil)manualMove()});
  drawMapWps();
  if(currentPosition){updateMap(currentPosition[0],currentPosition[1])}
 }
@@ -452,15 +493,16 @@ function drawMapWps(){
  wpLayer.clearLayers();
  wps.forEach(w=>{const sel=w.id===selId;L.circleMarker([w.lat,w.lon],{radius:sel?9:7,color:"#fff",weight:2.5,fillColor:w.mob?"#e5484d":(sel?"#55c2b2":"#ffb84d"),fillOpacity:1}).bindTooltip(w.n,{direction:"top"}).addTo(wpLayer)});
  updateWpUI();
- if(followMap)fitMob(true);
+ updateNavUI();
+ if(navFit)fitTarget(true);
 }
 function updateMap(lat,lon){
  if(!map)return;
  const p=[lat,lon];
  if(!posMarker)posMarker=L.circleMarker(p,{radius:8,color:"#fff",weight:3,fillColor:"#168bce",fillOpacity:1}).addTo(map);else posMarker.setLatLng(p);
- if(!mapHasFix){markAuto();map.setView(p,15);mapHasFix=true;if(followMap)fitMob(true)}else if(followMap){if(!fitMob()){markAuto();map.panTo(p,{animate:true,duration:.35})}}
+ if(!mapHasFix){markAuto();map.setView(p,15);mapHasFix=true;if(navFit)fitTarget(true)}else if(navFit){fitTarget()}else if(followMap){markAuto();map.panTo(p,{animate:true,duration:.35})}
 }
-function setFollow(on){followMap=on;$("followBtn").textContent=on?"FOLLOW ON":"FOLLOW OFF";$("followBtn").classList.toggle("active",on);$("followBtn").setAttribute("aria-pressed",String(on));if(on&&currentPosition&&map){markAuto();if(!fitMob(true))map.panTo(currentPosition,{animate:true,duration:.35})}}
+function setFollow(on){if(on&&navFit){navFit=false;updateNavUI()}followMap=on;$("followBtn").textContent=on?"FOLLOW ON":"FOLLOW OFF";$("followBtn").classList.toggle("active",on);$("followBtn").setAttribute("aria-pressed",String(on));if(on&&currentPosition&&map){markAuto();map.panTo(currentPosition,{animate:true,duration:.35})}}
 
 /* ---------- trip ---------- */
 function saveTrip(){if(!tripDirty)return;tripDirty=false;store.set("trip",JSON.stringify(trip));store.set("track",JSON.stringify(track))}
@@ -468,7 +510,7 @@ function updateTripUI(){
  const u=selectedUnit==="kn"?1.943844:3.6;
  $("tDist").textContent=trip.dist>0?(selectedUnit==="kn"?(trip.dist/1852).toFixed(1)+" nm":(trip.dist/1000).toFixed(1)+" km"):"—";
  const ts=tripSeconds();
- $("tTime").textContent=ts>0?fmtDur(ts):"—";
+ $("tTime").textContent=ts>0?fmtHMS(ts):"—";
  $("tAvg").textContent=ts>30&&trip.dist>0?(trip.dist/ts*u).toFixed(1)+" "+(selectedUnit==="kn"?"kn":"km/h"):"—";
  $("tMax").textContent=trip.max>0?(trip.max*u).toFixed(1)+" "+(selectedUnit==="kn"?"kn":"km/h"):"—";
  setSwitch("swRec",rec);setSwitch("swRec2",rec);$("rec").hidden=!rec;
@@ -795,16 +837,16 @@ const sw=$("stopwatch");
 let swMode="clock",swAcc=0,swT0=0,swIv=null,swLP=null,swLong=false;
 const clockIcon='<svg class="sw24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4.2l2.6 1.6"/><path d="M9.5 2.5h5M12 2.5v3.5"/><path d="M18.6 6.9l1.4-1.4"/></svg>';
 function swMs(){return swAcc+(swMode==="run"?Date.now()-swT0:0)}
-function swFmt(ms){const t=Math.floor(ms/100),d=t%10,s=Math.floor(t/10)%60,m=Math.floor(t/600)%60,h=Math.floor(t/36000);return(h?h+":"+String(m).padStart(2,"0"):String(m).padStart(2,"0"))+":"+String(s).padStart(2,"0")+"."+d}
+function swFmt(ms){return fmtHMS(ms/1000)}
 function swDraw(){
  sw.classList.toggle("run",swMode==="run");sw.classList.toggle("pause",swMode==="pause");
  if(swMode==="clock"){sw.innerHTML=clockIcon;sw.setAttribute("aria-label","Start stopwatch")}
  else{sw.textContent=swFmt(swMs());sw.setAttribute("aria-label",swMode==="run"?"Pause stopwatch":"Resume stopwatch")}
 }
 function swToggle(){
- if(swMode==="clock"){swMode="run";swAcc=0;swT0=Date.now();swIv=setInterval(swDraw,100)}
+ if(swMode==="clock"){swMode="run";swAcc=0;swT0=Date.now();swIv=setInterval(swDraw,250)}
  else if(swMode==="run"){swAcc+=Date.now()-swT0;swMode="pause";clearInterval(swIv)}
- else{swMode="run";swT0=Date.now();swIv=setInterval(swDraw,100)}
+ else{swMode="run";swT0=Date.now();swIv=setInterval(swDraw,250)}
  swDraw();
 }
 function swReset(){clearInterval(swIv);swMode="clock";swAcc=0;swDraw()}
@@ -822,6 +864,7 @@ function mobStart(){
   mobDone=true;
   const ok=addWaypoint(true);
   if(ok){
+   setNav(true);
    showTab("inst");window.scrollTo(0,0);
    if(navigator.vibrate)navigator.vibrate([250,100,250]);
    $("message").textContent="MOB saved. Bearing and distance are shown below the compass. The point is the position when you pressed the button, not the person’s location.";
@@ -857,6 +900,11 @@ $("swRec").onclick=toggleRec;$("swRec2").onclick=toggleRec;
 $("gpxBtn").onclick=saveGpx;$("resetTrip").onclick=resetTrip;
 $("knBtn").onclick=()=>chooseUnit("kn");$("kmhBtn").onclick=()=>chooseUnit("kmh");
 $("followBtn").onclick=()=>setFollow(!followMap);
+$("navPick").onclick=openNav;
+$("navToggle").onclick=()=>{if(!selWp()){openNav();return}setNav(!navFit)};
+$("navClose").onclick=closeNav;
+$("navSheet").addEventListener("click",e=>{if(e.target===$("navSheet"))closeNav()});
+$("navStop").onclick=()=>{selId=null;saveWps();renderWpList();updateWpUI();drawMapWps();closeNav()};
 $("recenter").onclick=()=>{if(map&&currentPosition){markAuto();map.panTo(currentPosition,{animate:true,duration:.35})}};
 function setMapType(t){mapType=t;store.set("maptype",t);$("mtStreet").classList.toggle("active",t==="street");$("mtNaut").classList.toggle("active",t==="nautical");$("mtStreet").setAttribute("aria-pressed",String(t==="street"));$("mtNaut").setAttribute("aria-pressed",String(t==="nautical"));applyMapType()}
 $("mtStreet").onclick=()=>setMapType("street");$("mtNaut").onclick=()=>setMapType("nautical");
@@ -882,7 +930,7 @@ function autoStartGPS(){
 }
 if(store.get("unit")==="kmh")chooseUnit("kmh");
 $("varVal").textContent=fmtVar();applyVarUI();$("mtStreet").classList.toggle("active",mapType==="street");$("mtNaut").classList.toggle("active",mapType==="nautical");
-drawRose();updateCompassState();updateCogMark();swDraw();updateTripUI();updateWpUI();updateWxUI();updateSun();wakeHint();
+drawRose();updateCompassState();updateCogMark();swDraw();updateTripUI();updateWpUI();updateNavUI();updateWxUI();updateSun();wakeHint();
 if(store.get("gps")==="1")autoStartGPS();
 if(store.get("compass")==="1"){
  if(needsCompassPermission())$("compMsg").textContent="The compass was on last time. iOS requires confirmation: please tap the compass switch.";
