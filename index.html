@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" translate="no"><head><meta charset="utf-8"><meta name="google" content="notranslate"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d2133"><title>HELMSMAN MK 1.0</title>
+<html lang="en" translate="no"><head><meta charset="utf-8"><meta name="google" content="notranslate"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d2133"><title>HELMSMAN MK 1.1</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{color-scheme:dark;--bg:#0b1926;--panel:#142b3e;--muted:#a9bdcc;--line:#29465c;--accent:#55c2b2}
@@ -49,7 +49,7 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 button.cell{cursor:pointer}
 .cell{position:relative}
 button.cell:active{background:#173247}
-.tap{position:absolute;top:6px;right:6px;width:16px;height:16px;color:#7f97a8}
+.tap{position:absolute;top:5px;right:5px;width:19px;height:19px;color:#7f97a8}
 .tap circle{fill:none;stroke:currentColor}
 .tap .d{fill:currentColor;stroke:none}
 #cellWind.pulse .o{transform-origin:8px 8px;animation:ripple 1.3s ease-out 3}
@@ -103,16 +103,19 @@ button.cell:active{background:#173247}
 #mapBox{position:relative;width:100%}
 #map{height:100%;width:100%;background:#dbe4df}
 .mapHud{position:absolute;left:10px;top:10px;z-index:1000;display:flex;align-items:center;gap:8px}
-.chip{width:214px;display:flex;justify-content:space-between;align-items:baseline;gap:8px;background:#0b1926ee;border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:15px;font-variant-numeric:tabular-nums;color:#f4f8fb;white-space:nowrap}
-.chip strong{font-size:19px;font-weight:600}
+.chip{width:214px;display:grid;grid-template-columns:auto auto;justify-content:space-between;align-items:baseline;row-gap:1px;background:#0b1926ee;border:1px solid var(--line);border-radius:12px;padding:5px 11px 6px;font-size:15px;font-variant-numeric:tabular-nums;color:#f4f8fb;white-space:nowrap}
+.chip strong{font-size:18px;font-weight:600}
+.chip .pos{font-size:11px;color:var(--muted);line-height:1.25}
+.chip .pos.r{text-align:right}
 #miniCompass{width:66px;height:70px;flex:none;filter:drop-shadow(0 2px 6px #0006)}
-.mapbtns{position:absolute;left:10px;right:10px;bottom:70px;z-index:1000;display:flex;gap:8px}
-.mapbtns .btn{padding:11px 8px;font-size:13px}
+.mapbtns{position:absolute;left:10px;right:10px;bottom:67px;z-index:1000;display:flex;gap:8px}
+.mapbtns .btn{padding:0 6px;height:37px;font-size:12px}
 .maptype{position:absolute;left:10px;bottom:22px;z-index:1000;background:#0b1926ee}
-.seg.maptype{width:calc((100% - 36px)/3);height:41px;padding:3px;box-sizing:border-box}
+.seg.maptype{width:calc((100% - 36px)/3);height:37px;padding:3px;box-sizing:border-box}
 .seg.maptype button{flex:1;min-width:0;padding:0;font-size:13px}
-.navrow{position:absolute;left:calc(10px + (100% - 36px)/3 + 8px);right:10px;bottom:22px;height:41px;z-index:1000;display:flex;gap:6px}
-.navrow .btn{height:41px;padding:0 10px;font-size:13px;white-space:nowrap}
+.navrow{position:absolute;left:calc(10px + (100% - 36px)/3 + 8px);right:10px;bottom:22px;height:37px;z-index:1000;display:flex;gap:6px}
+.navrow .btn{height:37px;padding:0 10px;font-size:13px;white-space:nowrap}
+#navToggle{font-size:12px!important}
 #navToggle{flex:0 0 84px}
 #navToggle[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#082027}
 #navToggle:disabled{opacity:.45}
@@ -153,7 +156,7 @@ button.cell:active{background:#173247}
 
 <header class="hdr"><div class="wrap">
 <div class="toprow">
-<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 1.0</span></div>
+<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 1.1</span></div>
 <div class="hbtns">
 <button class="hbtn" id="mob" aria-label="MOB: press and hold"><span id="mobFill"></span><span class="t">MOB</span></button>
 <button class="hbtn" id="stopwatch" aria-label="Stopwatch"></button>
@@ -191,9 +194,9 @@ button.cell:active{background:#173247}
 <div class="cell"><div class="l">HEADING</div><div class="v" id="heading">—</div><div class="s" id="headingDir">&nbsp;</div></div>
 <button class="cell" id="cellWind" aria-label="Wind forecast"><div class="l">WIND</div><svg class="tap" viewBox="0 0 16 16" aria-hidden="true"><circle class="o" cx="8" cy="8" r="6.8" stroke-width="1.1" opacity=".55"/><circle class="m" cx="8" cy="8" r="4.3" stroke-width="1.4"/><circle class="d" cx="8" cy="8" r="1.7"/></svg><div class="v" id="wxWind">—</div><div class="s" id="wxWindSub">&nbsp;</div></button>
 <div class="cell"><div class="l">COG</div><div class="v" id="cog">—</div><div class="s" id="cogDir">&nbsp;</div></div>
-<button class="cell" id="cellPres" aria-label="Pressure forecast"><div class="l">PRESSURE</div><div class="v" id="wxPres">—</div><div class="s" id="wxPresSub">&nbsp;</div></button>
+<div class="cell" id="cellPres"><div class="l">PRESSURE</div><div class="v" id="wxPres">—</div><div class="s" id="wxPresSub">&nbsp;</div></div>
 <div class="cell"><div class="l">DRIFT</div><div class="v" id="drift">—</div><div class="s" id="driftDir">&nbsp;</div></div>
-<button class="cell" id="cellRain" aria-label="Weather forecast"><div class="l">WEATHER</div><div class="v" id="wxRain">—</div><div class="s" id="wxRainSub">&nbsp;</div></button>
+<div class="cell" id="cellRain"><div class="l">WEATHER</div><div class="v" id="wxRain">—</div><div class="s" id="wxRainSub">&nbsp;</div></div>
 </div></div>
 <div id="wpLine" hidden><span id="wpText"></span><button class="x" id="wpHide" aria-label="Hide waypoint">×</button></div>
 <div class="legend" style="margin-top:8px"><span class="amb">Amber</span> = GPS Course (Above 1 kn) · <span class="grn">Green</span> = Waypoint</div>
@@ -234,7 +237,7 @@ button.cell:active{background:#173247}
 <div id="mapBox">
 <div id="map"></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<div class="mapHud"><div class="chip"><span><strong id="mapSog">—</strong> <span id="mapUnit">kn</span></span><span id="mapHdg">—</span></div>
+<div class="mapHud"><div class="chip"><span><strong id="mapSog">—</strong> <span id="mapUnit">kn</span></span><span id="mapHdg">—</span><span class="pos" id="mapLat">—</span><span class="pos r" id="mapLon">—</span></div>
 <svg id="miniCompass" viewBox="0 -6 200 212" role="img" aria-label="Small compass">
 <g id="rose2"><circle cx="100" cy="100" r="92" fill="#1b3549" stroke="#567084"/><g id="ticks2"></g><g id="labs2"></g>
 <g id="cogMark2" style="display:none"><polygon points="100,28 86,2 114,2" fill="#ffb84d" stroke="#0b1926" stroke-width="2" stroke-linejoin="round"/></g></g>
@@ -318,6 +321,7 @@ function tripSeconds(){return trip.time+(rec&&recStart?(Date.now()-recStart)/100
 
 /* ---------- helpers ---------- */
 function fmtCoord(v,pos,neg,isLon=false){if(v==null)return"—";const a=Math.abs(v),d=Math.floor(a),m=(a-d)*60;return`${String(d).padStart(isLon?3:2,"0")}° ${m.toFixed(1).padStart(4,"0")}′ ${v>=0?pos:neg}`}
+function fmtCoordMin(v,pos,neg,isLon=false){if(v==null)return"—";const a=Math.abs(v);let d=Math.floor(a),m=Math.round((a-d)*60);if(m===60){d+=1;m=0}return`${String(d).padStart(isLon?3:2,"0")}°${String(m).padStart(2,"0")}′ ${v>=0?pos:neg}`}
 function cardinal(d){if(d==null)return"—";return ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"][Math.round(((d%360)+360)%360/22.5)%16]}
 function p3(n){return String(Math.round(n)%360).padStart(3,"0")}
 function setSwitch(id,on){$(id).setAttribute("aria-checked",String(on))}
@@ -454,7 +458,7 @@ function fitTarget(force){
  if(!map||!currentPosition||!w||!navFit)return false;
  if(!force&&Date.now()-lastFit<3000)return true;
  lastFit=Date.now();markAuto();
- map.fitBounds(L.latLngBounds([currentPosition,[w.lat,w.lon]]),{paddingTopLeft:[50,95],paddingBottomRight:[50,150],maxZoom:18,animate:true,duration:.6});
+ map.fitBounds(L.latLngBounds([currentPosition,[w.lat,w.lon]]),{paddingTopLeft:[50,95],paddingBottomRight:[50,130],maxZoom:18,animate:true,duration:.6});
  return true;
 }
 function updateNavUI(){
@@ -537,7 +541,7 @@ function recordFix(c,ts){
  }
 }
 function buildGpx(){
- let x='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="HELMSMAN MK 1.0" xmlns="http://www.topografix.com/GPX/1/1">\n';
+ let x='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="HELMSMAN MK 1.1" xmlns="http://www.topografix.com/GPX/1/1">\n';
  wps.forEach(w=>{x+=`<wpt lat="${w.lat}" lon="${w.lon}"><time>${new Date(w.t).toISOString()}</time><name>${esc(w.n)}</name></wpt>\n`});
  x+="<trk><name>HELMSMAN Trip</name><trkseg>\n";
  track.forEach(p=>{x+=`<trkpt lat="${p[0]}" lon="${p[1]}"><time>${new Date(p[2]).toISOString()}</time></trkpt>\n`});
@@ -590,6 +594,7 @@ function startGPS(){
   const weak=c.accuracy!=null&&c.accuracy>30;
   setGpsStatus(weak?"weak":"good",weak?"GPS Inaccurate":"GPS Active");
   $("lat").textContent=fmtCoord(c.latitude,"N","S");$("lon").textContent=fmtCoord(c.longitude,"E","W",true);
+  $("mapLat").textContent=fmtCoordMin(c.latitude,"N","S");$("mapLon").textContent=fmtCoordMin(c.longitude,"E","W",true);
   const raw=Number.isFinite(c.speed)&&c.speed>=0?c.speed:null;
   if(raw===null){latestSpeedMs=null;smoothedSpeedMs=null}else{smoothedSpeedMs=smoothedSpeedMs===null?raw:(smoothedSpeedMs*.65+raw*.35);latestSpeedMs=smoothedSpeedMs}
   sogMs=raw;renderSpeed();
@@ -612,7 +617,7 @@ function stopGPS(keepMessage){
  if(watchId!==null)navigator.geolocation.clearWatch(watchId);
  watchId=null;lastFixAt=0;latestSpeedMs=null;smoothedSpeedMs=null;sogMs=null;cogDeg=null;currentPosition=null;tripLastT=null;
  store.set("gps","0");setSwitch("swGps",false);
- renderSpeed();$("lat").textContent="—";$("lon").textContent="—";$("cog").textContent="—";$("cogDir").innerHTML="&nbsp;";$("accuracy").textContent="—";
+ renderSpeed();$("lat").textContent="—";$("lon").textContent="—";$("mapLat").textContent="—";$("mapLon").textContent="—";$("cog").textContent="—";$("cogDir").innerHTML="&nbsp;";$("accuracy").textContent="—";
  updateCogMark();updateHeadingText(true);saveTrip();releaseWake();
  if(!keepMessage){setGpsStatus("off","GPS Off");$("gpsMsg").textContent="GPS Switched Off."}
  else{$("dot").className="dot stale"}
@@ -676,8 +681,9 @@ function orientationHandler(e){
 
 /* ---------- weather (Open-Meteo) ---------- */
 let wx=jget("wx",null),wxBusy=false,wxErr=false,wxLastTry=0;
-let tapStarts=(Number(store.get("tapstarts"))||0)+1;store.set("tapstarts",String(tapStarts));
-let tapPulse=tapStarts<=3&&store.get("tapopened")!=="1",tapPlayed=false;
+let tapPlayed=false;
+function playTap(){const tc=$("cellWind");tc.classList.remove("pulse");void tc.offsetWidth;tc.classList.add("pulse")}
+setInterval(()=>{if(!document.hidden&&wx&&(Date.now()-wx.t)/60000<=180&&$("wxSheet").hidden)playTap()},120000);
 function bft(kn){const t=[1,4,7,11,17,22,28,34,41,48,56,64];for(let i=0;i<t.length;i++)if(kn<t[i])return i;return 12}
 function wxArrow(kind,color){
  const p=kind==="up"?"M7 12V3M2.5 7.5 7 3l4.5 4.5":kind==="down"?"M7 2v9M2.5 6.5 7 11l4.5-4.5":"M2 7h9M6.5 2.5 11 7l-4.5 4.5";
@@ -790,7 +796,7 @@ function updateWxUI(){
  else if(wx.rainMin!=null){$("wxRain").innerHTML='<span style="color:#6cc4ff">'+(wx.rainMin<5?"&lt;5":wx.rainMin)+' Min</span>';$("wxRainSub").textContent=wx.ahead?"Rain Ahead":"Rain Expected"}
  else{$("wxRain").textContent="Dry";$("wxRainSub").textContent="Next Hour"}
  $("windMark").style.display="";$("windMark").setAttribute("transform",`rotate(${wx.cur.dir} 100 100)`);
- if(tapPulse&&!tapPlayed){tapPlayed=true;const tc=$("cellWind");tc.classList.remove("pulse");void tc.offsetWidth;tc.classList.add("pulse")}
+ if(!tapPlayed){tapPlayed=true;playTap()}
 }
 function wxStatusText(){
  $("wxStatus").textContent=!currentPosition?"No GPS position yet. Switch GPS on first.":wxBusy?"Loading …":wxErr?"Could not load weather. Check the internet connection.":(wx?"Updated "+new Date(wx.t).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}):"");
@@ -807,9 +813,9 @@ function renderWxSheet(){
   `<div class="wxnote">Now: wind from ${p3(wx.cur.dir)}° (${cardinal(wx.cur.dir)}), gusts ${Math.round(wx.cur.gust*f)} ${u}, ${Math.round(wx.cur.temp)} °C${wx.skyNow?", sky: "+wx.skyNow.toLowerCase():""}. ${rainTxt}</div>`;
  wxStatusText();
 }
-function openWx(){renderWxSheet();$("wxSheet").hidden=false;store.set("tapopened","1");tapPulse=false;$("cellWind").classList.remove("pulse");if(wx&&Date.now()-wx.t>10*60000)maybeFetchWeather()}
+function openWx(){renderWxSheet();$("wxSheet").hidden=false;$("cellWind").classList.remove("pulse");if(wx&&Date.now()-wx.t>10*60000)maybeFetchWeather()}
 function closeWx(){$("wxSheet").hidden=true}
-["cellWind","cellPres","cellRain"].forEach(id=>$(id).addEventListener("click",openWx));
+$("cellWind").addEventListener("click",openWx);
 $("wxClose").onclick=closeWx;
 $("wxSheet").addEventListener("click",e=>{if(e.target===$("wxSheet"))closeWx()});
 $("wxRefresh").onclick=()=>fetchWeather(true);
