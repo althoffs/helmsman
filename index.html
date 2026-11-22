@@ -1,5 +1,8 @@
 <!doctype html>
-<html lang="en" translate="no"><head><meta charset="utf-8"><meta name="google" content="notranslate"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d2133"><title>HELMSMAN MK 1.1</title>
+<html lang="en" translate="no"><head><meta charset="utf-8"><meta name="google" content="notranslate"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d2133">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="HELMSMAN"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><title>HELMSMAN MK 1.2</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{color-scheme:dark;--bg:#0b1926;--panel:#142b3e;--muted:#a9bdcc;--line:#29465c;--accent:#55c2b2}
@@ -11,10 +14,10 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 .wrap{max-width:650px;margin:auto}
 .hdr{position:sticky;top:0;z-index:2000;background:#0d2133;border-bottom:1px solid var(--line);padding:calc(env(safe-area-inset-top) + 8px) 14px 7px}
 .toprow{display:flex;justify-content:space-between;align-items:center}
-.brand{font-size:21px;letter-spacing:.16em;margin:0;font-weight:800}
+.brand{font-size:20px;letter-spacing:.13em;margin:0;font-weight:800}
 .brandline{display:flex;align-items:center;gap:6px}
 .version{font-size:10px;font-weight:800;letter-spacing:.08em;color:var(--accent);border:1px solid #397c78;border-radius:6px;padding:4px 6px}
-.hbtns{display:flex;gap:8px;align-items:center}
+.hbtns{display:flex;gap:6px;align-items:center}
 .subrow{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
 .tag{font-size:9px;letter-spacing:.16em;color:var(--muted)}
 .status{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:10px}
@@ -22,11 +25,12 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 #rec{color:#ffb84d;font-weight:700}
 .dot{width:8px;height:8px;border-radius:50%;background:#e2a64b;display:inline-block}
 .dot.on{background:#55d49a}.dot.weak{background:#e2a64b}.dot.stale{background:#e56d6d}.dot.off{background:#6b8294}
-.hbtn{border:1px solid #35536a;background:#0d2030;color:#dce8ef;border-radius:11px;height:40px;min-width:44px;padding:0 11px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;-webkit-touch-callout:none}
+.hbtn{border:1px solid #35536a;background:#0d2030;color:#dce8ef;border-radius:11px;height:40px;min-width:44px;padding:0 9px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;-webkit-touch-callout:none}
 .hbtn svg{width:22px;height:22px}
+#stopwatch{font-size:15px}
 #stopwatch.run{color:var(--accent);border-color:var(--accent)}
 #stopwatch.pause{color:#ffd18a;border-color:#ffd18a}
-#mob{position:relative;overflow:hidden;border:1px solid #e5484d;background:#3a1519;color:#ff8d90;font-size:14px;letter-spacing:.06em;padding:0 14px}
+#mob{position:relative;overflow:hidden;border:1px solid #e5484d;background:#3a1519;color:#ff8d90;font-size:14px;letter-spacing:.06em;padding:0 12px}
 #mobFill{position:absolute;left:0;top:0;bottom:0;width:0;background:#e5484d;opacity:.55}
 #mob span.t{position:relative}
 .page{padding:9px 14px 0;padding-bottom:calc(86px + env(safe-area-inset-bottom))}
@@ -49,12 +53,14 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 button.cell{cursor:pointer}
 .cell{position:relative}
 button.cell:active{background:#173247}
-.tap{position:absolute;top:5px;right:5px;width:19px;height:19px;color:#7f97a8}
+.tap{position:absolute;top:5px;right:5px;width:19px;height:19px;color:#f4f8fb}
 .tap circle{fill:none;stroke:currentColor}
 .tap .d{fill:currentColor;stroke:none}
-#cellWind.pulse .o{transform-origin:8px 8px;animation:ripple 1.3s ease-out 3}
-#cellWind.pulse .m{transform-origin:8px 8px;animation:ripple 1.3s ease-out .35s 3}
+#cellWind.pulse .o{transform-origin:8px 8px;animation:ripple 1.3s ease-out 1}
+#cellWind.pulse .m{transform-origin:8px 8px;animation:ripple 1.3s ease-out .25s 1}
+#cellWind.pulse .tap{animation:tapcolor 1.6s ease-in-out 1}
 @keyframes ripple{0%{transform:scale(.55);opacity:.95}100%{transform:scale(1.35);opacity:0}}
+@keyframes tapcolor{0%{color:#f4f8fb}30%{color:#4ade80}70%{color:#4ade80}100%{color:#f4f8fb}}
 @media(prefers-reduced-motion:reduce){#cellWind.pulse .o,#cellWind.pulse .m{animation:none}}
 .cell .l{font-size:10px;letter-spacing:.08em;color:var(--muted);font-weight:750;white-space:nowrap}
 .cell .v{font-size:19px;font-weight:600;margin-top:2px;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -103,14 +109,13 @@ button.cell:active{background:#173247}
 #mapBox{position:relative;width:100%}
 #map{height:100%;width:100%;background:#dbe4df}
 .mapHud{position:absolute;left:10px;top:10px;z-index:1000;display:flex;align-items:center;gap:8px}
-.chip{width:214px;display:grid;grid-template-columns:auto auto;justify-content:space-between;align-items:baseline;row-gap:1px;background:#0b1926ee;border:1px solid var(--line);border-radius:12px;padding:5px 11px 6px;font-size:15px;font-variant-numeric:tabular-nums;color:#f4f8fb;white-space:nowrap}
+.chip{width:192px;display:grid;grid-template-columns:auto auto;justify-content:space-between;align-items:baseline;row-gap:1px;background:#0b1926ee;border:1px solid var(--line);border-radius:12px;padding:5px 11px 6px;font-size:15px;font-variant-numeric:tabular-nums;color:#f4f8fb;white-space:nowrap}
 .chip strong{font-size:18px;font-weight:600}
-.chip .pos{font-size:11px;color:var(--muted);line-height:1.25}
-.chip .pos.r{text-align:right}
+.chip .pos{grid-column:1/3;display:flex;gap:12px;font-size:11px;color:var(--muted);line-height:1.25}
 #miniCompass{width:66px;height:70px;flex:none;filter:drop-shadow(0 2px 6px #0006)}
 .mapbtns{position:absolute;left:10px;right:10px;bottom:67px;z-index:1000;display:flex;gap:8px}
 .mapbtns .btn{padding:0 6px;height:37px;font-size:12px}
-.maptype{position:absolute;left:10px;bottom:22px;z-index:1000;background:#0b1926ee}
+.maptype{position:absolute;left:10px;bottom:22px;z-index:1000;background:#0b1926}
 .seg.maptype{width:calc((100% - 36px)/3);height:37px;padding:3px;box-sizing:border-box}
 .seg.maptype button{flex:1;min-width:0;padding:0;font-size:13px}
 .navrow{position:absolute;left:calc(10px + (100% - 36px)/3 + 8px);right:10px;bottom:22px;height:37px;z-index:1000;display:flex;gap:6px}
@@ -118,18 +123,19 @@ button.cell:active{background:#173247}
 #navToggle{font-size:12px!important}
 #navToggle{flex:0 0 84px}
 #navToggle[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#082027}
-#navToggle:disabled{opacity:.45}
+#navToggle:disabled{color:#6f8aa0;border-color:#27425a}
 #navPick{overflow:hidden;text-overflow:ellipsis;text-align:left}
-.btn{border:1px solid #35536a;background:#0b1926ee;color:#dce8ef;border-radius:11px;padding:11px 12px;font-size:14px;font-weight:600}
+.btn{border:1px solid #35536a;background:#0b1926;color:#dce8ef;border-radius:11px;padding:11px 12px;font-size:14px;font-weight:600}
 .btn.flex{flex:1}
 .btn.active{background:var(--accent);border-color:var(--accent);color:#082027}
 .mapbtns #followBtn{transition:background .15s,color .15s}
 .mapbtns #followBtn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#082027}
-.mapbtns #followBtn[aria-pressed="false"]{background:#0b1926ee;border-color:#35536a;color:#dce8ef}
+.mapbtns #followBtn[aria-pressed="false"]{background:#0b1926;border-color:#35536a;color:#dce8ef}
 .btn.flash,.mapbtns .btn.flash{background:#f4f8fb!important;border-color:#f4f8fb!important;color:#082027!important}
 .toast{position:absolute;left:50%;top:30%;transform:translateX(-50%);z-index:1100;background:#0b1926f2;border:1px solid var(--accent);color:#f4f8fb;border-radius:14px;padding:12px 20px;font-size:17px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .25s;white-space:nowrap}
 .toast.show{opacity:1}
-.mobline{stroke-dasharray:16 12;animation:mobflow .7s linear infinite}
+.mobline{stroke-dasharray:16 12;animation:mobflow 1s linear infinite}
+.jetline{stroke-dasharray:16 12;animation:mobflow 1s linear infinite}
 @keyframes mobflow{from{stroke-dashoffset:0}to{stroke-dashoffset:-28}}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 .wp{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
@@ -151,12 +157,16 @@ button.cell:active{background:#173247}
 .leaflet-container{font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 .leaflet-control-attribution{font-size:9px!important}
 .hbtn svg.sw24{width:24px;height:24px}
+.sl{animation:slL .22s ease-out}.sr{animation:slR .22s ease-out}.sf{animation:slF .2s ease-out}
+@keyframes slL{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
+@keyframes slR{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
+@keyframes slF{from{opacity:0}to{opacity:1}}
 @media(max-width:360px){.page{padding-left:10px;padding-right:10px}.card{padding:12px}.position{font-size:13px;gap:5px}.seg button{padding:7px 8px;min-width:44px}.brand{font-size:19px}.metric strong{font-size:18px}.cell .v{font-size:17px}}
 </style></head><body>
 
 <header class="hdr"><div class="wrap">
 <div class="toprow">
-<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 1.1</span></div>
+<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 1.2</span></div>
 <div class="hbtns">
 <button class="hbtn" id="mob" aria-label="MOB: press and hold"><span id="mobFill"></span><span class="t">MOB</span></button>
 <button class="hbtn" id="stopwatch" aria-label="Stopwatch"></button>
@@ -237,7 +247,7 @@ button.cell:active{background:#173247}
 <div id="mapBox">
 <div id="map"></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<div class="mapHud"><div class="chip"><span><strong id="mapSog">—</strong> <span id="mapUnit">kn</span></span><span id="mapHdg">—</span><span class="pos" id="mapLat">—</span><span class="pos r" id="mapLon">—</span></div>
+<div class="mapHud"><div class="chip"><span><strong id="mapSog">—</strong> <span id="mapUnit">kn</span></span><span id="mapHdg">—</span><span class="pos"><span id="mapLat">—</span><span id="mapLon">—</span></span></div>
 <svg id="miniCompass" viewBox="0 -6 200 212" role="img" aria-label="Small compass">
 <g id="rose2"><circle cx="100" cy="100" r="92" fill="#1b3549" stroke="#567084"/><g id="ticks2"></g><g id="labs2"></g>
 <g id="cogMark2" style="display:none"><polygon points="100,28 86,2 114,2" fill="#ffb84d" stroke="#0b1926" stroke-width="2" stroke-linejoin="round"/></g></g>
@@ -246,7 +256,7 @@ button.cell:active{background:#173247}
 </svg></div>
 <div class="mapbtns"><button class="btn flex" id="addWp">+ WAYPOINT</button><button class="btn flex" id="recenter">RECENTER</button><button class="btn flex active" id="followBtn" aria-pressed="true">FOLLOW ON</button></div>
 <div class="seg maptype"><button id="mtStreet" class="active" aria-pressed="true">Street</button><button id="mtNaut" aria-pressed="false" aria-label="Nautical">Naut.</button></div>
-<div class="navrow"><button class="btn" id="navToggle" aria-pressed="false" aria-label="Fit map to waypoint">NAV OFF</button><button class="btn flex" id="navPick" aria-label="Choose waypoint">Select ▾</button></div>
+<div class="navrow"><button class="btn flex" id="navPick" aria-label="Choose waypoint">Select ▾</button><button class="btn" id="navToggle" aria-pressed="false" aria-label="Fit map to waypoint">NAV OFF</button></div>
 </div>
 </section>
 
@@ -452,6 +462,24 @@ function sizeMap(){
 }
 let autoUntil=0,lastFit=0;
 function markAuto(){autoUntil=Date.now()+1200}
+let jetLine=null,jetStart=0;
+function jetBurst(e){
+ if(e<0)return null;
+ const s=e<60?(e<20?0:e<40?20:40):60+30*Math.floor((e-60)/30);
+ const t=e-s;
+ return t<5?t:null;
+}
+const easeOut=x=>1-Math.pow(1-x,3),easeIn=x=>x*x*x;
+function jetStep(){
+ if(!map||!jetLine)return;
+ const w=selWp(),t=(navFit&&w&&!w.mob&&currentPosition&&curTab==="map")?jetBurst((Date.now()-jetStart)/1000):null;
+ if(t===null){if(jetLine._has){jetLine.setLatLngs([]);jetLine._has=false}return}
+ let a=0,b=1;
+ if(t<1.2)b=easeOut(t/1.2);else if(t>3.8)a=easeIn((t-3.8)/1.2);
+ const p0=currentPosition,p1=[w.lat,w.lon],pt=f=>[p0[0]+(p1[0]-p0[0])*f,p0[1]+(p1[1]-p0[1])*f];
+ jetLine.setLatLngs([pt(a),pt(b)]);jetLine._has=true;
+}
+setInterval(jetStep,50);
 let navFit=false;
 function fitTarget(force){
  const w=selWp();
@@ -471,6 +499,7 @@ function updateNavUI(){
 }
 function setNav(on){
  navFit=!!on&&!!selWp();
+ if(navFit)jetStart=Date.now();
  if(navFit&&followMap)setFollow(false);
  updateNavUI();
  if(navFit)fitTarget(true);
@@ -495,7 +524,8 @@ function initMap(){
  applyMapType();
  trackLine=L.polyline(track.map(p=>[p[0],p[1]]),{color:"#0f9d8f",weight:4,opacity:.9}).addTo(map);
  wpLayer=L.layerGroup().addTo(map);
- wpLine=L.polyline([],{color:"#e5484d",weight:7,opacity:1,dashArray:"16 12",className:"mobline"}).addTo(map);
+ wpLine=L.polyline([],{color:"#e5484d",weight:5,opacity:1,dashArray:"16 12",className:"mobline"}).addTo(map);
+ jetLine=L.polyline([],{color:"#55c2b2",weight:5,opacity:1,dashArray:"16 12",className:"jetline"}).addTo(map);
  map.on("dragstart",manualMove);
  map.on("zoomstart",()=>{if(Date.now()>autoUntil)manualMove()});
  drawMapWps();
@@ -541,7 +571,7 @@ function recordFix(c,ts){
  }
 }
 function buildGpx(){
- let x='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="HELMSMAN MK 1.1" xmlns="http://www.topografix.com/GPX/1/1">\n';
+ let x='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="HELMSMAN MK 1.2" xmlns="http://www.topografix.com/GPX/1/1">\n';
  wps.forEach(w=>{x+=`<wpt lat="${w.lat}" lon="${w.lon}"><time>${new Date(w.t).toISOString()}</time><name>${esc(w.n)}</name></wpt>\n`});
  x+="<trk><name>HELMSMAN Trip</name><trkseg>\n";
  track.forEach(p=>{x+=`<trkpt lat="${p[0]}" lon="${p[1]}"><time>${new Date(p[2]).toISOString()}</time></trkpt>\n`});
@@ -682,8 +712,15 @@ function orientationHandler(e){
 /* ---------- weather (Open-Meteo) ---------- */
 let wx=jget("wx",null),wxBusy=false,wxErr=false,wxLastTry=0;
 let tapPlayed=false;
+function tapOk(){return !document.hidden&&wx&&(Date.now()-wx.t)/60000<=180&&$("wxSheet").hidden}
 function playTap(){const tc=$("cellWind");tc.classList.remove("pulse");void tc.offsetWidth;tc.classList.add("pulse")}
-setInterval(()=>{if(!document.hidden&&wx&&(Date.now()-wx.t)/60000<=180&&$("wxSheet").hidden)playTap()},120000);
+function startTapSchedule(){
+ playTap();
+ [20000,40000].forEach(ms=>setTimeout(()=>{if(tapOk())playTap()},ms));
+ setTimeout(()=>{if(tapOk())playTap();setInterval(()=>{if(tapOk())playTap()},60000)},60000);
+}
+function fitText(el,max,min){el.style.fontSize=max+"px";let sz=max;while(el.scrollWidth>el.clientWidth+0.5&&sz>min){sz-=0.5;el.style.fontSize=sz+"px"}}
+function fitWxValues(){["wxWind","wxPres","wxRain"].forEach(id=>fitText($(id),19,13))}
 function bft(kn){const t=[1,4,7,11,17,22,28,34,41,48,56,64];for(let i=0;i<t.length;i++)if(kn<t[i])return i;return 12}
 function wxArrow(kind,color){
  const p=kind==="up"?"M7 12V3M2.5 7.5 7 3l4.5 4.5":kind==="down"?"M7 2v9M2.5 6.5 7 11l4.5-4.5":"M2 7h9M6.5 2.5 11 7l-4.5 4.5";
@@ -796,7 +833,8 @@ function updateWxUI(){
  else if(wx.rainMin!=null){$("wxRain").innerHTML='<span style="color:#6cc4ff">'+(wx.rainMin<5?"&lt;5":wx.rainMin)+' Min</span>';$("wxRainSub").textContent=wx.ahead?"Rain Ahead":"Rain Expected"}
  else{$("wxRain").textContent="Dry";$("wxRainSub").textContent="Next Hour"}
  $("windMark").style.display="";$("windMark").setAttribute("transform",`rotate(${wx.cur.dir} 100 100)`);
- if(!tapPlayed){tapPlayed=true;playTap()}
+ if(!tapPlayed){tapPlayed=true;startTapSchedule()}
+ fitWxValues();
 }
 function wxStatusText(){
  $("wxStatus").textContent=!currentPosition?"No GPS position yet. Switch GPS on first.":wxBusy?"Loading …":wxErr?"Could not load weather. Check the internet connection.":(wx?"Updated "+new Date(wx.t).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}):"");
@@ -897,16 +935,36 @@ mob.addEventListener("pointerdown",mobStart);
 mob.addEventListener("contextmenu",e=>e.preventDefault());
 
 /* ---------- pages ---------- */
-function showTab(t){
+function showTab(t,dir){
  curTab=t;
  ["inst","map","trip"].forEach(k=>{$("p_"+k).hidden=k!==t});
  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("on",b.getAttribute("data-t")===t));
  if(t==="map"){sizeMap();initMap();setTimeout(()=>{if(map)map.invalidateSize()},60)}
  if(t==="trip"){updateTripUI();renderWpList()}
+ if(t==="inst")fitWxValues();
  if(t!=="map")window.scrollTo(0,0);
+ const pg=$("p_"+t);pg.classList.remove("sl","sr","sf");
+ if(dir){void pg.offsetWidth;pg.classList.add(t==="map"?"sf":dir>0?"sr":"sl")}
 }
+const TAB_ORDER=["inst","map","trip"];
+let swipe0=null;
+document.addEventListener("touchstart",e=>{
+ if(e.touches.length!==1){swipe0=null;return}
+ const t=e.touches[0],tg=e.target;
+ if(t.clientX<28||t.clientX>window.innerWidth-28){swipe0=null;return}
+ if(tg&&tg.closest&&tg.closest("#mapBox,#wxSheet,#navSheet,input")){swipe0=null;return}
+ swipe0={x:t.clientX,y:t.clientY,t:Date.now()};
+},{passive:true});
+document.addEventListener("touchend",e=>{
+ if(!swipe0)return;
+ const t=e.changedTouches[0],dx=t.clientX-swipe0.x,dy=t.clientY-swipe0.y,dt=Date.now()-swipe0.t;
+ swipe0=null;
+ if(Math.abs(dx)<70||Math.abs(dy)>45||Math.abs(dx)<Math.abs(dy)*2||dt>700)return;
+ const i=TAB_ORDER.indexOf(curTab),n=dx<0?i+1:i-1;
+ if(n>=0&&n<TAB_ORDER.length)showTab(TAB_ORDER[n],dx<0?1:-1);
+},{passive:true});
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>showTab(b.getAttribute("data-t")));
-window.addEventListener("resize",()=>{if(curTab==="map")sizeMap()});
+window.addEventListener("resize",()=>{if(curTab==="map")sizeMap();if(curTab==="inst")fitWxValues()});
 
 /* ---------- controls ---------- */
 $("swGps").onclick=()=>{if(watchId!==null)stopGPS();else startGPS()};
