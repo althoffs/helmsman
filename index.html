@@ -49,8 +49,8 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 .position .sep{color:#7891a3;font-weight:400}
 .cardhead{display:flex;justify-content:space-between;align-items:center;width:100%;background:transparent;border:0;color:inherit;padding:0;text-align:left;font-family:inherit}
 .cardhead .tog{font-size:12px;color:var(--accent);font-weight:600;display:flex;gap:6px;white-space:nowrap}
-.compass-body{display:flex;align-items:center;gap:8px;margin-top:8px}
-#seaBox{position:relative;height:236px;margin-top:8px;border-radius:12px;overflow:hidden;background:#cfe3ea}
+.compass-body{display:flex;align-items:center;gap:8px;margin-top:11px}
+#seaBox{position:relative;height:236px;margin-top:11px;border-radius:12px;overflow:hidden;background:#cfe3ea}
 #seaMap{height:100%;width:100%}
 .seaZoom{position:absolute;right:8px;top:8px;z-index:1000;display:flex;flex-direction:column;gap:6px}
 .seaZoom button{width:36px;height:36px;border-radius:10px;border:1px solid #35536a;background:#0b1926;color:#f4f8fb;font-size:22px;line-height:1;padding:0}
@@ -178,7 +178,7 @@ button.cell:active{background:#173247}
 @keyframes slF{from{opacity:0}to{opacity:1}}
 @media(max-width:360px){.hdr .wrap{padding:0 10px}.page{padding-left:10px;padding-right:10px}.card{padding:12px}.position{font-size:13px;gap:5px}.seg button{padding:7px 8px;min-width:44px}.brand{font-size:19px}.metric strong{font-size:18px}.cell .v{font-size:17px}}
 </style></head><body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="coneGrad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="74"><stop offset="0" stop-color="#2f9bf0" stop-opacity=".8"/><stop offset="1" stop-color="#2f9bf0" stop-opacity="0"/></radialGradient></defs></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="coneGrad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="63"><stop offset="0" stop-color="#2f9bf0" stop-opacity=".8"/><stop offset="1" stop-color="#2f9bf0" stop-opacity="0"/></radialGradient></defs></svg>
 
 <header class="hdr"><div class="wrap">
 <div class="toprow">
@@ -490,7 +490,7 @@ function markAuto(){autoUntil=Date.now()+1200}
 const boats=[];
 let coneAngle=null;
 function makeBoat(m,p){
- const icon=L.divIcon({className:"boatIcon",html:'<div class="bw"><svg class="bcone" viewBox="-80 -80 160 160" style="display:none"><path d="M0 0 L-39 -63 A74 74 0 0 1 39 -63 Z" fill="url(#coneGrad)"/></svg><span class="bdot"></span></div>',iconSize:[160,160],iconAnchor:[80,80]});
+ const icon=L.divIcon({className:"boatIcon",html:'<div class="bw"><svg class="bcone" viewBox="-80 -80 160 160" style="display:none"><path d="M0 0 L-33 -53 A63 63 0 0 1 33 -53 Z" fill="url(#coneGrad)"/></svg><span class="bdot"></span></div>',iconSize:[160,160],iconAnchor:[80,80]});
  const mk=L.marker(p,{icon:icon,interactive:false,keyboard:false,zIndexOffset:500}).addTo(m);
  boats.push(mk);updateCones();return mk;
 }
@@ -523,14 +523,17 @@ function updateSea(lat,lon){
  seaMap.panTo([lat,lon],{animate:true,duration:.35});
 }
 function setSeaOpen(on){
+ const card=$("cardToggle").parentElement,wasCompass=!$("compassView").hidden,before=wasCompass?card.offsetHeight:0;
  seaOpen=!!on;store.set("seaopen",seaOpen?"1":"0");
  $("compassView").hidden=seaOpen;$("legendBox").hidden=seaOpen;$("seaView").hidden=!seaOpen;
  $("cardTitle").textContent=seaOpen?"SEA MAP":"COMPASS · HEADING";
  $("cardToggleText").textContent=seaOpen?"Expand Compass And Weather":"Expand Map";
  $("cardToggleArrow").textContent=seaOpen?"▴":"▾";
  $("cardToggle").setAttribute("aria-expanded",String(seaOpen));
- if(seaOpen){initSeaMap();setTimeout(()=>{if(seaMap){seaMap.invalidateSize();seaCenter()}},60)}
- else fitWxValues();
+ if(seaOpen){
+  if(before>0){const sb=$("seaBox");sb.style.height="200px";const after=card.offsetHeight;sb.style.height=Math.max(160,200+before-after)+"px"}
+  initSeaMap();setTimeout(()=>{if(seaMap){seaMap.invalidateSize();seaCenter()}},60);
+ }else fitWxValues();
 }
 function seaZoomBy(d){if(!seaMap)return;const z=Math.max(8,Math.min(18,seaMap.getZoom()+d));seaMap.setZoom(z);store.set("seazoom",String(z))}
 let jetLine=null,jetStart=0;
@@ -866,7 +869,7 @@ async function fetchWeather(manual){
   else if((c.precipitation||0)>=0.1)sky={label:(isWet(c.weather_code)&&skyLabel(c.weather_code,c.is_day))||"Rain",kind:"rain",sub:"Now"};
   else if(rainMin!=null)sky={label:(isWet(arrCode)&&skyLabel(arrCode,srcC.is_day))||"Rain",kind:"rain",sub:inTxt(rainMin)};
   else sky={label:skyLabel(arrCode,srcC.is_day)||skyLabel(c.weather_code,c.is_day)||"Dry",kind:"calm",sub:"Next Hour"};
-  wx={sky,skyNow:skyLabel(c.weather_code,c.is_day),t:Date.now(),cur:{wind:c.wind_speed_10m,dir:c.wind_direction_10m,gust:c.wind_gusts_10m,pres:c.pressure_msl,temp:c.temperature_2m,rain:c.precipitation},
+  wx={sky,skyNow:skyLabel(c.weather_code,c.is_day),t:Date.now(),pos:currentPosition.slice(),cur:{wind:c.wind_speed_10m,dir:c.wind_direction_10m,gust:c.wind_gusts_10m,pres:c.pressure_msl,temp:c.temperature_2m,rain:c.precipitation},
       delta,hours,rainNow:(c.precipitation||0)>=0.1,rainMin,ahead:!!a,aheadNm:a?distM(currentPosition,a)/1852:0};
   store.set("wx",JSON.stringify(wx));wxErr=false;
  }catch(e){wxErr=true}
@@ -874,7 +877,9 @@ async function fetchWeather(manual){
 }
 function maybeFetchWeather(){
  if(!currentPosition||wxBusy||Date.now()-wxLastTry<60000)return;
- if(!wx||Date.now()-wx.t>10*60000)fetchWeather();
+ const active=wx&&wx.sky&&(wx.sky.kind==="rain"||wx.sky.kind==="warn"),lim=(active?5:15)*60000;
+ const moved=wx&&wx.pos?distM(wx.pos,currentPosition):0;
+ if(!wx||Date.now()-wx.t>lim||moved>9000)fetchWeather();
 }
 function wxAgeText(){
  if(!wx)return wxErr?"Weather Unavailable (Offline?)":"Weather: Waiting For GPS";
@@ -922,7 +927,7 @@ function renderWxSheet(){
   `<div class="wxnote">Now: wind from ${p3(wx.cur.dir)}° (${cardinal(wx.cur.dir)}), gusts ${Math.round(wx.cur.gust*f)} ${u}, ${Math.round(wx.cur.temp)} °C${wx.skyNow?", sky: "+wx.skyNow.toLowerCase():""}. ${rainTxt}</div>`;
  wxStatusText();
 }
-function openWx(){renderWxSheet();$("wxSheet").hidden=false;$("cellWind").classList.remove("pulse");if(wx&&Date.now()-wx.t>10*60000)maybeFetchWeather()}
+function openWx(){renderWxSheet();$("wxSheet").hidden=false;$("cellWind").classList.remove("pulse");if(wx&&Date.now()-wx.t>5*60000&&Date.now()-wxLastTry>60000)fetchWeather()}
 function closeWx(){$("wxSheet").hidden=true}
 $("cellWind").addEventListener("click",openWx);
 $("wxClose").onclick=closeWx;
