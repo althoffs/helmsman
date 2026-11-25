@@ -2,7 +2,7 @@
 <html lang="en" translate="no"><head><meta charset="utf-8"><meta name="google" content="notranslate"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d2133">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="HELMSMAN"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><title>HELMSMAN MK 1.2</title>
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><title>HELMSMAN MK 1.3</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{color-scheme:dark;--bg:#0b1926;--panel:#142b3e;--muted:#a9bdcc;--line:#29465c;--accent:#55c2b2}
@@ -12,7 +12,8 @@ html{background:#08131e}
 body{margin:0;background:linear-gradient(160deg,#10263a,#08131e 65%);background-attachment:fixed;color:#f4f8fb;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
 button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:none;touch-action:manipulation}
 .wrap{max-width:650px;margin:auto}
-.hdr{position:sticky;top:0;z-index:2000;background:#0d2133;border-bottom:1px solid var(--line);padding:calc(env(safe-area-inset-top) + 8px) 14px 7px}
+.hdr{position:sticky;top:0;z-index:2000;background:#0d2133;border-bottom:1px solid var(--line);padding:calc(env(safe-area-inset-top) + 8px) 0 7px}
+.hdr .wrap{padding:0 14px}
 .toprow{display:flex;justify-content:space-between;align-items:center}
 .brand{font-size:20px;letter-spacing:.13em;margin:0;font-weight:800}
 .brandline{display:flex;align-items:center;gap:6px}
@@ -33,7 +34,7 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 #mob{position:relative;overflow:hidden;border:1px solid #e5484d;background:#3a1519;color:#ff8d90;font-size:14px;letter-spacing:.06em;padding:0 12px}
 #mobFill{position:absolute;left:0;top:0;bottom:0;width:0;background:#e5484d;opacity:.55}
 #mob span.t{position:relative}
-.page{padding:9px 14px 0;padding-bottom:calc(86px + env(safe-area-inset-bottom))}
+.page{padding:9px 14px 0;padding-bottom:calc(86px + max(env(safe-area-inset-bottom) - 12px, 0px))}
 .card{background:rgba(20,43,62,.96);border:1px solid var(--line);border-radius:17px;padding:15px;margin:0 0 9px;box-shadow:0 10px 26px #0003}
 .eyebrow{font-size:10px;letter-spacing:.13em;color:var(--muted);font-weight:750}
 .speedrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px}
@@ -46,8 +47,22 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 .sub{font-size:10px;color:var(--muted);margin-top:5px}
 .position{margin-top:9px;padding-top:8px;border-top:1px solid #29465c;display:flex;align-items:baseline;gap:7px;white-space:nowrap;font-size:clamp(14px,3.8vw,17px);font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.015em}
 .position .sep{color:#7891a3;font-weight:400}
+.cardhead{display:flex;justify-content:space-between;align-items:center;width:100%;background:transparent;border:0;color:inherit;padding:0;text-align:left;font-family:inherit}
+.cardhead .tog{font-size:12px;color:var(--accent);font-weight:600;display:flex;gap:6px;white-space:nowrap}
 .compass-body{display:flex;align-items:center;gap:8px;margin-top:8px}
-.compass{flex:none;width:clamp(128px,40vw,150px);height:auto}
+#seaBox{position:relative;height:236px;margin-top:8px;border-radius:12px;overflow:hidden;background:#cfe3ea}
+#seaMap{height:100%;width:100%}
+.seaZoom{position:absolute;right:8px;top:8px;z-index:1000;display:flex;flex-direction:column;gap:6px}
+.seaZoom button{width:36px;height:36px;border-radius:10px;border:1px solid #35536a;background:#0b1926;color:#f4f8fb;font-size:22px;line-height:1;padding:0}
+.seaAttr{position:absolute;left:8px;bottom:6px;z-index:1000;font-size:10px;background:#ffffffb3;border-radius:5px;padding:1px 6px;color:#35525f}
+.seaAttr a{color:#35525f;text-decoration:none}
+.boatIcon{background:none;border:0;pointer-events:none}
+.bw{position:relative;width:160px;height:160px;pointer-events:none}
+.bcone{position:absolute;left:0;top:0;width:160px;height:160px;animation:conepulse 2.6s ease-in-out infinite;transition:transform .3s linear;pointer-events:none}
+.bdot{position:absolute;left:50%;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#168bce;border:3px solid #fff;box-sizing:border-box;box-shadow:0 0 0 1px #0003}
+@keyframes conepulse{0%,100%{opacity:.55}50%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.bcone{animation:none}}
+.compass{flex:none;width:clamp(118px,36.8vw,138px);height:auto}
 .cells{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .cell{background:#0d2030;border:0;border-radius:11px;padding:7px 8px;min-width:0;text-align:left;color:#f4f8fb;font-family:inherit;display:block}
 button.cell{cursor:pointer}
@@ -80,8 +95,8 @@ button.cell:active{background:#173247}
 .accrow strong{display:block;font-size:20px;margin-top:4px;font-variant-numeric:tabular-nums}
 .accrow .hint{font-size:11px;color:var(--muted);margin-top:3px}
 .accrow>div:first-child{flex:1;min-width:0}
-.sun{display:flex;flex-direction:column;gap:6px;flex:none;margin-right:16px}
-.sunrow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;white-space:nowrap}
+.sun{display:grid;grid-template-columns:auto auto;column-gap:12px;row-gap:6px;align-items:baseline;flex:none;margin-right:8px;white-space:nowrap}
+.sunrow{display:contents}
 .sunrow b{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
 .rowmsg{font-size:11px;line-height:1.4;color:#ffd18a;margin:-5px 0 7px}
 .rowmsg:empty,.msg:empty{display:none}
@@ -129,7 +144,7 @@ button.cell:active{background:#173247}
 .btn.flex{flex:1}
 .btn.active{background:var(--accent);border-color:var(--accent);color:#082027}
 .mapbtns #followBtn{transition:background .15s,color .15s}
-.mapbtns #followBtn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#082027}
+.mapbtns #followBtn[aria-pressed="true"]{background:#6cc4ff;border-color:#6cc4ff;color:#06202f}
 .mapbtns #followBtn[aria-pressed="false"]{background:#0b1926;border-color:#35536a;color:#dce8ef}
 .btn.flash,.mapbtns .btn.flash{background:#f4f8fb!important;border-color:#f4f8fb!important;color:#082027!important}
 .toast{position:absolute;left:50%;top:30%;transform:translateX(-50%);z-index:1100;background:#0b1926f2;border:1px solid var(--accent);color:#f4f8fb;border-radius:14px;padding:12px 20px;font-size:17px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .25s;white-space:nowrap}
@@ -149,7 +164,7 @@ button.cell:active{background:#173247}
 .step{display:flex;align-items:center;gap:10px}
 .step button{border:1px solid #35536a;background:#0d2030;color:#f4f8fb;border-radius:9px;width:40px;height:36px;font-size:20px}
 .step span{min-width:64px;text-align:center;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums}
-.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:2000;background:#0e2233;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:2000;background:#0e2233;border-top:1px solid var(--line);padding-bottom:max(calc(env(safe-area-inset-bottom) - 12px), 0px)}
 .tabbar .in{max-width:650px;margin:auto;display:flex}
 .tab{flex:1;background:transparent;border:0;color:#7f97a8;padding:7px 0 6px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px}
 .tab svg{width:25px;height:25px}
@@ -161,12 +176,13 @@ button.cell:active{background:#173247}
 @keyframes slL{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
 @keyframes slR{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
 @keyframes slF{from{opacity:0}to{opacity:1}}
-@media(max-width:360px){.page{padding-left:10px;padding-right:10px}.card{padding:12px}.position{font-size:13px;gap:5px}.seg button{padding:7px 8px;min-width:44px}.brand{font-size:19px}.metric strong{font-size:18px}.cell .v{font-size:17px}}
+@media(max-width:360px){.hdr .wrap{padding:0 10px}.page{padding-left:10px;padding-right:10px}.card{padding:12px}.position{font-size:13px;gap:5px}.seg button{padding:7px 8px;min-width:44px}.brand{font-size:19px}.metric strong{font-size:18px}.cell .v{font-size:17px}}
 </style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="coneGrad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="74"><stop offset="0" stop-color="#2f9bf0" stop-opacity=".8"/><stop offset="1" stop-color="#2f9bf0" stop-opacity="0"/></radialGradient></defs></svg>
 
 <header class="hdr"><div class="wrap">
 <div class="toprow">
-<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 1.2</span></div>
+<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 1.3</span></div>
 <div class="hbtns">
 <button class="hbtn" id="mob" aria-label="MOB: press and hold"><span id="mobFill"></span><span class="t">MOB</span></button>
 <button class="hbtn" id="stopwatch" aria-label="Stopwatch"></button>
@@ -186,9 +202,10 @@ button.cell:active{background:#173247}
 </div>
 
 <div class="card">
-<div class="eyebrow">COMPASS · HEADING</div>
+<button class="cardhead" id="cardToggle" aria-expanded="false"><span class="eyebrow" id="cardTitle">COMPASS · HEADING</span><span class="tog"><span id="cardToggleText">Expand Map</span><span id="cardToggleArrow" aria-hidden="true">▾</span></span></button>
+<div id="compassView">
 <div class="compass-body">
-<svg class="compass" viewBox="0 -6 200 212" role="img" aria-label="Compass: the dial rotates, the white mark at the top is the bow">
+<svg class="compass" viewBox="8 -6 184 212" role="img" aria-label="Compass: the dial rotates, the white mark at the top is the bow">
 <g id="rose">
 <circle cx="100" cy="100" r="92" fill="#1b3549" stroke="#567084"/>
 <g id="ticks"></g>
@@ -208,9 +225,15 @@ button.cell:active{background:#173247}
 <div class="cell"><div class="l">DRIFT</div><div class="v" id="drift">—</div><div class="s" id="driftDir">&nbsp;</div></div>
 <div class="cell" id="cellRain"><div class="l">WEATHER</div><div class="v" id="wxRain">—</div><div class="s" id="wxRainSub">&nbsp;</div></div>
 </div></div>
+</div>
+<div id="seaView" hidden><div id="seaBox"><div id="seaMap"></div>
+<div class="seaZoom"><button id="seaZin" aria-label="Zoom in">+</button><button id="seaZout" aria-label="Zoom out">−</button></div>
+<div class="seaAttr"><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a> · <a href="https://www.openseamap.org" target="_blank" rel="noopener">© OpenSeaMap</a></div></div></div>
 <div id="wpLine" hidden><span id="wpText"></span><button class="x" id="wpHide" aria-label="Hide waypoint">×</button></div>
+<div id="legendBox">
 <div class="legend" style="margin-top:8px"><span class="amb">Amber</span> = GPS Course (Above 1 kn) · <span class="grn">Green</span> = Waypoint</div>
 <div class="legend"><span class="red">Red</span> = MOB · <span class="blu">Blue</span> = Wind · <span id="wxAge">Weather: Waiting For GPS</span></div>
+</div>
 </div>
 
 <div class="card" style="padding:13px 15px">
@@ -239,6 +262,7 @@ button.cell:active{background:#173247}
 <p class="note">The device compass can be disturbed on board by metal and electrical equipment.</p>
 <p class="note">MOB only saves the position where the button was pressed, not the location of the person.</p>
 <p class="note">Map data needs an internet connection.</p>
+<p class="note">The small Sea Map on Instruments only shows where you are. On both maps the blue cone shows the direction the device points (compass needed).</p>
 <p class="note">HELMSMAN is a supplementary instrument and no substitute for proper navigation, weather and rescue equipment.</p>
 </section>
 
@@ -408,6 +432,7 @@ function updateHeadingText(force){
  const h=currentHeading(),on=compassOn&&h!=null;
  $("heading").textContent=on?p3(h)+"°":"—";$("headingDir").innerHTML=on?cardinal(h):(compassOn?"Waiting":"Off");
  $("mapHdg").textContent=on?`${p3(h)}° ${cardinal(h)}`:"—";
+ updateCones();
  updateDrift();updateWpUI();
 }
 
@@ -462,6 +487,52 @@ function sizeMap(){
 }
 let autoUntil=0,lastFit=0;
 function markAuto(){autoUntil=Date.now()+1200}
+const boats=[];
+let coneAngle=null;
+function makeBoat(m,p){
+ const icon=L.divIcon({className:"boatIcon",html:'<div class="bw"><svg class="bcone" viewBox="-80 -80 160 160" style="display:none"><path d="M0 0 L-39 -63 A74 74 0 0 1 39 -63 Z" fill="url(#coneGrad)"/></svg><span class="bdot"></span></div>',iconSize:[160,160],iconAnchor:[80,80]});
+ const mk=L.marker(p,{icon:icon,interactive:false,keyboard:false,zIndexOffset:500}).addTo(m);
+ boats.push(mk);updateCones();return mk;
+}
+function updateCones(){
+ const h=currentHeading(),on=compassOn&&h!=null;
+ if(on){if(coneAngle===null)coneAngle=h;else coneAngle+=(((h-coneAngle)%360)+540)%360-180}
+ boats.forEach(mk=>{const el=mk.getElement&&mk.getElement(),c=el&&el.querySelector&&el.querySelector(".bcone");if(!c)return;c.style.display=on?"":"none";if(on)c.style.transform="rotate("+coneAngle+"deg)"});
+}
+/* ---------- sea map on Instruments ---------- */
+let seaMap=null,seaBoat=null,seaOpen=store.get("seaopen")==="1";
+function seaCenter(){
+ if(!seaMap)return;
+ const p=currentPosition||sunPos;
+ if(!p)return;
+ seaMap.setView(p,seaMap.getZoom(),{animate:false});
+ if(seaBoat){if(currentPosition){seaBoat.setLatLng(currentPosition);seaBoat.setOpacity(1)}else seaBoat.setOpacity(0)}
+}
+function initSeaMap(){
+ if(seaMap||!window.L)return;
+ const p=currentPosition||sunPos||[53.55,9.99];
+ seaMap=L.map("seaMap",{zoomControl:false,attributionControl:false,dragging:false,touchZoom:false,doubleClickZoom:false,scrollWheelZoom:false,boxZoom:false,keyboard:false,tap:false,minZoom:8,maxZoom:18}).setView(p,Number(store.get("seazoom"))||15);
+ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18}).addTo(seaMap);
+ L.tileLayer("https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",{maxZoom:18}).addTo(seaMap);
+ seaBoat=makeBoat(seaMap,p);
+ if(!currentPosition)seaBoat.setOpacity(0);
+}
+function updateSea(lat,lon){
+ if(!seaMap||!seaOpen)return;
+ if(seaBoat){seaBoat.setLatLng([lat,lon]);seaBoat.setOpacity(1)}
+ seaMap.panTo([lat,lon],{animate:true,duration:.35});
+}
+function setSeaOpen(on){
+ seaOpen=!!on;store.set("seaopen",seaOpen?"1":"0");
+ $("compassView").hidden=seaOpen;$("legendBox").hidden=seaOpen;$("seaView").hidden=!seaOpen;
+ $("cardTitle").textContent=seaOpen?"SEA MAP":"COMPASS · HEADING";
+ $("cardToggleText").textContent=seaOpen?"Expand Compass And Weather":"Expand Map";
+ $("cardToggleArrow").textContent=seaOpen?"▴":"▾";
+ $("cardToggle").setAttribute("aria-expanded",String(seaOpen));
+ if(seaOpen){initSeaMap();setTimeout(()=>{if(seaMap){seaMap.invalidateSize();seaCenter()}},60)}
+ else fitWxValues();
+}
+function seaZoomBy(d){if(!seaMap)return;const z=Math.max(8,Math.min(18,seaMap.getZoom()+d));seaMap.setZoom(z);store.set("seazoom",String(z))}
 let jetLine=null,jetStart=0;
 function jetBurst(e){
  if(e<0)return null;
@@ -475,7 +546,7 @@ function jetStep(){
  const w=selWp(),t=(navFit&&w&&!w.mob&&currentPosition&&curTab==="map")?jetBurst((Date.now()-jetStart)/1000):null;
  if(t===null){if(jetLine._has){jetLine.setLatLngs([]);jetLine._has=false}return}
  let a=0,b=1;
- if(t<1.2)b=easeOut(t/1.2);else if(t>3.8)a=easeIn((t-3.8)/1.2);
+ if(t<1.2)b=easeOut(t/1.2);else if(t>3.8)a=(t-3.8)/1.2;
  const p0=currentPosition,p1=[w.lat,w.lon],pt=f=>[p0[0]+(p1[0]-p0[0])*f,p0[1]+(p1[1]-p0[1])*f];
  jetLine.setLatLngs([pt(a),pt(b)]);jetLine._has=true;
 }
@@ -543,7 +614,7 @@ function drawMapWps(){
 function updateMap(lat,lon){
  if(!map)return;
  const p=[lat,lon];
- if(!posMarker)posMarker=L.circleMarker(p,{radius:8,color:"#fff",weight:3,fillColor:"#168bce",fillOpacity:1}).addTo(map);else posMarker.setLatLng(p);
+ if(!posMarker)posMarker=makeBoat(map,p);else posMarker.setLatLng(p);
  if(!mapHasFix){markAuto();map.setView(p,15);mapHasFix=true;if(navFit)fitTarget(true)}else if(navFit){fitTarget()}else if(followMap){markAuto();map.panTo(p,{animate:true,duration:.35})}
 }
 function setFollow(on){if(on&&navFit){navFit=false;updateNavUI()}followMap=on;$("followBtn").textContent=on?"FOLLOW ON":"FOLLOW OFF";$("followBtn").classList.toggle("active",on);$("followBtn").setAttribute("aria-pressed",String(on));if(on&&currentPosition&&map){markAuto();map.panTo(currentPosition,{animate:true,duration:.35})}}
@@ -571,7 +642,7 @@ function recordFix(c,ts){
  }
 }
 function buildGpx(){
- let x='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="HELMSMAN MK 1.2" xmlns="http://www.topografix.com/GPX/1/1">\n';
+ let x='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="HELMSMAN MK 1.3" xmlns="http://www.topografix.com/GPX/1/1">\n';
  wps.forEach(w=>{x+=`<wpt lat="${w.lat}" lon="${w.lon}"><time>${new Date(w.t).toISOString()}</time><name>${esc(w.n)}</name></wpt>\n`});
  x+="<trk><name>HELMSMAN Trip</name><trkseg>\n";
  track.forEach(p=>{x+=`<trkpt lat="${p[0]}" lon="${p[1]}"><time>${new Date(p[2]).toISOString()}</time></trkpt>\n`});
@@ -631,7 +702,7 @@ function startGPS(){
   cogDeg=Number.isFinite(c.heading)?c.heading:null;
   $("cog").textContent=cogDeg==null?"—":p3(cogDeg)+"°";$("cogDir").innerHTML=cogDeg==null?"&nbsp;":cardinal(cogDeg);
   $("accuracy").textContent=c.accuracy==null?"—":`±${Math.round(c.accuracy)} m`;
-  recordFix(c,pos.timestamp);maybeFetchWeather();noteSunPos();
+  recordFix(c,pos.timestamp);maybeFetchWeather();noteSunPos();updateSea(c.latitude,c.longitude);
   updateCogMark();updateHeadingText(true);updateMap(c.latitude,c.longitude);
   if(curTab==="trip")updateTripUI();
   $("gpsMsg").textContent=`GPS Updated: ${new Date(pos.timestamp).toLocaleTimeString("en-GB")}`;
@@ -922,6 +993,7 @@ function mobStart(){
   const ok=addWaypoint(true);
   if(ok){
    setNav(true);
+   setSeaOpen(false);
    showTab("inst");window.scrollTo(0,0);
    if(navigator.vibrate)navigator.vibrate([250,100,250]);
    $("message").textContent="MOB saved. Bearing and distance are shown below the compass. The point is the position when you pressed the button, not the person’s location.";
@@ -941,7 +1013,7 @@ function showTab(t,dir){
  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("on",b.getAttribute("data-t")===t));
  if(t==="map"){sizeMap();initMap();setTimeout(()=>{if(map)map.invalidateSize()},60)}
  if(t==="trip"){updateTripUI();renderWpList()}
- if(t==="inst")fitWxValues();
+ if(t==="inst"){fitWxValues();if(seaOpen&&seaMap)setTimeout(()=>{seaMap.invalidateSize();seaCenter()},60)}
  if(t!=="map")window.scrollTo(0,0);
  const pg=$("p_"+t);pg.classList.remove("sl","sr","sf");
  if(dir){void pg.offsetWidth;pg.classList.add(t==="map"?"sf":dir>0?"sr":"sl")}
@@ -960,11 +1032,11 @@ document.addEventListener("touchend",e=>{
  const t=e.changedTouches[0],dx=t.clientX-swipe0.x,dy=t.clientY-swipe0.y,dt=Date.now()-swipe0.t;
  swipe0=null;
  if(Math.abs(dx)<70||Math.abs(dy)>45||Math.abs(dx)<Math.abs(dy)*2||dt>700)return;
- const i=TAB_ORDER.indexOf(curTab),n=dx<0?i+1:i-1;
- if(n>=0&&n<TAB_ORDER.length)showTab(TAB_ORDER[n],dx<0?1:-1);
+ const i=TAB_ORDER.indexOf(curTab),n=(i+(dx<0?1:-1)+TAB_ORDER.length)%TAB_ORDER.length;
+ showTab(TAB_ORDER[n],dx<0?1:-1);
 },{passive:true});
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>showTab(b.getAttribute("data-t")));
-window.addEventListener("resize",()=>{if(curTab==="map")sizeMap();if(curTab==="inst")fitWxValues()});
+window.addEventListener("resize",()=>{if(curTab==="map")sizeMap();if(curTab==="inst"){fitWxValues();if(seaOpen&&seaMap)seaMap.invalidateSize()}});
 
 /* ---------- controls ---------- */
 $("swGps").onclick=()=>{if(watchId!==null)stopGPS();else startGPS()};
@@ -977,6 +1049,8 @@ $("swRec").onclick=toggleRec;$("swRec2").onclick=toggleRec;
 $("gpxBtn").onclick=saveGpx;$("resetTrip").onclick=resetTrip;
 $("knBtn").onclick=()=>chooseUnit("kn");$("kmhBtn").onclick=()=>chooseUnit("kmh");
 $("followBtn").onclick=()=>setFollow(!followMap);
+$("cardToggle").onclick=()=>setSeaOpen(!seaOpen);
+$("seaZin").onclick=()=>seaZoomBy(1);$("seaZout").onclick=()=>seaZoomBy(-1);
 $("navPick").onclick=openNav;
 $("navToggle").onclick=()=>{if(!selWp()){openNav();return}setNav(!navFit)};
 $("navClose").onclick=closeNav;
@@ -1007,7 +1081,8 @@ function autoStartGPS(){
 }
 if(store.get("unit")==="kmh")chooseUnit("kmh");
 $("varVal").textContent=fmtVar();applyVarUI();$("mtStreet").classList.toggle("active",mapType==="street");$("mtNaut").classList.toggle("active",mapType==="nautical");
-drawRose();updateCompassState();updateCogMark();swDraw();updateTripUI();updateWpUI();updateNavUI();if(selWp()&&selWp().mob)setNav(true);updateWxUI();updateSun();wakeHint();
+drawRose();updateCompassState();updateCogMark();swDraw();updateTripUI();updateWpUI();updateNavUI();if(selWp()&&selWp().mob){setNav(true);seaOpen=false}
+setSeaOpen(seaOpen);updateWxUI();updateSun();wakeHint();
 if(store.get("gps")==="1")autoStartGPS();
 if(store.get("compass")==="1"){
  if(needsCompassPermission())$("compMsg").textContent="The compass was on last time. iOS requires confirmation: please tap the compass switch.";
