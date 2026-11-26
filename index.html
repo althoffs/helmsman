@@ -2,7 +2,7 @@
 <html lang="en" translate="no"><head><meta charset="utf-8"><meta name="google" content="notranslate"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d2133">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="HELMSMAN"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><title>HELMSMAN MK 1.4</title>
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><title>HELMSMAN MK 1.5</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{color-scheme:dark;--bg:#0b1926;--panel:#142b3e;--muted:#a9bdcc;--line:#29465c;--accent:#55c2b2}
@@ -58,10 +58,14 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 .seaAttr a{color:#35525f;text-decoration:none}
 .boatIcon{background:none;border:0;pointer-events:none}
 .bw{position:relative;width:160px;height:160px;pointer-events:none}
-.bcone{position:absolute;left:0;top:0;width:160px;height:160px;animation:conepulse 2.6s ease-in-out infinite;transition:transform .3s linear;pointer-events:none}
+.bcone{position:absolute;left:0;top:0;width:160px;height:160px;opacity:.6;transition:transform .3s linear;pointer-events:none}
+.bcone.pulse{animation:conepulse 2.4s ease-in-out 1}
 .bdot{position:absolute;left:50%;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#168bce;border:3px solid #fff;box-sizing:border-box;box-shadow:0 0 0 1px #0003}
-@keyframes conepulse{0%,100%{opacity:.55}50%{opacity:1}}
-@media(prefers-reduced-motion:reduce){.bcone{animation:none}}
+@keyframes conepulse{0%,100%{opacity:.6}45%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.bcone.pulse{animation:none}}
+.eco .bcone.pulse,.eco #cellWind.pulse .o,.eco #cellWind.pulse .m,.eco #cellWind.pulse .tap{animation:none!important}
+#dimOverlay{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .8s;z-index:5000}
+#dimOverlay.on{opacity:.66}
 .compass{flex:none;width:clamp(118px,36.8vw,138px);height:auto}
 .cells{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .cell{background:#0d2030;border:0;border-radius:11px;padding:7px 8px;min-width:0;text-align:left;color:#f4f8fb;font-family:inherit;display:block}
@@ -183,7 +187,7 @@ button.cell:active{background:#173247}
 
 <header class="hdr"><div class="wrap">
 <div class="toprow">
-<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 1.4</span></div>
+<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 1.5</span></div>
 <div class="hbtns">
 <button class="hbtn" id="mob" aria-label="MOB: press and hold"><span id="mobFill"></span><span class="t">MOB</span></button>
 <button class="hbtn" id="stopwatch" aria-label="Stopwatch"></button>
@@ -252,6 +256,8 @@ button.cell:active{background:#173247}
 <div class="row"><span>Magnetic Variation</span><button class="sw" id="swVar" role="switch" aria-checked="false" aria-label="Magnetic variation"></button></div>
 <div class="varbox" id="varBox" hidden><span class="sub">East = +, West = − (See Your Chart)</span>
 <div class="step"><button id="varMinus" aria-label="Decrease magnetic variation">−</button><span id="varVal">0°</span><button id="varPlus" aria-label="Increase magnetic variation">+</button></div></div>
+<div class="row"><span>Power Saver</span><button class="sw" id="swPower" role="switch" aria-checked="false" aria-label="Power Saver"></button></div>
+<div class="rowmsg" id="powerMsg" style="color:var(--muted)"></div>
 <div class="msg" id="message"></div>
 </div>
 
@@ -264,6 +270,7 @@ button.cell:active{background:#173247}
 <p class="note">MOB only saves the position where the button was pressed, not the location of the person.</p>
 <p class="note">Map data needs an internet connection.</p>
 <p class="note">The small Sea Map on Instruments only shows where you are. On both maps the blue cone shows the direction the device points (compass needed).</p>
+<p class="note">Power Saver slows the compass and map updates, stops the pulsing and dims the screen after 20 seconds without touch, but never while a MOB is active.</p>
 <p class="note">HELMSMAN is a supplementary instrument and no substitute for proper navigation, weather and rescue equipment.</p>
 </section>
 
@@ -323,6 +330,8 @@ button.cell:active{background:#173247}
 <div class="sub" style="font-size:11px;margin-top:6px"><a href="https://open-meteo.com/" target="_blank" rel="noopener" style="color:#8fc8ee">Weather data by Open-Meteo.com</a></div>
 </div></div>
 
+<div id="dimOverlay"></div>
+
 <nav class="tabbar"><div class="in">
 <button class="tab on" data-t="inst"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7l2.5 5-2.5 5-2.5-5z"/></svg>Instruments</button>
 <button class="tab" data-t="map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/></svg>Map</button>
@@ -332,7 +341,7 @@ button.cell:active{background:#173247}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 let watchId=null,map=null,posMarker=null,trackLine=null,wpLayer=null,wpLine=null,selectedUnit="kn",latestSpeedMs=null,smoothedSpeedMs=null,lastFixAt=0,currentPosition=null,followMap=true,mapHasFix=false;
-let headingRaw=null,cogDeg=null,sogMs=null,compassOn=false,smH=null,lastHT=0,lastTextT=0,wakeLock=null,curTab="inst";
+let headingRaw=null,cogDeg=null,sogMs=null,compassOn=false,smH=null,lastHT=0,lastTextT=0,wakeLock=null,curTab="inst",lastDraw=0,lastSea=0,lastPan=0;
 const MIN_DRIFT_SPEED=0.5; // m/s, about 1 kn
 const $=id=>document.getElementById(id);
 const store={get(k){try{return localStorage.getItem("helmsman."+k)}catch(e){return null}},set(k,v){try{localStorage.setItem("helmsman."+k,v)}catch(e){}}};
@@ -344,6 +353,7 @@ function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;","
 let varDeg=Number(store.get("var"))||0;
 let varOn=store.get("varon")===null?(varDeg!==0):store.get("varon")==="1";
 let rec=store.get("rec")==="1";
+let power=store.get("power")==="1";
 let trip=jget("trip",{dist:0,time:0,max:0});
 let track=jget("track",[]);
 let wps=jget("wps",[]);
@@ -456,7 +466,7 @@ function updateWpUI(){
   $("wpText").innerHTML=html;
  }
  document.querySelectorAll("[data-info]").forEach(el=>{const x=wps.find(v=>v.id===el.getAttribute("data-info")),gg=x?wpGeo(x):null;el.textContent=gg?p3(gg.b)+"° · "+fmtDist(gg.d):"—"});
- if(map&&wpLine){const g2=w&&w.mob&&currentPosition?[currentPosition,[w.lat,w.lon]]:[];wpLine.setLatLngs(g2)}
+ if(map&&wpLine&&curTab==="map"){const g2=w&&w.mob&&currentPosition?[currentPosition,[w.lat,w.lon]]:[];wpLine.setLatLngs(g2)}
 }
 function renderWpList(){
  const box=$("wpList");
@@ -500,6 +510,11 @@ function updateCones(){
  if(on){if(coneAngle===null)coneAngle=h;else coneAngle+=(((h-coneAngle)%360)+540)%360-180}
  boats.forEach(mk=>{const el=mk.getElement&&mk.getElement(),c=el&&el.querySelector&&el.querySelector(".bcone");if(!c)return;c.style.display=on?"":"none";if(on)c.style.transform="rotate("+coneAngle+"deg)"});
 }
+function pulseCones(){
+ if(document.hidden||power)return;
+ boats.forEach(mk=>{const el=mk.getElement&&mk.getElement(),c=el&&el.querySelector&&el.querySelector(".bcone");if(c&&c.style.display!=="none"){c.classList.remove("pulse");void c.getBoundingClientRect();c.classList.add("pulse")}});
+}
+setInterval(pulseCones,7000);
 /* ---------- sea map on Instruments ---------- */
 let seaMap=null,seaBoat=null,seaOpen=store.get("seaopen")==="1";
 function seaCenter(){
@@ -519,9 +534,12 @@ function initSeaMap(){
  if(!currentPosition)seaBoat.setOpacity(0);
 }
 function updateSea(lat,lon){
- if(!seaMap||!seaOpen)return;
+ if(!seaMap||!seaOpen||curTab!=="inst")return;
+ const now=Date.now();
+ if(power&&now-lastSea<5000)return;
+ lastSea=now;
  if(seaBoat){seaBoat.setLatLng([lat,lon]);seaBoat.setOpacity(1)}
- seaMap.panTo([lat,lon],{animate:true,duration:.35});
+ if(offCenter(seaMap,[lat,lon],.15))seaMap.panTo([lat,lon],{animate:true,duration:.45});
 }
 function setSeaOpen(on){
  const card=$("cardToggle").parentElement,wasCompass=!$("compassView").hidden,before=wasCompass?card.offsetHeight:0;
@@ -554,7 +572,20 @@ function jetStep(){
  const p0=currentPosition,p1=[w.lat,w.lon],pt=f=>[p0[0]+(p1[0]-p0[0])*f,p0[1]+(p1[1]-p0[1])*f];
  jetLine.setLatLngs([pt(a),pt(b)]);jetLine._has=true;
 }
-setInterval(jetStep,50);
+let jetTimer=null;
+function jetWanted(){const w=selWp();return !!(map&&jetLine&&navFit&&w&&!w.mob&&currentPosition&&curTab==="map")}
+function jetNext(e){const st=[0,20,40,60],n=st.find(x=>x>e);return n!==undefined?n:60+30*(Math.floor((e-60)/30)+1)}
+function jetLoop(){
+ jetTimer=null;
+ jetStep();
+ if(!jetWanted())return;
+ const e=(Date.now()-jetStart)/1000,t=jetBurst(e);
+ jetTimer=setTimeout(jetLoop,t!==null?(power?100:50):Math.max(150,(jetNext(e)-e)*1000));
+}
+function jetSync(){
+ if(jetWanted()){if(!jetTimer)jetLoop()}
+ else{if(jetTimer){clearTimeout(jetTimer);jetTimer=null}jetStep()}
+}
 let navFit=false;
 function fitTarget(force){
  const w=selWp();
@@ -571,10 +602,11 @@ function updateNavUI(){
  $("navToggle").disabled=!w;
  $("navToggle").textContent=navFit?"NAV ON":"NAV OFF";
  $("navToggle").setAttribute("aria-pressed",String(navFit));
+ jetSync();
 }
 function setNav(on){
  navFit=!!on&&!!selWp();
- if(navFit)jetStart=Date.now();
+ if(navFit){jetStart=Date.now();if(jetTimer){clearTimeout(jetTimer);jetTimer=null}}
  if(navFit&&followMap)setFollow(false);
  updateNavUI();
  if(navFit)fitTarget(true);
@@ -615,11 +647,17 @@ function drawMapWps(){
  updateNavUI();
  if(navFit)fitTarget(true);
 }
+function offCenter(m,p,frac){const pt=m.latLngToContainerPoint(p),sz=m.getSize();return Math.abs(pt.x-sz.x/2)>sz.x*frac||Math.abs(pt.y-sz.y/2)>sz.y*frac}
 function updateMap(lat,lon){
- if(!map)return;
+ if(!map||curTab!=="map")return;
  const p=[lat,lon];
  if(!posMarker)posMarker=makeBoat(map,p);else posMarker.setLatLng(p);
- if(!mapHasFix){markAuto();map.setView(p,15);mapHasFix=true;if(navFit)fitTarget(true)}else if(navFit){fitTarget()}else if(followMap){markAuto();map.panTo(p,{animate:true,duration:.35})}
+ if(!mapHasFix){markAuto();map.setView(p,15);mapHasFix=true;if(navFit)fitTarget(true)}
+ else if(navFit){fitTarget()}
+ else if(followMap&&offCenter(map,p,power?.30:.18)){
+  const now=Date.now();
+  if(now-lastPan>(power?5000:1000)){lastPan=now;markAuto();map.panTo(p,{animate:true,duration:.45})}
+ }
 }
 function setFollow(on){if(on&&navFit){navFit=false;updateNavUI()}followMap=on;$("followBtn").textContent=on?"FOLLOW ON":"FOLLOW OFF";$("followBtn").classList.toggle("active",on);$("followBtn").setAttribute("aria-pressed",String(on));if(on&&currentPosition&&map){markAuto();map.panTo(currentPosition,{animate:true,duration:.35})}}
 
@@ -646,7 +684,7 @@ function recordFix(c,ts){
  }
 }
 function buildGpx(){
- let x='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="HELMSMAN MK 1.4" xmlns="http://www.topografix.com/GPX/1/1">\n';
+ let x='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="HELMSMAN MK 1.5" xmlns="http://www.topografix.com/GPX/1/1">\n';
  wps.forEach(w=>{x+=`<wpt lat="${w.lat}" lon="${w.lon}"><time>${new Date(w.t).toISOString()}</time><name>${esc(w.n)}</name></wpt>\n`});
  x+="<trk><name>HELMSMAN Trip</name><trkseg>\n";
  track.forEach(p=>{x+=`<trkpt lat="${p[0]}" lon="${p[1]}"><time>${new Date(p[2]).toISOString()}</time></trkpt>\n`});
@@ -781,16 +819,16 @@ function orientationHandler(e){
   smH=(smH+a*d+360)%360;
  }
  lastHT=now;headingRaw=smH;
- drawRose();updateHeadingText(false);
+ if(now-lastDraw>=(power?200:66)){lastDraw=now;drawRose();updateHeadingText(false)}
 }
 
 /* ---------- weather (Open-Meteo) ---------- */
 let wx=jget("wx",null),wxBusy=false,wxErr=false,wxLastTry=0;
 let tapPlayed=false;
-function tapOk(){return !document.hidden&&wx&&(Date.now()-wx.t)/60000<=180&&$("wxSheet").hidden}
+function tapOk(){return !document.hidden&&!power&&wx&&(Date.now()-wx.t)/60000<=180&&$("wxSheet").hidden}
 function playTap(){const tc=$("cellWind");tc.classList.remove("pulse");void tc.offsetWidth;tc.classList.add("pulse")}
 function startTapSchedule(){
- playTap();
+ if(!power)playTap();
  [20000,40000].forEach(ms=>setTimeout(()=>{if(tapOk())playTap()},ms));
  setTimeout(()=>{if(tapOk())playTap();setInterval(()=>{if(tapOk())playTap()},60000)},60000);
 }
@@ -1017,10 +1055,11 @@ function showTab(t,dir){
  curTab=t;
  ["inst","map","trip"].forEach(k=>{$("p_"+k).hidden=k!==t});
  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("on",b.getAttribute("data-t")===t));
- if(t==="map"){sizeMap();initMap();setTimeout(()=>{if(map)map.invalidateSize()},60)}
+ if(t==="map"){sizeMap();initMap();setTimeout(()=>{if(map)map.invalidateSize()},60);if(map&&currentPosition){updateMap(currentPosition[0],currentPosition[1]);updateWpUI()}}
  if(t==="trip"){updateTripUI();renderWpList()}
  if(t==="inst"){fitWxValues();if(seaOpen&&seaMap)setTimeout(()=>{seaMap.invalidateSize();seaCenter()},60)}
  if(t!=="map")window.scrollTo(0,0);
+ jetSync();
  const pg=$("p_"+t);pg.classList.remove("sl","sr","sf");
  if(dir){void pg.offsetWidth;pg.classList.add(t==="map"?"sf":dir>0?"sr":"sl")}
 }
@@ -1044,6 +1083,27 @@ document.addEventListener("touchend",e=>{
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>showTab(b.getAttribute("data-t")));
 window.addEventListener("resize",()=>{if(curTab==="map")sizeMap();if(curTab==="inst"){fitWxValues();if(seaOpen&&seaMap)seaMap.invalidateSize()}});
 
+/* ---------- power saver ---------- */
+let dimTimer=null;
+function dimNow(){
+ dimTimer=null;
+ const w=selWp();
+ if(!power||document.hidden||(w&&w.mob))return;
+ $("dimOverlay").classList.add("on");
+}
+function wakeDim(){
+ $("dimOverlay").classList.remove("on");
+ if(dimTimer){clearTimeout(dimTimer);dimTimer=null}
+ if(power)dimTimer=setTimeout(dimNow,20000);
+}
+document.addEventListener("touchstart",wakeDim,{passive:true});
+document.addEventListener("pointerdown",wakeDim,{passive:true});
+function applyPower(){
+ setSwitch("swPower",power);document.body.classList.toggle("eco",power);
+ $("powerMsg").textContent=power?"Slower Updates, No Pulsing, Dims After 20 s":"";
+ wakeDim();
+}
+$("swPower").onclick=()=>{power=!power;store.set("power",power?"1":"0");applyPower()};
 /* ---------- controls ---------- */
 $("swGps").onclick=()=>{if(watchId!==null)stopGPS();else startGPS()};
 $("swCompass").onclick=()=>{if(compassOn)deactivateCompass();else activateCompass()};
@@ -1088,7 +1148,8 @@ function autoStartGPS(){
 if(store.get("unit")==="kmh")chooseUnit("kmh");
 $("varVal").textContent=fmtVar();applyVarUI();$("mtStreet").classList.toggle("active",mapType==="street");$("mtNaut").classList.toggle("active",mapType==="nautical");
 drawRose();updateCompassState();updateCogMark();swDraw();updateTripUI();updateWpUI();updateNavUI();if(selWp()&&selWp().mob){setNav(true);seaOpen=false}
-setSeaOpen(seaOpen);updateWxUI();updateSun();wakeHint();
+setSeaOpen(seaOpen);
+applyPower();updateWxUI();updateSun();wakeHint();
 if(store.get("gps")==="1")autoStartGPS();
 if(store.get("compass")==="1"){
  if(needsCompassPermission())$("compMsg").textContent="The compass was on last time. iOS requires confirmation: please tap the compass switch.";
