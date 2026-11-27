@@ -2,10 +2,10 @@
 <html lang="en" translate="no"><head><meta charset="utf-8"><meta name="google" content="notranslate"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d2133">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="HELMSMAN"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><title>HELMSMAN MK 1.6</title>
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><title>HELMSMAN MK 1.7</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
-:root{color-scheme:dark;--bg:#0b1926;--panel:#142b3e;--muted:#a9bdcc;--line:#29465c;--accent:#55c2b2}
+:root{color-scheme:dark;--bg:#0b1926;--panel:#142b3e;--muted:#a9bdcc;--line:#29465c;--accent:#55d49a}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html{background:#08131e}
@@ -17,7 +17,7 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 .toprow{display:flex;justify-content:space-between;align-items:center}
 .brand{font-size:20px;letter-spacing:.13em;margin:0;font-weight:800}
 .brandline{display:flex;align-items:center;gap:6px}
-.version{font-size:10px;font-weight:800;letter-spacing:.08em;color:var(--accent);border:1px solid #397c78;border-radius:6px;padding:4px 6px}
+.version{font-size:10px;font-weight:800;letter-spacing:.08em;color:var(--accent);border:1px solid var(--accent);border-radius:6px;padding:4px 6px}
 .hbtns{display:flex;gap:6px;align-items:center}
 .subrow{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
 .tag{font-size:9px;letter-spacing:.16em;color:var(--muted)}
@@ -63,19 +63,19 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 .bdot{position:absolute;left:50%;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#168bce;border:3px solid #fff;box-sizing:border-box;box-shadow:0 0 0 1px #0003}
 @keyframes conepulse{0%,100%{opacity:.6}45%{opacity:1}}
 @media(prefers-reduced-motion:reduce){.bcone.pulse{animation:none}}
-.eco .bcone.pulse,.eco #cellWind.pulse .o,.eco #cellWind.pulse .m,.eco #cellWind.pulse .tap{animation:none!important}
 #rotateGuard{display:none;position:fixed;inset:0;z-index:6000;background:#0b1926;color:#f4f8fb;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center;padding:20px}
 #rotateGuard svg{width:48px;height:48px;color:var(--accent)}
 .guardmob{border:1px solid #e5484d;background:#3a1519;color:#ff8d90;font-size:16px;font-weight:700;letter-spacing:.06em;padding:0 26px;height:46px;border-radius:12px;position:relative;overflow:hidden;margin-top:4px;-webkit-touch-callout:none;user-select:none}
 @media (orientation:landscape) and (max-height:500px){html:not(.noguard) #rotateGuard{display:flex}}
-#dimOverlay{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .8s;z-index:5000}
-#dimOverlay.on{opacity:.66}
 .compass{flex:none;width:clamp(118px,36.8vw,138px);height:auto}
 .cells{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .cell{background:#0d2030;border:0;border-radius:11px;padding:7px 8px;min-width:0;text-align:left;color:#f4f8fb;font-family:inherit;display:block}
 button.cell{cursor:pointer}
 .cell{position:relative}
 button.cell:active{background:#173247}
+#cellPres{transition:opacity .3s}
+#cellPres.fade{opacity:0}
+@media(prefers-reduced-motion:reduce){#cellPres{transition:none}}
 .tap{position:absolute;top:5px;right:5px;width:19px;height:19px;color:#f4f8fb}
 .tap circle{fill:none;stroke:currentColor}
 .tap .d{fill:currentColor;stroke:none}
@@ -83,7 +83,7 @@ button.cell:active{background:#173247}
 #cellWind.pulse .m{transform-origin:8px 8px;animation:ripple 1.3s ease-out .25s 1}
 #cellWind.pulse .tap{animation:tapcolor 1.6s ease-in-out 1}
 @keyframes ripple{0%{transform:scale(.55);opacity:.95}100%{transform:scale(1.35);opacity:0}}
-@keyframes tapcolor{0%{color:#f4f8fb}30%{color:#4ade80}70%{color:#4ade80}100%{color:#f4f8fb}}
+@keyframes tapcolor{0%{color:#f4f8fb}30%{color:#55d49a}70%{color:#55d49a}100%{color:#f4f8fb}}
 @media(prefers-reduced-motion:reduce){#cellWind.pulse .o,#cellWind.pulse .m{animation:none}}
 .cell .l{font-size:10px;letter-spacing:.08em;color:var(--muted);font-weight:750;white-space:nowrap}
 .cell .v{font-size:19px;font-weight:600;margin-top:2px;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -111,11 +111,11 @@ button.cell:active{background:#173247}
 .varbox{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 0 8px}
 .varbox .sub{margin:0;font-size:11px}
 .legend{font-size:11px;color:var(--muted);line-height:1.5}
-.legend .amb{color:#ffb84d;font-weight:700}.legend .grn{color:#55c2b2;font-weight:700}.legend .red{color:#ff7d80;font-weight:700}.legend .blu{color:#6cc4ff;font-weight:700}
+.legend .amb{color:#ffb84d;font-weight:700}.legend .grn{color:#55d49a;font-weight:700}.legend .red{color:#ff7d80;font-weight:700}.legend .blu{color:#6cc4ff;font-weight:700}
 .row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-top:1px solid var(--line);font-size:15px;gap:10px}
 .sw{position:relative;width:51px;height:31px;border-radius:16px;border:0;padding:0;background:#3a566b;transition:background .2s;flex:none}
 .sw:after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;transition:transform .2s}
-.sw[aria-checked="true"]{background:#34c759}
+.sw[aria-checked="true"]{background:#55d49a}
 .sw[aria-checked="true"]:after{transform:translateX(20px)}
 .msg{font-size:11px;line-height:1.45;color:#ffd18a;min-height:16px;margin:10px 2px 2px}
 #wxSheet,#navSheet{position:fixed;inset:0;z-index:3000;background:#000a;display:flex;align-items:flex-end;justify-content:center}
@@ -152,6 +152,8 @@ button.cell:active{background:#173247}
 .btn{border:1px solid #35536a;background:#0b1926;color:#dce8ef;border-radius:11px;padding:11px 12px;font-size:14px;font-weight:600}
 .btn.flex{flex:1}
 .btn.active{background:var(--accent);border-color:var(--accent);color:#082027}
+.btn.green{background:var(--accent);border-color:var(--accent);color:#082027}
+.grid2 .metric{border:1px solid var(--line)}
 .mapbtns #followBtn{transition:background .15s,color .15s}
 .mapbtns #followBtn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#082027}
 .mapbtns #followBtn[aria-pressed="false"]{background:#0b1926;border-color:#35536a;color:#dce8ef}
@@ -191,7 +193,7 @@ button.cell:active{background:#173247}
 
 <header class="hdr"><div class="wrap">
 <div class="toprow">
-<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 1.6</span></div>
+<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 1.7</span></div>
 <div class="hbtns">
 <button class="hbtn" id="mob" aria-label="MOB: press and hold"><span id="mobFill"></span><span class="t">MOB</span></button>
 <button class="hbtn" id="stopwatch" aria-label="Stopwatch"></button>
@@ -230,7 +232,7 @@ button.cell:active{background:#173247}
 <div class="cell"><div class="l">HEADING</div><div class="v" id="heading">—</div><div class="s" id="headingDir">&nbsp;</div></div>
 <button class="cell" id="cellWind" aria-label="Wind forecast"><div class="l">WIND</div><svg class="tap" viewBox="0 0 16 16" aria-hidden="true"><circle class="o" cx="8" cy="8" r="6.8" stroke-width="1.1" opacity=".55"/><circle class="m" cx="8" cy="8" r="4.3" stroke-width="1.4"/><circle class="d" cx="8" cy="8" r="1.7"/></svg><div class="v" id="wxWind">—</div><div class="s" id="wxWindSub">&nbsp;</div></button>
 <div class="cell"><div class="l">COG</div><div class="v" id="cog">—</div><div class="s" id="cogDir">&nbsp;</div></div>
-<div class="cell" id="cellPres"><div class="l">PRESSURE</div><div class="v" id="wxPres">—</div><div class="s" id="wxPresSub">&nbsp;</div></div>
+<div class="cell" id="cellPres"><div class="l" id="wxPresLabel">PRESSURE</div><div class="v" id="wxPres">—</div><div class="s" id="wxPresSub">&nbsp;</div></div>
 <div class="cell"><div class="l">DRIFT</div><div class="v" id="drift">—</div><div class="s" id="driftDir">&nbsp;</div></div>
 <div class="cell" id="cellRain"><div class="l">WEATHER</div><div class="v" id="wxRain">—</div><div class="s" id="wxRainSub">&nbsp;</div></div>
 </div></div>
@@ -260,8 +262,6 @@ button.cell:active{background:#173247}
 <div class="row"><span>Magnetic Variation</span><button class="sw" id="swVar" role="switch" aria-checked="false" aria-label="Magnetic variation"></button></div>
 <div class="varbox" id="varBox" hidden><span class="sub">East = +, West = − (See Your Chart)</span>
 <div class="step"><button id="varMinus" aria-label="Decrease magnetic variation">−</button><span id="varVal">0°</span><button id="varPlus" aria-label="Increase magnetic variation">+</button></div></div>
-<div class="row"><span>Power Saver</span><button class="sw" id="swPower" role="switch" aria-checked="false" aria-label="Power Saver"></button></div>
-<div class="rowmsg" id="powerMsg" style="color:var(--muted)"></div>
 <div class="row"><span>Portrait Guard</span><button class="sw" id="swGuard" role="switch" aria-checked="true" aria-label="Portrait Guard"></button></div>
 <div class="rowmsg" id="guardMsg" style="color:var(--muted)">Covers The App When The Phone Turns To Landscape</div>
 <div class="msg" id="message"></div>
@@ -276,7 +276,6 @@ button.cell:active{background:#173247}
 <p class="note">MOB only saves the position where the button was pressed, not the location of the person.</p>
 <p class="note">Map data needs an internet connection.</p>
 <p class="note">The small Sea Map on Instruments only shows where you are. On both maps the blue cone shows the direction the device points (compass needed).</p>
-<p class="note">Power Saver slows the compass and map updates, stops the pulsing and dims the screen after 20 seconds without touch, but never while a MOB is active.</p>
 <p class="note">HELMSMAN is a supplementary instrument and no substitute for proper navigation, weather and rescue equipment.</p>
 </section>
 
@@ -309,7 +308,7 @@ button.cell:active{background:#173247}
 <div class="metric"><div class="eyebrow">MAX</div><strong id="tMax">—</strong></div>
 </div>
 <div class="row" style="margin-top:10px"><span>Record Trip</span><button class="sw" id="swRec" role="switch" aria-checked="false" aria-label="Record Trip"></button></div>
-<div style="display:flex;gap:8px;padding-top:10px;border-top:1px solid var(--line)"><button class="btn flex" id="gpxBtn">Save As GPX</button><button class="btn flex" id="resetTrip">Reset Trip</button></div>
+<div style="display:flex;gap:8px;padding-top:10px;border-top:1px solid var(--line)"><button class="btn flex green" id="gpxBtn">Save As GPX</button><button class="btn flex green" id="resetTrip">Reset Trip</button></div>
 <div class="msg" id="tripMsg"></div>
 </div>
 
@@ -337,7 +336,6 @@ button.cell:active{background:#173247}
 </div></div>
 
 <div id="rotateGuard" role="alert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg><div style="font-size:18px;font-weight:700">Turn The Phone Back To Portrait</div><div style="font-size:13px;color:#a9bdcc">GPS, Compass And Recording Keep Running</div><button class="guardmob" id="guardMob" aria-label="MOB: press and hold">MOB</button></div>
-<div id="dimOverlay"></div>
 
 <nav class="tabbar"><div class="in">
 <button class="tab on" data-t="inst"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7l2.5 5-2.5 5-2.5-5z"/></svg>Instruments</button>
@@ -360,7 +358,6 @@ function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;","
 let varDeg=Number(store.get("var"))||0;
 let varOn=store.get("varon")===null?(varDeg!==0):store.get("varon")==="1";
 let rec=store.get("rec")==="1";
-let power=store.get("power")==="1";
 let trip=jget("trip",{dist:0,time:0,max:0});
 let track=jget("track",[]);
 let wps=jget("wps",[]);
@@ -462,7 +459,7 @@ function updateWpUI(){
  updateNavUI();
  const w=selWp(),g=w?wpGeo(w):null;
  $("wpLine").classList.toggle("mob",!!(w&&w.mob));
- if(w)$("wpMark").firstElementChild.setAttribute("fill",w.mob?"#e5484d":"#55c2b2");
+ if(w)$("wpMark").firstElementChild.setAttribute("fill",w.mob?"#e5484d":"#55d49a");
  if(!w){$("wpLine").hidden=true;$("wpMark").style.display="none"}
  else{
   $("wpLine").hidden=false;
@@ -518,7 +515,7 @@ function updateCones(){
  boats.forEach(mk=>{const el=mk.getElement&&mk.getElement(),c=el&&el.querySelector&&el.querySelector(".bcone");if(!c)return;c.style.display=on?"":"none";if(on)c.style.transform="rotate("+coneAngle+"deg)"});
 }
 function pulseCones(){
- if(document.hidden||power)return;
+ if(document.hidden)return;
  boats.forEach(mk=>{const el=mk.getElement&&mk.getElement(),c=el&&el.querySelector&&el.querySelector(".bcone");if(c&&c.style.display!=="none"){c.classList.remove("pulse");void c.getBoundingClientRect();c.classList.add("pulse")}});
 }
 setInterval(pulseCones,7000);
@@ -543,7 +540,6 @@ function initSeaMap(){
 function updateSea(lat,lon){
  if(!seaMap||!seaOpen||curTab!=="inst")return;
  const now=Date.now();
- if(power&&now-lastSea<5000)return;
  lastSea=now;
  if(seaBoat){seaBoat.setLatLng([lat,lon]);seaBoat.setOpacity(1)}
  if(offCenter(seaMap,[lat,lon],.15))seaMap.panTo([lat,lon],{animate:true,duration:.45});
@@ -587,7 +583,7 @@ function jetLoop(){
  jetStep();
  if(!jetWanted())return;
  const e=(Date.now()-jetStart)/1000,t=jetBurst(e);
- jetTimer=setTimeout(jetLoop,t!==null?(power?100:50):Math.max(150,(jetNext(e)-e)*1000));
+ jetTimer=setTimeout(jetLoop,t!==null?50:Math.max(150,(jetNext(e)-e)*1000));
 }
 function jetSync(){
  if(jetWanted()){if(!jetTimer)jetLoop()}
@@ -639,7 +635,7 @@ function initMap(){
  trackLine=L.polyline(track.map(p=>[p[0],p[1]]),{color:"#0f9d8f",weight:4,opacity:.9}).addTo(map);
  wpLayer=L.layerGroup().addTo(map);
  wpLine=L.polyline([],{color:"#e5484d",weight:5,opacity:1,dashArray:"16 12",className:"mobline"}).addTo(map);
- jetLine=L.polyline([],{color:"#55c2b2",weight:5,opacity:1,dashArray:"16 12",className:"jetline"}).addTo(map);
+ jetLine=L.polyline([],{color:"#55d49a",weight:5,opacity:1,dashArray:"16 12",className:"jetline"}).addTo(map);
  map.on("dragstart",manualMove);
  map.on("zoomstart",()=>{if(Date.now()>autoUntil)manualMove()});
  drawMapWps();
@@ -649,7 +645,7 @@ function applyMapType(){if(!map||!seaLayer)return;if(mapType==="nautical"){if(!m
 function drawMapWps(){
  if(!map||!wpLayer)return;
  wpLayer.clearLayers();
- wps.forEach(w=>{const sel=w.id===selId;L.circleMarker([w.lat,w.lon],{radius:sel?9:7,color:"#fff",weight:2.5,fillColor:w.mob?"#e5484d":(sel?"#55c2b2":"#ffb84d"),fillOpacity:1}).bindTooltip(w.n,{direction:"top"}).addTo(wpLayer)});
+ wps.forEach(w=>{const sel=w.id===selId;L.circleMarker([w.lat,w.lon],{radius:sel?9:7,color:"#fff",weight:2.5,fillColor:w.mob?"#e5484d":(sel?"#55d49a":"#ffb84d"),fillOpacity:1}).bindTooltip(w.n,{direction:"top"}).addTo(wpLayer)});
  updateWpUI();
  updateNavUI();
  if(navFit)fitTarget(true);
@@ -661,9 +657,9 @@ function updateMap(lat,lon){
  if(!posMarker)posMarker=makeBoat(map,p);else posMarker.setLatLng(p);
  if(!mapHasFix){markAuto();map.setView(p,15);mapHasFix=true;if(navFit)fitTarget(true)}
  else if(navFit){fitTarget()}
- else if(followMap&&offCenter(map,p,power?.30:.18)){
+ else if(followMap&&offCenter(map,p,.18)){
   const now=Date.now();
-  if(now-lastPan>(power?5000:1000)){lastPan=now;markAuto();map.panTo(p,{animate:true,duration:.45})}
+  if(now-lastPan>1000){lastPan=now;markAuto();map.panTo(p,{animate:true,duration:.45})}
  }
 }
 function setFollow(on){if(on&&navFit){navFit=false;updateNavUI()}followMap=on;$("followBtn").textContent=on?"FOLLOW ON":"FOLLOW OFF";$("followBtn").classList.toggle("active",on);$("followBtn").setAttribute("aria-pressed",String(on));if(on&&currentPosition&&map){markAuto();map.panTo(currentPosition,{animate:true,duration:.35})}}
@@ -691,7 +687,7 @@ function recordFix(c,ts){
  }
 }
 function buildGpx(){
- let x='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="HELMSMAN MK 1.6" xmlns="http://www.topografix.com/GPX/1/1">\n';
+ let x='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="HELMSMAN MK 1.7" xmlns="http://www.topografix.com/GPX/1/1">\n';
  wps.forEach(w=>{x+=`<wpt lat="${w.lat}" lon="${w.lon}"><time>${new Date(w.t).toISOString()}</time><name>${esc(w.n)}</name></wpt>\n`});
  x+="<trk><name>HELMSMAN Trip</name><trkseg>\n";
  track.forEach(p=>{x+=`<trkpt lat="${p[0]}" lon="${p[1]}"><time>${new Date(p[2]).toISOString()}</time></trkpt>\n`});
@@ -826,19 +822,25 @@ function orientationHandler(e){
   smH=(smH+a*d+360)%360;
  }
  lastHT=now;headingRaw=smH;
- if(now-lastDraw>=(power?200:66)){lastDraw=now;drawRose();updateHeadingText(false)}
+ if(now-lastDraw>=66){lastDraw=now;drawRose();updateHeadingText(false)}
 }
 
 /* ---------- weather (Open-Meteo) ---------- */
-let wx=jget("wx",null),wxBusy=false,wxErr=false,wxLastTry=0;
+let wx=jget("wx",null),wxBusy=false,wxErr=false,wxLastTry=0,showTemp=false;
 let tapPlayed=false;
-function tapOk(){return !document.hidden&&!power&&wx&&(Date.now()-wx.t)/60000<=180&&$("wxSheet").hidden}
+function tapOk(){return !document.hidden&&wx&&(Date.now()-wx.t)/60000<=180&&$("wxSheet").hidden}
 function playTap(){const tc=$("cellWind");tc.classList.remove("pulse");void tc.offsetWidth;tc.classList.add("pulse")}
 function startTapSchedule(){
- if(!power)playTap();
+ playTap();
  [20000,40000].forEach(ms=>setTimeout(()=>{if(tapOk())playTap()},ms));
  setTimeout(()=>{if(tapOk())playTap();setInterval(()=>{if(tapOk())playTap()},60000)},60000);
 }
+function swapPresTemp(){
+ if(document.hidden||!wx)return;
+ const c=$("cellPres");c.classList.add("fade");
+ setTimeout(()=>{showTemp=!showTemp;updateWxUI();c.classList.remove("fade")},320);
+}
+setInterval(swapPresTemp,60000);
 function fitText(el,max,min){el.style.fontSize=max+"px";let sz=max;while(el.scrollWidth>el.clientWidth+0.5&&sz>min){sz-=0.5;el.style.fontSize=sz+"px"}}
 function fitWxValues(){["wxWind","wxPres","wxRain"].forEach(id=>fitText($(id),19,13))}
 function bft(kn){const t=[1,4,7,11,17,22,28,34,41,48,56,64];for(let i=0;i<t.length;i++)if(kn<t[i])return i;return 12}
@@ -897,6 +899,8 @@ async function fetchWeather(manual){
   let delta=null,bi=-1,bd=1e9;
   H.time.forEach((t,i)=>{const d=Math.abs(t-(c.time-3*3600));if(d<bd){bd=d;bi=i}});
   if(bi>=0&&bd<=3600&&H.pressure_msl[bi]!=null&&c.pressure_msl!=null)delta=c.pressure_msl-H.pressure_msl[bi];
+  let tdelta=null;
+  if(bi>=0&&bd<=3600&&H.temperature_2m&&H.temperature_2m[bi]!=null&&c.temperature_2m!=null)tdelta=c.temperature_2m-H.temperature_2m[bi];
   const hours=[];
   for(let i=0;i<H.time.length&&hours.length<6;i++){
    if(H.time[i]>=now-1800)hours.push([H.time[i],H.wind_speed_10m[i],H.wind_gusts_10m[i],H.precipitation[i],H.pressure_msl[i],H.temperature_2m[i]]);
@@ -916,7 +920,7 @@ async function fetchWeather(manual){
   else if(rainMin!=null)sky={label:(isWet(arrCode)&&skyLabel(arrCode,srcC.is_day))||"Rain",kind:"rain",sub:inTxt(rainMin)};
   else sky={label:skyLabel(arrCode,srcC.is_day)||skyLabel(c.weather_code,c.is_day)||"Dry",kind:"calm",sub:"Next Hour"};
   wx={sky,skyNow:skyLabel(c.weather_code,c.is_day),t:Date.now(),pos:currentPosition.slice(),cur:{wind:c.wind_speed_10m,dir:c.wind_direction_10m,gust:c.wind_gusts_10m,pres:c.pressure_msl,temp:c.temperature_2m,rain:c.precipitation},
-      delta,hours,rainNow:(c.precipitation||0)>=0.1,rainMin,ahead:!!a,aheadNm:a?distM(currentPosition,a)/1852:0};
+      delta,tdelta,hours,rainNow:(c.precipitation||0)>=0.1,rainMin,ahead:!!a,aheadNm:a?distM(currentPosition,a)/1852:0};
   store.set("wx",JSON.stringify(wx));wxErr=false;
  }catch(e){wxErr=true}
  wxBusy=false;updateWxUI();if(!$("wxSheet").hidden)renderWxSheet();
@@ -943,11 +947,19 @@ function updateWxUI(){
  const f=selectedUnit==="kn"?1:1.852,u=selectedUnit==="kn"?"kn":"km/h";
  $("wxWind").innerHTML=Math.round(wx.cur.wind*f)+" <small>"+u+"</small>";
  $("wxWindSub").textContent=bft(wx.cur.wind)+" Bft · "+cardinal(wx.cur.dir);
- const d=wx.delta;
- let arrow="";
- if(d!=null){const kind=d>0.5?"up":d<-0.5?"down":"flat",col=kind==="up"?"#55d49a":kind==="down"?(d<=-3?"#ee6666":"#ffb84d"):"#a9bdcc";arrow=wxArrow(kind,col)}
- $("wxPres").innerHTML=Math.round(wx.cur.pres)+arrow;
- $("wxPresSub").textContent=d==null?"hPa":(d>=0?"+":"−")+Math.abs(d).toFixed(1)+" hPa/3h";
+ if(showTemp&&wx.cur.temp!=null){
+  const td=wx.tdelta;let ar="";
+  if(td!=null){const kind=td>0.5?"up":td<-0.5?"down":"flat",col=kind==="up"?"#55d49a":kind==="down"?"#ffb84d":"#a9bdcc";ar=wxArrow(kind,col)}
+  $("wxPresLabel").textContent="TEMP";
+  $("wxPres").innerHTML=Math.round(wx.cur.temp)+'<small style="font-size:11px;color:#a9bdcc;font-weight:500"> °C</small>'+ar;
+  $("wxPresSub").textContent=td==null?"°C":(td>=0?"+":"−")+Math.abs(td).toFixed(1)+" °C/3h";
+ }else{
+  const d=wx.delta;let arrow="";
+  if(d!=null){const kind=d>0.5?"up":d<-0.5?"down":"flat",col=kind==="up"?"#55d49a":kind==="down"?(d<=-3?"#ee6666":"#ffb84d"):"#a9bdcc";arrow=wxArrow(kind,col)}
+  $("wxPresLabel").textContent="PRESSURE";
+  $("wxPres").innerHTML=Math.round(wx.cur.pres)+arrow;
+  $("wxPresSub").textContent=d==null?"hPa":(d>=0?"+":"−")+Math.abs(d).toFixed(1)+" hPa/3h";
+ }
  $("wxWind").style.color=bft(wx.cur.wind)>=7?"#ffb84d":"";
  const sk=wx.sky;
  if(sk){const col=sk.kind==="warn"?"#ffb84d":sk.kind==="rain"?"#6cc4ff":"";$("wxRain").innerHTML='<span style="color:'+col+'">'+esc(sk.label)+'</span>';$("wxRainSub").textContent=sk.sub}
@@ -1094,27 +1106,6 @@ document.addEventListener("touchend",e=>{
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>showTab(b.getAttribute("data-t")));
 window.addEventListener("resize",()=>{if(curTab==="map")sizeMap();if(curTab==="inst"){fitWxValues();if(seaOpen&&seaMap)seaMap.invalidateSize()}});
 
-/* ---------- power saver ---------- */
-let dimTimer=null;
-function dimNow(){
- dimTimer=null;
- const w=selWp();
- if(!power||document.hidden||(w&&w.mob))return;
- $("dimOverlay").classList.add("on");
-}
-function wakeDim(){
- $("dimOverlay").classList.remove("on");
- if(dimTimer){clearTimeout(dimTimer);dimTimer=null}
- if(power)dimTimer=setTimeout(dimNow,20000);
-}
-document.addEventListener("touchstart",wakeDim,{passive:true});
-document.addEventListener("pointerdown",wakeDim,{passive:true});
-function applyPower(){
- setSwitch("swPower",power);document.body.classList.toggle("eco",power);
- $("powerMsg").textContent=power?"Slower Updates, No Pulsing, Dims After 20 s":"";
- wakeDim();
-}
-$("swPower").onclick=()=>{power=!power;store.set("power",power?"1":"0");applyPower()};
 let guardOn=store.get("guard")!=="0";
 function applyGuard(){setSwitch("swGuard",guardOn);document.documentElement.classList.toggle("noguard",!guardOn)}
 $("swGuard").onclick=()=>{guardOn=!guardOn;store.set("guard",guardOn?"1":"0");applyGuard()};
@@ -1163,7 +1154,7 @@ chooseUnit("kmh");
 $("varVal").textContent=fmtVar();applyVarUI();$("mtStreet").classList.toggle("active",mapType==="street");$("mtNaut").classList.toggle("active",mapType==="nautical");
 drawRose();updateCompassState();updateCogMark();swDraw();updateTripUI();updateWpUI();updateNavUI();if(selWp()&&selWp().mob){setNav(true);seaOpen=false}
 setSeaOpen(seaOpen);
-applyPower();applyGuard();updateWxUI();updateSun();wakeHint();
+applyGuard();updateWxUI();updateSun();wakeHint();
 if(store.get("gps")==="1")autoStartGPS();
 if(store.get("compass")==="1"){
  if(needsCompassPermission())$("compMsg").textContent="The compass was on last time. iOS requires confirmation: please tap the compass switch.";
