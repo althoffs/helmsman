@@ -2,7 +2,7 @@
 <html lang="en" translate="no"><head><meta charset="utf-8"><meta name="google" content="notranslate"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d2133">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="HELMSMAN"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><title>HELMSMAN MK 1.5</title>
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><title>HELMSMAN MK 1.6</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{color-scheme:dark;--bg:#0b1926;--panel:#142b3e;--muted:#a9bdcc;--line:#29465c;--accent:#55c2b2}
@@ -64,6 +64,10 @@ button{font-family:inherit;cursor:pointer;-webkit-user-select:none;user-select:n
 @keyframes conepulse{0%,100%{opacity:.6}45%{opacity:1}}
 @media(prefers-reduced-motion:reduce){.bcone.pulse{animation:none}}
 .eco .bcone.pulse,.eco #cellWind.pulse .o,.eco #cellWind.pulse .m,.eco #cellWind.pulse .tap{animation:none!important}
+#rotateGuard{display:none;position:fixed;inset:0;z-index:6000;background:#0b1926;color:#f4f8fb;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center;padding:20px}
+#rotateGuard svg{width:48px;height:48px;color:var(--accent)}
+.guardmob{border:1px solid #e5484d;background:#3a1519;color:#ff8d90;font-size:16px;font-weight:700;letter-spacing:.06em;padding:0 26px;height:46px;border-radius:12px;position:relative;overflow:hidden;margin-top:4px;-webkit-touch-callout:none;user-select:none}
+@media (orientation:landscape) and (max-height:500px){html:not(.noguard) #rotateGuard{display:flex}}
 #dimOverlay{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .8s;z-index:5000}
 #dimOverlay.on{opacity:.66}
 .compass{flex:none;width:clamp(118px,36.8vw,138px);height:auto}
@@ -149,7 +153,7 @@ button.cell:active{background:#173247}
 .btn.flex{flex:1}
 .btn.active{background:var(--accent);border-color:var(--accent);color:#082027}
 .mapbtns #followBtn{transition:background .15s,color .15s}
-.mapbtns #followBtn[aria-pressed="true"]{background:#6cc4ff;border-color:#6cc4ff;color:#06202f}
+.mapbtns #followBtn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#082027}
 .mapbtns #followBtn[aria-pressed="false"]{background:#0b1926;border-color:#35536a;color:#dce8ef}
 .btn.flash,.mapbtns .btn.flash{background:#f4f8fb!important;border-color:#f4f8fb!important;color:#082027!important}
 .toast{position:absolute;left:50%;top:30%;transform:translateX(-50%);z-index:1100;background:#0b1926f2;border:1px solid var(--accent);color:#f4f8fb;border-radius:14px;padding:12px 20px;font-size:17px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .25s;white-space:nowrap}
@@ -187,7 +191,7 @@ button.cell:active{background:#173247}
 
 <header class="hdr"><div class="wrap">
 <div class="toprow">
-<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 1.5</span></div>
+<div class="brandline"><h1 class="brand">HELMSMAN</h1><span class="version">MK 1.6</span></div>
 <div class="hbtns">
 <button class="hbtn" id="mob" aria-label="MOB: press and hold"><span id="mobFill"></span><span class="t">MOB</span></button>
 <button class="hbtn" id="stopwatch" aria-label="Stopwatch"></button>
@@ -258,6 +262,8 @@ button.cell:active{background:#173247}
 <div class="step"><button id="varMinus" aria-label="Decrease magnetic variation">−</button><span id="varVal">0°</span><button id="varPlus" aria-label="Increase magnetic variation">+</button></div></div>
 <div class="row"><span>Power Saver</span><button class="sw" id="swPower" role="switch" aria-checked="false" aria-label="Power Saver"></button></div>
 <div class="rowmsg" id="powerMsg" style="color:var(--muted)"></div>
+<div class="row"><span>Portrait Guard</span><button class="sw" id="swGuard" role="switch" aria-checked="true" aria-label="Portrait Guard"></button></div>
+<div class="rowmsg" id="guardMsg" style="color:var(--muted)">Covers The App When The Phone Turns To Landscape</div>
 <div class="msg" id="message"></div>
 </div>
 
@@ -330,6 +336,7 @@ button.cell:active{background:#173247}
 <div class="sub" style="font-size:11px;margin-top:6px"><a href="https://open-meteo.com/" target="_blank" rel="noopener" style="color:#8fc8ee">Weather data by Open-Meteo.com</a></div>
 </div></div>
 
+<div id="rotateGuard" role="alert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg><div style="font-size:18px;font-weight:700">Turn The Phone Back To Portrait</div><div style="font-size:13px;color:#a9bdcc">GPS, Compass And Recording Keep Running</div><button class="guardmob" id="guardMob" aria-label="MOB: press and hold">MOB</button></div>
 <div id="dimOverlay"></div>
 
 <nav class="tabbar"><div class="in">
@@ -684,7 +691,7 @@ function recordFix(c,ts){
  }
 }
 function buildGpx(){
- let x='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="HELMSMAN MK 1.5" xmlns="http://www.topografix.com/GPX/1/1">\n';
+ let x='<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="HELMSMAN MK 1.6" xmlns="http://www.topografix.com/GPX/1/1">\n';
  wps.forEach(w=>{x+=`<wpt lat="${w.lat}" lon="${w.lon}"><time>${new Date(w.t).toISOString()}</time><name>${esc(w.n)}</name></wpt>\n`});
  x+="<trk><name>HELMSMAN Trip</name><trkseg>\n";
  track.forEach(p=>{x+=`<trkpt lat="${p[0]}" lon="${p[1]}"><time>${new Date(p[2]).toISOString()}</time></trkpt>\n`});
@@ -1049,6 +1056,10 @@ function mobStop(){clearTimeout(mobTimer);if(!mobDone){const f=$("mobFill");f.st
 mob.addEventListener("pointerdown",mobStart);
 ["pointerup","pointerleave","pointercancel"].forEach(ev=>mob.addEventListener(ev,mobStop));
 mob.addEventListener("contextmenu",e=>e.preventDefault());
+const gmob=$("guardMob");
+gmob.addEventListener("pointerdown",mobStart);
+["pointerup","pointerleave","pointercancel"].forEach(ev=>gmob.addEventListener(ev,mobStop));
+gmob.addEventListener("contextmenu",e=>e.preventDefault());
 
 /* ---------- pages ---------- */
 function showTab(t,dir){
@@ -1104,6 +1115,9 @@ function applyPower(){
  wakeDim();
 }
 $("swPower").onclick=()=>{power=!power;store.set("power",power?"1":"0");applyPower()};
+let guardOn=store.get("guard")!=="0";
+function applyGuard(){setSwitch("swGuard",guardOn);document.documentElement.classList.toggle("noguard",!guardOn)}
+$("swGuard").onclick=()=>{guardOn=!guardOn;store.set("guard",guardOn?"1":"0");applyGuard()};
 /* ---------- controls ---------- */
 $("swGps").onclick=()=>{if(watchId!==null)stopGPS();else startGPS()};
 $("swCompass").onclick=()=>{if(compassOn)deactivateCompass();else activateCompass()};
@@ -1118,10 +1132,10 @@ $("followBtn").onclick=()=>setFollow(!followMap);
 $("cardToggle").onclick=()=>setSeaOpen(!seaOpen);
 $("seaZin").onclick=()=>seaZoomBy(1);$("seaZout").onclick=()=>seaZoomBy(-1);
 $("navPick").onclick=openNav;
-$("navToggle").onclick=()=>{if(!selWp()){openNav();return}setNav(!navFit)};
+$("navToggle").onclick=()=>{if(!selWp()){openNav();return}const on=!navFit;setNav(on);if(!on)setFollow(true)};
 $("navClose").onclick=closeNav;
 $("navSheet").addEventListener("click",e=>{if(e.target===$("navSheet"))closeNav()});
-$("navStop").onclick=()=>{selId=null;saveWps();renderWpList();updateWpUI();drawMapWps();closeNav()};
+$("navStop").onclick=()=>{selId=null;saveWps();renderWpList();updateWpUI();drawMapWps();closeNav();setFollow(true)};
 $("recenter").onclick=()=>{if(map&&currentPosition){markAuto();map.panTo(currentPosition,{animate:true,duration:.35})}};
 function setMapType(t){mapType=t;store.set("maptype",t);$("mtStreet").classList.toggle("active",t==="street");$("mtNaut").classList.toggle("active",t==="nautical");$("mtStreet").setAttribute("aria-pressed",String(t==="street"));$("mtNaut").setAttribute("aria-pressed",String(t==="nautical"));applyMapType()}
 $("mtStreet").onclick=()=>setMapType("street");$("mtNaut").onclick=()=>setMapType("nautical");
@@ -1145,11 +1159,11 @@ function autoStartGPS(){
   }).catch(()=>startGPS());
  }else startGPS();
 }
-if(store.get("unit")==="kmh")chooseUnit("kmh");
+chooseUnit("kmh");
 $("varVal").textContent=fmtVar();applyVarUI();$("mtStreet").classList.toggle("active",mapType==="street");$("mtNaut").classList.toggle("active",mapType==="nautical");
 drawRose();updateCompassState();updateCogMark();swDraw();updateTripUI();updateWpUI();updateNavUI();if(selWp()&&selWp().mob){setNav(true);seaOpen=false}
 setSeaOpen(seaOpen);
-applyPower();updateWxUI();updateSun();wakeHint();
+applyPower();applyGuard();updateWxUI();updateSun();wakeHint();
 if(store.get("gps")==="1")autoStartGPS();
 if(store.get("compass")==="1"){
  if(needsCompassPermission())$("compMsg").textContent="The compass was on last time. iOS requires confirmation: please tap the compass switch.";
